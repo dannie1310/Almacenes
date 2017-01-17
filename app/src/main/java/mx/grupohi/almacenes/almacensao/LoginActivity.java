@@ -22,6 +22,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.net.URL;
@@ -41,11 +42,12 @@ public class LoginActivity extends AppCompatActivity {
     private TextInputLayout formLayout;
     private EditText mPasswordView;
     private ProgressDialog mProgressDialog;
-    Intent mainActivity;
+    Intent SeleccionaObraActivity;
     Usuario user;
     Button mIniciarSesionButton;
 
     private DBScaSqlite db_sca;
+    Obras obras;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,8 +105,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void nextActivity() {
-        mainActivity = new Intent(this, MainActivity.class);
-        startActivity(mainActivity);
+        SeleccionaObraActivity = new Intent(this, SeleccionaObraActivity.class);
+        startActivity(SeleccionaObraActivity);
     }
 
     @Override
@@ -217,11 +219,14 @@ public class LoginActivity extends AppCompatActivity {
             data.put("accion","iniciaSesionMovil");
             try {
                 URL url = new URL(getApplicationContext().getString(R.string.url));
-                System.out.println("url: "+ url + " "+ data);
+
                 final JSONObject JSON = HttpConnection.POST(url, data);
+                System.out.println("url: "+ url + " "+ JSON);
+
                 db_sca.deleteCatalogos();
                 if(JSON.has("error")) {
-                    Toast.makeText(getApplicationContext(),(String) JSON.get("error"), Toast.LENGTH_SHORT);
+                    System.out.println("ERROR");
+                    errorLayout(formLayout, (String) JSON.get("error"));
                     return false;
                 } else {
                     runOnUiThread(new Runnable() {
@@ -244,11 +249,38 @@ public class LoginActivity extends AppCompatActivity {
                     if (!usuario.create(data)) {
                         return false;
                     }
+
+                    obras = new Obras(getApplicationContext());
+                    try{
+                        final JSONArray obra = new JSONArray(JSON.getString("BasesObras"));
+                        for (int i = 0; i < obra.length(); i++) {
+                            final int finalI = i + 1;
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mProgressDialog.setMessage("Actualizando catálogo de Obras... \n Obra " + finalI + " de " + obra.length());
+                                }
+                            });
+                            System.out.println("obras: "+obra.getJSONObject(i));
+                            JSONObject info = obra.getJSONObject(i);
+                            data.clear();
+                            data.put("nombre", info.getString("nombre"));
+                            data.put("idbase", info.getInt("id_base"));
+                            data.put("base", info.getString("base"));
+                            data.put("idobra", info.getInt("id"));
+
+                            if(!obras.create(data)){
+                                return false;
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
                 return true;
             } catch (Exception e) {
                 e.printStackTrace();
-                Toast.makeText(getApplicationContext(),getResources().getString(R.string.general_exception),Toast.LENGTH_SHORT);
+                errorMessage(getResources().getString(R.string.general_exception));
                 return false;
             }
 
@@ -276,5 +308,25 @@ public class LoginActivity extends AppCompatActivity {
         intent.addCategory(Intent.CATEGORY_HOME);
         startActivity(intent);
     }
+
+    private void errorMessage(final String message) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void errorLayout(final TextInputLayout layout, final String message) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                layout.setErrorEnabled(true);
+                layout.setError(message);
+            }
+        });
+    }
+
 }
 

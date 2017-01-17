@@ -38,6 +38,7 @@
 
     <string name="action_settings">Settings</string>
     <string name="general_exception">Por favor verifique su conexión a internet e intentelo nuevamente</string>
+    <string name="button_write">Descargar Catálogos</string>
 
 
 </resources>

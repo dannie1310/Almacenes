@@ -15,7 +15,8 @@ import android.database.sqlite.SQLiteOpenHelper;
     }
 
     private static String[] queries = new String[] {
-            "CREATE TABLE user (idusuario INTEGER,  nombre, TEXT, user TEXT, pass TEXT, usuarioCADECO TEXT)",
+            "CREATE TABLE user (idusuario INTEGER,  nombre, TEXT, user TEXT, pass TEXT, usuarioCADECO TEXT, idbase INTEGER, idobra INTEGER)",
+            "CREATE TABLE obras (ID INTEGER PRIMARY KEY AUTOINCREMENT, idobra INTEGER, nombre TEXT, idbase INTEGER, base TEXT)",
     };
 
     @Override
@@ -28,6 +29,7 @@ import android.database.sqlite.SQLiteOpenHelper;
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS user");
+        db.execSQL("DROP TABLE IF EXISTS obras");
 
         for (String query: queries){
             db.execSQL(query);
@@ -39,6 +41,7 @@ import android.database.sqlite.SQLiteOpenHelper;
     void deleteCatalogos() {
         SQLiteDatabase db = this.getReadableDatabase();
         db.execSQL("DELETE FROM user");
+        db.execSQL("DELETE FROM obras");
         db.close();
     }
 
