@@ -30,9 +30,6 @@ import java.net.URL;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.READ_PHONE_STATE;
 
-/**
- * A login screen that offers login via email/password.
- */
 public class LoginActivity extends AppCompatActivity {
 
     private UserLoginTask mAuthTask = null;

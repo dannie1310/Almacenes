@@ -47,20 +47,46 @@ public class Obras {
         db.close();
     }
 
-    static ArrayList<String> getArrayListNombres(Context context) {
-        System.out.println("obra?? ");
+   ArrayList<String> getArrayListNombres() {
         ArrayList<String> data = new ArrayList<>();
-        DBScaSqlite db_sca = new DBScaSqlite(context, "sca", null, 1);
-        SQLiteDatabase db = db_sca.getWritableDatabase();
-        Cursor c = db.rawQuery("SELECT * FROM obras ORDER BY ID ASC", null);
-
+        db = db_sca.getWritableDatabase();
+        Cursor c = db.rawQuery("SELECT * FROM obras ORDER BY nombre ASC", null);
         if (c != null && c.moveToFirst())
             try {
-                data.add("-- Seleccione --");
-                data.add(c.getString(c.getColumnIndex("id")) + " [" + c.getString(c.getColumnIndex("nombre")) + "]");
-                System.out.println("obras: "+ c.getColumnIndex("id")+c.getColumnIndex("nombre"));
-                while (c.moveToNext()) {
-                    data.add(c.getString(c.getColumnIndex("id")) + " [" + c.getString(c.getColumnIndex("nombre")) + "]");
+
+                if (c.getCount() == 1) {
+                    data.add(c.getString(c.getColumnIndex("nombre"))+" ["+c.getString(c.getColumnIndex("base"))+"].");
+                    System.out.println("obras: "+ c.getString(0) + c.getString(2));
+                } else {
+                    data.add("-- Seleccione --");
+                    data.add(c.getString(c.getColumnIndex("nombre"))+" ["+c.getString(c.getColumnIndex("base"))+"].");
+                    System.out.println("obras: "+ c.getString(0) + c.getString(2));
+                    while (c.moveToNext()) {
+                        data.add(c.getString(c.getColumnIndex("nombre"))+" ["+c.getString(c.getColumnIndex("base"))+"].");
+                        System.out.println("obras: "+ c.getString(0) + c.getString(2));
+                    }
+                }
+            } finally {
+                c.close();
+                db.close();
+            }
+
+        return data;
+    }
+    ArrayList<String> getArrayListId() {
+        ArrayList<String> data = new ArrayList<>();
+        db = db_sca.getWritableDatabase();
+        Cursor c = db.rawQuery("SELECT * FROM obras ORDER BY nombre ASC", null);
+        if (c != null && c.moveToFirst())
+            try {
+                if (c.getCount() == 1) {
+                    data.add(c.getString(c.getColumnIndex("ID")));
+                } else {
+                    data.add("0");
+                    data.add(c.getString(c.getColumnIndex("ID")));
+                    while (c.moveToNext()) {
+                        data.add(c.getString(c.getColumnIndex("ID")));
+                    }
                 }
             } finally {
                 c.close();
@@ -68,28 +94,26 @@ public class Obras {
             }
         return data;
     }
-    static ArrayList<String> getArrayListId(Context context) {
-        ArrayList<String> data = new ArrayList<>();
-        String query;
-        DBScaSqlite db_sca = new DBScaSqlite(context, "sca", null, 1);
-        SQLiteDatabase db = db_sca.getWritableDatabase();
-        query = "SELECT * FROM obras ORDER BY ID ASC";
 
+    public Obras find(Integer id){
+        db=db_sca.getWritableDatabase();
+        Cursor c = db.rawQuery("SELECT * FROM obras WHERE ID = '"+id+"'", null);
+        try{
+            if(c != null && c.moveToFirst()){
+                this.id_obra = c.getInt(c.getColumnIndex("idobra"));
+                this.id_base = c.getInt(c.getColumnIndex("idbase"));
+                this.nombre = c.getString(c.getColumnIndex("nombre"));
+                this.base = c.getString(c.getColumnIndex("base"));
 
-        Cursor c = db.rawQuery(query, null);
-        try {
-            if (c != null && c.moveToFirst()) {
-                data.add("0");
-                data.add(c.getString(c.getColumnIndex("id")));
-                while (c.moveToNext()) {
-                    data.add(c.getString(c.getColumnIndex("id")));
-                }
             }
-            return data;
-        } finally {
+            return this;
+        }finally {
+            assert c != null;
             c.close();
             db.close();
         }
     }
+
+
 
 }
