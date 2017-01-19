@@ -11,11 +11,12 @@ import android.database.sqlite.SQLiteDatabase;
 
 class Usuario {
 
-    private Integer idUsuario;
+    Integer idUsuario;
     String usr;
     String pass;
     String nombre;
     String usuarioCADECO;
+    Integer obraActiva;
 
     private Context context;
 
@@ -82,6 +83,8 @@ class Usuario {
                 this.nombre = c.getString(c.getColumnIndex("nombre"));
                 this.usr = c.getString(c.getColumnIndex("user"));
                 this.pass = c.getString(c.getColumnIndex("pass"));
+                this.usuarioCADECO = c.getString(c.getColumnIndex("usuarioCADECO"));
+                this.obraActiva = c.getInt(c.getColumnIndex("idobraactiva"));
 
                 return this;
             } else {
@@ -118,34 +121,34 @@ class Usuario {
         }
     }
 
-  boolean update(Integer idobra_activa){
-        boolean resp=false;
-        ContentValues data = null;
-        db = db_sca.getWritableDatabase();
-        int id = getId();
-        System.out.println("idobra: "+ idobra_activa + id);
-        try{
-            data.put("idobra_activa", idobra_activa);
 
-            db.update("user", data, "idusuario = '" +id+ "'", null);
-            System.out.println("sql: ");
+    static boolean update(String obraActiva,String id,  Context context) {
+        boolean resp=false;
+        ContentValues data = new ContentValues();
+
+        DBScaSqlite db_sca = new DBScaSqlite(context, "sca", null, 1);
+        SQLiteDatabase db = db_sca.getWritableDatabase();
+
+        try {
+            data.put("idobraactiva", obraActiva);
+
+            db.update("user", data, "idusuario = '" + id + "'", null);
             resp = true;
-        }catch (Exception e){
-            resp = false;
         }finally {
             db.close();
         }
+
         return resp;
-  }
+    }
 
     String getObraActiva(){
 
         db = db_sca.getWritableDatabase();
-        Cursor c = db.rawQuery("SELECT  o.nombre FROM obras as o LEFT JOIN user as u on u.idobra_activa = o.id", null);
+        Cursor c = db.rawQuery("SELECT  o.nombre FROM obras as o INNER JOIN user as u on u.idobraactiva = o.ID WHERE u.idobraactiva=o.ID", null);
 
         try {
-            if(c!=null && c.moveToFirst()){
-               return  c.getColumnName(0);
+            if(c!=null && c.moveToFirst() && c.getString(0) != String.valueOf(0)){
+               return  c.getString(0);
             }else {
                 return null;
             }

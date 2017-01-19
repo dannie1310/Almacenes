@@ -18,6 +18,7 @@ import android.widget.Toast;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -163,9 +164,8 @@ public class SeleccionaObraActivity extends AppCompatActivity {
 
 
                     //agregar id obra activa al usuario.
-                    boolean resp = user.update(ID);
-                    System.out.println("update: "+resp+ID);
-                    if(resp){
+                    boolean resp = user.update(String.valueOf(ID), String.valueOf(user.getId()),getApplicationContext());
+
                     ordenCompra = new OrdenCompra(getApplicationContext());
                     try {
                         final JSONArray ordenes = new JSONArray(JSON.getString("ordenescompra"));
@@ -310,7 +310,7 @@ public class SeleccionaObraActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
 
-                }}
+                }
                 return true;
             } catch (Exception e) {
                 e.printStackTrace();
@@ -365,11 +365,15 @@ public class SeleccionaObraActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-     /*   if(user.get()) {
+    public void onBackPressed() {
+        if(user.getObraActiva() == null) {
+            Intent intent = new Intent(Intent.ACTION_MAIN);
+            intent.addCategory(Intent.CATEGORY_HOME);
+            startActivity(intent);
+        }else{
             nextActivity();
-        }*/
+        }
     }
+
 
 }

@@ -40,6 +40,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText mPasswordView;
     private ProgressDialog mProgressDialog;
     Intent SeleccionaObraActivity;
+    Intent main;
     Usuario user;
     Button mIniciarSesionButton;
 
@@ -50,8 +51,9 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         user = new Usuario(this);
         db_sca = new DBScaSqlite(getApplicationContext(), "sca", null, 1);
-        if(user.get()) {
-            nextActivity();
+
+        if(user.getObraActiva() != null) {
+            mainActivity();
         }
         super.onCreate(savedInstanceState);
         setTitle(R.string.title_login_activity);
@@ -105,14 +107,15 @@ public class LoginActivity extends AppCompatActivity {
         SeleccionaObraActivity = new Intent(this, SeleccionaObraActivity.class);
         startActivity(SeleccionaObraActivity);
     }
+    private void mainActivity() {
+        main = new Intent(this, MainActivity.class);
+        startActivity(main);
+    }
 
     @Override
     protected void onStart() {
 
         super.onStart();
-        if(user.get()) {
-            nextActivity();
-        }
     }
     private Boolean checkPermissions() {
 
@@ -242,6 +245,7 @@ public class LoginActivity extends AppCompatActivity {
                     data.put("user", user);
                     data.put("pass", pass);
                     data.put("usuarioCADECO", JSON.getString("UsuarioCADECO"));
+                    data.put("idobraactiva", 0);
 
                     if (!usuario.create(data)) {
                         return false;

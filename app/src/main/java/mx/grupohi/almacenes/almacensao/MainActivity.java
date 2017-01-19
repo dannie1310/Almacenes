@@ -13,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import java.io.IOException;
 
@@ -36,23 +37,38 @@ public class MainActivity extends AppCompatActivity
         } catch (IOException e) {
             e.printStackTrace();
         }
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
+        if(drawer != null)
+            drawer.addDrawerListener(toggle);
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        if(drawer != null)
+            drawer.post(new Runnable() {
+                @Override
+                public void run() {
+                    for (int i = 0; i < drawer.getChildCount(); i++) {
+                        View child = drawer.getChildAt(i);
+                        TextView tvp = (TextView) child.findViewById(R.id.textViewProyecto);
+                        TextView tvu = (TextView) child.findViewById(R.id.textViewUser);
+                        TextView tvv = (TextView) child.findViewById(R.id.textViewVersion);
+
+                        if (tvp != null) {
+                            tvp.setText(usuario.getObraActiva());
+                        }
+                        if (tvu != null) {
+                            tvu.setText(usuario.getNombre());
+                        }
+                        if (tvv != null) {
+                            tvv.setText("Versión " + String.valueOf(BuildConfig.VERSION_NAME));
+                        }
+                    }
+                }
+            });
     }
 
     @Override
@@ -90,18 +106,22 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        if (id == R.id.nav_inicio) {
+            Intent intent = getIntent();
+            finish();
+            startActivity(intent);
+        } else if (id == R.id.nav_imprimir) {
 
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.nav_syn) {
 
-        } else if (id == R.id.nav_manage) {
+        } else if (id == R.id.nav_cambio) {
+            Intent seleccionar = new Intent(this, SeleccionaObraActivity.class);
+            startActivity(seleccionar);
 
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+        } else if (id == R.id.nav_cerrar) {
+            usuario.destroy();
+            Intent loginActivity = new Intent(this, LoginActivity.class);
+            startActivity(loginActivity);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

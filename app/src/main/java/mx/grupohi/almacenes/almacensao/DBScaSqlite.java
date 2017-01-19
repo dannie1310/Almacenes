@@ -15,7 +15,7 @@ import android.database.sqlite.SQLiteOpenHelper;
     }
 
     private static String[] queries = new String[] {
-            "CREATE TABLE user (idusuario INTEGER,  nombre TEXT, user TEXT, pass TEXT, usuarioCADECO TEXT, idobra_activa INTEGER)",
+            "CREATE TABLE user (idusuario INTEGER,  nombre TEXT, user TEXT, pass TEXT, usuarioCADECO TEXT, idobraactiva INTEGER)",
             "CREATE TABLE obras (ID INTEGER PRIMARY KEY AUTOINCREMENT, idobra INTEGER, nombre TEXT, idbase INTEGER, base TEXT)",
             "CREATE TABLE ordenescompra (ID INTEGER PRIMARY KEY AUTOINCREMENT, descripcion TEXT, unidad TEXT, existencia TEXT, idmaterial INTEGER, iditem INTEGER, razonsocial TEXT, numerofolio INTEGER, preciounitario INTEGER, idorden INTEGER)",
             "CREATE TABLE almacenes (id_almacen INTEGER, descripcion TEXT)",
