@@ -106,6 +106,7 @@ class Usuario {
             db.close();
         }
     }
+
     boolean get() {
         db = db_sca.getWritableDatabase();
         Cursor c = db.rawQuery("SELECT * FROM user", null);
@@ -114,6 +115,44 @@ class Usuario {
         } finally {
             c.close();
             db.close();
+        }
+    }
+
+  boolean update(Integer idobra_activa){
+        boolean resp=false;
+        ContentValues data = null;
+        db = db_sca.getWritableDatabase();
+        int id = getId();
+        System.out.println("idobra: "+ idobra_activa + id);
+        try{
+            data.put("idobra_activa", idobra_activa);
+
+            db.update("user", data, "idusuario = '" +id+ "'", null);
+            System.out.println("sql: ");
+            resp = true;
+        }catch (Exception e){
+            resp = false;
+        }finally {
+            db.close();
+        }
+        return resp;
+  }
+
+    String getObraActiva(){
+
+        db = db_sca.getWritableDatabase();
+        Cursor c = db.rawQuery("SELECT  o.nombre FROM obras as o LEFT JOIN user as u on u.idobra_activa = o.id", null);
+
+        try {
+            if(c!=null && c.moveToFirst()){
+               return  c.getColumnName(0);
+            }else {
+                return null;
+            }
+        } finally {
+            c.close();
+            db.close();
+
         }
     }
 }

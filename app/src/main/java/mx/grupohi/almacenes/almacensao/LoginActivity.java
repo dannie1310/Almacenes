@@ -44,7 +44,7 @@ public class LoginActivity extends AppCompatActivity {
     Button mIniciarSesionButton;
 
     private DBScaSqlite db_sca;
-    Obras obras;
+    Obra obras;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -247,7 +247,7 @@ public class LoginActivity extends AppCompatActivity {
                         return false;
                     }
 
-                    obras = new Obras(getApplicationContext());
+                    obras = new Obra(getApplicationContext());
                     try{
                         final JSONArray obra = new JSONArray(JSON.getString("BasesObras"));
                         for (int i = 0; i < obra.length(); i++) {

@@ -15,8 +15,13 @@ import android.database.sqlite.SQLiteOpenHelper;
     }
 
     private static String[] queries = new String[] {
-            "CREATE TABLE user (idusuario INTEGER,  nombre, TEXT, user TEXT, pass TEXT, usuarioCADECO TEXT, idbase INTEGER, idobra INTEGER)",
+            "CREATE TABLE user (idusuario INTEGER,  nombre TEXT, user TEXT, pass TEXT, usuarioCADECO TEXT, idobra_activa INTEGER)",
             "CREATE TABLE obras (ID INTEGER PRIMARY KEY AUTOINCREMENT, idobra INTEGER, nombre TEXT, idbase INTEGER, base TEXT)",
+            "CREATE TABLE ordenescompra (ID INTEGER PRIMARY KEY AUTOINCREMENT, descripcion TEXT, unidad TEXT, existencia TEXT, idmaterial INTEGER, iditem INTEGER, razonsocial TEXT, numerofolio INTEGER, preciounitario INTEGER, idorden INTEGER)",
+            "CREATE TABLE almacenes (id_almacen INTEGER, descripcion TEXT)",
+            "CREATE TABLE materiales (id_material INTEGER, tipomaterial INTEGER, marca INTEGER, descripcion TEXT)",
+            "CREATE TABLE material_almacen(ID INTEGER PRIMARY KEY AUTOINCREMENT, id_material INTEGER, id_almacen INTEGER, unidad TEXT, id_obra INTEGER, cantidad INTEGER)",
+            "CREATE TABLE contratistas (idempresa INTEGER, razonsocial TEXT)",
     };
 
     @Override
@@ -28,8 +33,14 @@ import android.database.sqlite.SQLiteOpenHelper;
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+
         db.execSQL("DROP TABLE IF EXISTS user");
         db.execSQL("DROP TABLE IF EXISTS obras");
+        db.execSQL("DROP TABLE IF EXISTS ordenescompra");
+        db.execSQL("DROP TABLE IF EXISTS almacenes");
+        db.execSQL("DROP TABLE IF EXISTS materiales");
+        db.execSQL("DROP TABLE IF EXISTS material_almacen");
+        db.execSQL("DROP TABLE IF EXISTS contratistas");
 
         for (String query: queries){
             db.execSQL(query);
@@ -42,9 +53,23 @@ import android.database.sqlite.SQLiteOpenHelper;
         SQLiteDatabase db = this.getReadableDatabase();
         db.execSQL("DELETE FROM user");
         db.execSQL("DELETE FROM obras");
+        db.execSQL("DELETE FROM ordenescompra");
+        db.execSQL("DELETE FROM almacenes");
+        db.execSQL("DELETE FROM materiales");
+        db.execSQL("DELETE FROM material_almacen");
+        db.execSQL("DELETE FROM contratistas");
         db.close();
     }
 
+    void deleteCatalogosObras() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        db.execSQL("DELETE FROM ordenescompra");
+        db.execSQL("DELETE FROM almacenes");
+        db.execSQL("DELETE FROM materiales");
+        db.execSQL("DELETE FROM material_almacen");
+        db.execSQL("DELETE FROM contratistas");
+        db.close();
+    }
 
 
 }

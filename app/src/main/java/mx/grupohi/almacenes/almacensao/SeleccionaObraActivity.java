@@ -33,7 +33,12 @@ public class SeleccionaObraActivity extends AppCompatActivity {
     private DBScaSqlite db_sca;
     Intent main;
     Usuario user;
-    Obras obras;
+    Obra obras;
+    OrdenCompra ordenCompra;
+    Almacen almacen;
+    Material material;
+    Contratista contratista;
+    MaterialesAlmacen materialesAlmacen;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +49,8 @@ public class SeleccionaObraActivity extends AppCompatActivity {
         spinner = (Spinner) findViewById(R.id.spinner);
 
         user = new Usuario(getApplicationContext());
-        obras = new Obras(getApplicationContext());
+        user = user.getUsuario();
+        obras = new Obra(getApplicationContext());
         final ArrayList<String> nombres = obras.getArrayListNombres();
         final ArrayList<String> ids = obras.getArrayListId();
 
@@ -98,7 +104,7 @@ public class SeleccionaObraActivity extends AppCompatActivity {
 
     }
 
-    private void attemptLogin(Integer id) {
+    private void attemptLogin(final Integer id) {
 
         obras = obras.find(id);
         System.out.println("Find: " + obras.id_base + obras.id_obra);
@@ -106,7 +112,7 @@ public class SeleccionaObraActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                mAuthTask = new CatalogosTask(obras.id_base, obras.id_obra);
+                mAuthTask = new CatalogosTask(id,obras.id_base, obras.id_obra);
                 mAuthTask.execute((Void) null);
             }
         }).run();
@@ -116,8 +122,10 @@ public class SeleccionaObraActivity extends AppCompatActivity {
 
         private final Integer id_base;
         private final Integer id_obras;
+        private final Integer ID;
 
-        CatalogosTask(Integer idbase, Integer idobras) {
+        CatalogosTask(Integer id,Integer idbase, Integer idobras) {
+            ID = id;
             id_base = idbase;
             id_obras = idobras;
             System.out.println("Proyecto: " + idbase + idobras);
@@ -139,7 +147,7 @@ public class SeleccionaObraActivity extends AppCompatActivity {
                 final JSONObject JSON = HttpConnection.POST(url, data);
                 System.out.println("url: " + url + " " + JSON);
 
-                db_sca.deleteCatalogos();
+                db_sca.deleteCatalogosObras();
                 if (JSON.has("error")) {
                     System.out.println("ERROR");
                     errorMessage((String) JSON.get("error"));
@@ -155,34 +163,154 @@ public class SeleccionaObraActivity extends AppCompatActivity {
 
 
                     //agregar id obra activa al usuario.
-
-                    /*obras = new Obras(getApplicationContext());
+                    boolean resp = user.update(ID);
+                    System.out.println("update: "+resp+ID);
+                    if(resp){
+                    ordenCompra = new OrdenCompra(getApplicationContext());
                     try {
-                        final JSONArray obra = new JSONArray(JSON.getString("BasesObras"));
-                        for (int i = 0; i < obra.length(); i++) {
+                        final JSONArray ordenes = new JSONArray(JSON.getString("ordenescompra"));
+                        for (int i = 0; i < ordenes.length(); i++) {
                             final int finalI = i + 1;
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    mProgressDialog.setMessage("Actualizando catálogo de Obras... \n Obra " + finalI + " de " + obra.length());
+                                    mProgressDialog.setMessage("Actualizando catálogo de Ordenes de Compra... \n Orden " + finalI + " de " + ordenes.length());
                                 }
                             });
-                            System.out.println("obras: " + obra.getJSONObject(i));
-                            JSONObject info = obra.getJSONObject(i);
-                            data.clear();
-                            data.put("nombre", info.getString("nombre"));
-                            data.put("idbase", info.getInt("id_base"));
-                            data.put("base", info.getString("base"));
-                            data.put("idobra", info.getInt("id"));
+                            System.out.println("ordenes: " + ordenes.getJSONObject(i));
+                            JSONObject info = ordenes.getJSONObject(i);
 
-                            if (!obras.create(data)) {
+                            data.clear();
+                            data.put("descripcion", info.getString("descripcion"));
+                            data.put("idmaterial", info.getInt("id_material"));
+                            data.put("unidad", info.getString("unidad"));
+                            data.put("iditem", info.getInt("id_item"));
+                            data.put("existencia", info.getString("existencia"));
+                            data.put("razonsocial", info.getString("razon_social"));
+                            data.put("numerofolio", info.getString("numero_folio"));
+                            data.put("preciounitario", info.getInt("precio_unitario"));
+                            data.put("idorden", info.getInt("id_transaccion"));
+
+                            if (!ordenCompra.create(data)) {
                                 return false;
                             }
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
-                    }*/
-                }
+                    }
+
+
+                    almacen = new Almacen(getApplicationContext());
+                    try {
+                        final JSONArray almacenes = new JSONArray(JSON.getString("almacenes"));
+                        for (int i = 0; i < almacenes.length(); i++) {
+                            final int finalI = i + 1;
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mProgressDialog.setMessage("Actualizando catálogo de Almacenes... \n Almacen " + finalI + " de " + almacenes.length());
+                                }
+                            });
+                            System.out.println("almacenes: " + almacenes.getJSONObject(i));
+                            JSONObject info = almacenes.getJSONObject(i);
+
+                            data.clear();
+                            data.put("descripcion", info.getString("descripcion"));
+                            data.put("id_almacen", info.getInt("id"));
+
+                            if (!almacen.create(data)) {
+                                return false;
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    material = new Material(getApplicationContext());
+                    try {
+                        final JSONArray materials = new JSONArray(JSON.getString("materiales"));
+                        for (int i = 0; i < materials.length(); i++) {
+                            final int finalI = i + 1;
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mProgressDialog.setMessage("Actualizando catálogo de Materiales... \n Material " + finalI + " de " + materials.length());
+                                }
+                            });
+                            System.out.println("materiales: " + materials.getJSONObject(i));
+                            JSONObject info = materials.getJSONObject(i);
+
+                            data.clear();
+                            data.put("descripcion", info.getString("descripcion"));
+                            data.put("id_material", info.getInt("id_material"));
+                            data.put("tipomaterial", info.getInt("tipo_material"));
+                            data.put("marca", info.getInt("marca"));
+
+                            if (!material.create(data)) {
+                                return false;
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+
+                    materialesAlmacen = new MaterialesAlmacen(getApplicationContext());
+                    try {
+                        final JSONArray ma_al = new JSONArray(JSON.getString("materiales_x_almacen"));
+                        for (int i = 0; i < ma_al.length(); i++) {
+                            final int finalI = i + 1;
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mProgressDialog.setMessage("Actualizando catálogo de Material por Almacén... \n Material " + finalI + " de " + ma_al.length());
+                                }
+                            });
+                            System.out.println("ma_al: " + ma_al.getJSONObject(i));
+                            JSONObject info = ma_al.getJSONObject(i);
+
+                            data.clear();
+                            data.put("unidad", info.getString("unidad"));
+                            data.put("id_material", info.getInt("id_material"));
+                            data.put("id_almacen", info.getInt("id_almacen"));
+                            data.put("id_obra", info.getInt("id_obra"));
+                            data.put("cantidad", info.getInt("cantidad"));
+
+                            if (!materialesAlmacen.create(data)) {
+                                return false;
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    contratista = new Contratista(getApplicationContext());
+                    try {
+                        final JSONArray contratistas = new JSONArray(JSON.getString("contratistas"));
+                        for (int i = 0; i < contratistas.length(); i++) {
+                            final int finalI = i + 1;
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mProgressDialog.setMessage("Actualizando catálogo de Contratistas... \n Contratista " + finalI + " de " + contratistas.length());
+                                }
+                            });
+                            System.out.println("contratistas: " + contratistas.getJSONObject(i));
+                            JSONObject info = contratistas.getJSONObject(i);
+
+                            data.clear();
+                            data.put("razonsocial", info.getString("razon_social"));
+                            data.put("idempresa", info.getInt("id_empresa"));
+
+                            if (!contratista.create(data)) {
+                                return false;
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                }}
                 return true;
             } catch (Exception e) {
                 e.printStackTrace();
@@ -238,9 +366,8 @@ public class SeleccionaObraActivity extends AppCompatActivity {
 
     @Override
     protected void onStart() {
-
         super.onStart();
-        /*if(user.get()) {
+     /*   if(user.get()) {
             nextActivity();
         }*/
     }

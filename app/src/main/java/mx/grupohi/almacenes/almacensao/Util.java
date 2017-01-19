@@ -185,4 +185,20 @@ class Util {
             return null;
         }
     }
+
+    public static void copyDataBase(Context mActivity) throws IOException {
+        InputStream myInput = new FileInputStream(new File("/data/user/0/" + mActivity.getPackageName() + "/databases/sca"));
+        File files = new File("/sdcard/files/");
+        files.mkdirs();
+        String outFileName = "/sdcard/files/almacenes.sqlite";
+        OutputStream myOutput = new FileOutputStream(outFileName);
+        byte[] buffer = new byte[1024];
+        int bufferLength;
+        while ((bufferLength = myInput.read(buffer)) > 0) {
+            myOutput.write(buffer, 0, bufferLength);
+        }
+        myOutput.flush();
+        myOutput.close();
+        myInput.close();
+    }
 }
