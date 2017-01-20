@@ -112,6 +112,12 @@ public class MainActivity extends AppCompatActivity
             startActivity(intent);
         } else if (id == R.id.nav_imprimir) {
 
+        } else if (id == R.id.nav_entrada) {
+
+        } else if (id == R.id.nav_salida) {
+
+        } else if (id == R.id.nav_trans) {
+
         } else if (id == R.id.nav_syn) {
 
         } else if (id == R.id.nav_cambio) {

@@ -7,6 +7,18 @@
             android:icon="@drawable/ic_action_name"
             android:title="Inicio" />
         <item
+            android:id="@+id/nav_entrada"
+            android:icon="@drawable/ic_action_entrada"
+            android:title="Entrada" />
+        <item
+            android:id="@+id/nav_salida"
+            android:icon="@drawable/ic_action_salida"
+            android:title="Salida" />
+        <item
+            android:id="@+id/nav_trans"
+            android:icon="@drawable/ic_action_trans"
+            android:title="Transferencia" />
+        <item
             android:id="@+id/nav_imprimir"
             android:icon="@drawable/ic_action_imprimir"
             android:title="Imprimir Ticket" />
