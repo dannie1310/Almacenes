@@ -68,6 +68,7 @@ public class SeleccionaObraActivity extends AppCompatActivity {
 
         spinner.setAdapter(a);
 
+
         if (spinner != null) {
             spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override

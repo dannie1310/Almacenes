@@ -3,8 +3,9 @@ package mx.grupohi.almacenes.almacensao;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.view.View;
+import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -12,71 +13,20 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
-import java.io.IOException;
-
-public class MainActivity extends AppCompatActivity
+public class EntradaActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-
     Usuario usuario;
-    ImageButton entrada;
-    ImageButton salida;
-    ImageButton trans;
-    ImageButton imprimir;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_entrada);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
         usuario = new Usuario(getApplicationContext());
         usuario = usuario.getUsuario();
-        String x = usuario.getObraActiva();
-        System.out.println("obra : "+x);
-        try {
-            Util.copyDataBase(getApplicationContext());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        entrada = (ImageButton) findViewById(R.id.button_entrada);
-        salida = (ImageButton) findViewById(R.id.button_salida);
-        trans = (ImageButton) findViewById(R.id.button_trans);
-        imprimir = (ImageButton) findViewById(R.id.button_imprimir);
-
-        entrada.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent entrada = new Intent(getApplicationContext(), EntradaActivity.class);
-                startActivity(entrada);
-            }
-        });
-
-        salida.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-
-        trans.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-
-        imprimir.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-
-
         final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -112,9 +62,19 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent(Intent.ACTION_MAIN);
-        intent.addCategory(Intent.CATEGORY_HOME);
-        startActivity(intent);
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
     }
 
     @Override
@@ -139,15 +99,16 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_inicio) {
-            Intent intent = getIntent();
-            finish();
-            startActivity(intent);
+            Intent inicio = new Intent(this, MainActivity.class);
+            startActivity(inicio);
+
         } else if (id == R.id.nav_imprimir) {
 
         } else if (id == R.id.nav_entrada) {
 
-            Intent entrada = new Intent(getApplicationContext(), EntradaActivity.class);
-            startActivity(entrada);
+            Intent intent = getIntent();
+            finish();
+            startActivity(intent);
 
         } else if (id == R.id.nav_salida) {
 
@@ -164,7 +125,6 @@ public class MainActivity extends AppCompatActivity
             Intent loginActivity = new Intent(this, LoginActivity.class);
             startActivity(loginActivity);
         }
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
