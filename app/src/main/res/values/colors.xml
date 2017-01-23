@@ -8,7 +8,8 @@
 
     <color name="background_footer">#90000000</color>
 
-    <color name="backgroundColor">#212121</color>
+    <color name="backgroundColor">#aacfe7</color>
+    <color name="colorlista">#FF92DEC2</color>
 </resources>
 
 
