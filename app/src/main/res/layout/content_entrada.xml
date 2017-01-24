@@ -89,8 +89,9 @@
                 android:layout_height="120dp"
                 android:scrollbars="vertical"
                 android:fillViewport="true"
-                android:layout_width="fill_parent"
-                android:background="@color/colorlista" >
+                android:layout_width="wrap_content"
+                android:background="@color/colorlista"
+                android:fastScrollAlwaysVisible="true">
             </ListView>
 
         </LinearLayout>
@@ -122,7 +123,7 @@
                 android:scrollbars="vertical"
                 android:fillViewport="true"
                 android:layout_width="fill_parent"
-                android:background="@color/colorlista" >
+                android:background="@color/colorlista">
 
             </ListView>
         </LinearLayout>

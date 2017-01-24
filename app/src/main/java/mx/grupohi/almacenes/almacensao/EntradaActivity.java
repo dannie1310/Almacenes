@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -37,6 +38,8 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
     Button guardar;
     ListView mViajesList;
     lista_adaptador lista;
+    EditText referencia;
+    EditText observaciones;
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -56,7 +59,8 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
         usuario = usuario.getUsuario();
 
         ordenCompra = new OrdenCompra(getApplicationContext());
-
+        referencia = (EditText) findViewById(R.id.textReferencia);
+        observaciones = (EditText) findViewById(R.id.textObservaciones);
         spinner = (Spinner) findViewById(R.id.spinner_ordencompra);
         guardar = (Button) findViewById(R.id.buttonGuardar);
 
@@ -94,7 +98,8 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
                                 @Override
                                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                                     OrdenCompra orden = lista.getItem(position);
-                                    System.out.println("orden: " + orden);
+                                    System.out.println("Click orden: " + orden.idorden + "posicion"+ position);
+
 
                                 }
                             });
@@ -147,6 +152,11 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
                     }
                 }
             });
+
+
+    }
+
+    public void obtenerCantidad(String material, Double existencia){
 
 
     }

@@ -1,11 +1,13 @@
 package mx.grupohi.almacenes.almacensao;
 
 import android.content.Context;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.List;
@@ -27,12 +29,8 @@ public class lista_adaptador  extends ArrayAdapter<OrdenCompra> {
         @Override
         public View getView(int position, View convertView, @NonNull ViewGroup parent) {
             LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
             if (null == convertView) {
-                convertView = inflater.inflate(
-                        R.layout.item,
-                        parent,
-                        false);
+                convertView = inflater.inflate(R.layout.item, parent,false);
             }
 
             TextView descripcion = (TextView) convertView.findViewById(R.id.textView_superior);
@@ -44,7 +42,11 @@ public class lista_adaptador  extends ArrayAdapter<OrdenCompra> {
             assert orden != null;
             descripcion.setText(orden.descripcion);
             cantidad.setText(orden.existencia + " " + orden.unidad);
+            convertView.setVisibility(View.VISIBLE);
 
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                convertView.getOverScrollMode();
+            }
             return convertView;
         }
 }
