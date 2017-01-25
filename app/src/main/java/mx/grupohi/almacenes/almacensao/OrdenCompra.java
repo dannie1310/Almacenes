@@ -20,6 +20,7 @@ public class OrdenCompra {
     private SQLiteDatabase db;
     private DBScaSqlite db_sca;
     Integer idmaterial;
+    Integer id;
     Integer iditem;
     Integer numerofolio;
     Integer preciounitario;
@@ -118,7 +119,7 @@ public class OrdenCompra {
         Cursor c = db.rawQuery("SELECT * FROM ordenescompra WHERE ID = '"+id+"'", null);
         try{
             if(c != null && c.moveToFirst()){
-
+                this.id = c.getInt(c.getColumnIndex("ID"));
                 this.idmaterial = c.getInt(c.getColumnIndex("idmaterial"));
                 this.iditem = c.getInt(c.getColumnIndex("iditem"));
                 this.numerofolio = c.getInt(c.getColumnIndex("numerofolio"));
@@ -149,19 +150,67 @@ public class OrdenCompra {
                     OrdenCompra orden = new OrdenCompra(context);
                     orden = orden.find(c.getInt(0));
                     ordenes.add(orden);
-                    System.out.println("ordenes: "+ordenes);
+                    System.out.println("ordenes:aaaaa "+c.getInt(0));
                 }
-                Collections.sort(ordenes, new Comparator<OrdenCompra>() {
+              /*  Collections.sort(ordenes, new Comparator<OrdenCompra>() {
                     @Override
                     public int compare(OrdenCompra v1, OrdenCompra v2) {
                         return Integer.valueOf(v2.numerofolio).compareTo(Integer.valueOf(v1.numerofolio));
                     }
-                });
+                });*/
 
                 return ordenes;
             }
             else {
                 return new ArrayList<>();
+            }
+        } finally {
+            c.close();
+            db.close();
+        }
+    }
+
+    public String getDescripcion(Integer id){
+        db = db_sca.getWritableDatabase();
+        Cursor c = db.rawQuery("SELECT descripcion FROM ordenescompra WHERE ID  = '"+id+"'", null);
+        try {
+            if(c!=null && c.moveToFirst()){
+                return c.getString(0);
+            }
+            else{
+                return null;
+            }
+        } finally {
+            c.close();
+            db.close();
+        }
+    }
+
+    public String getExistencia(Integer id){
+        db = db_sca.getWritableDatabase();
+        Cursor c = db.rawQuery("SELECT existencia FROM ordenescompra WHERE ID  = '"+id+"'", null);
+        try {
+            if(c!=null && c.moveToFirst()){
+                return c.getString(0);
+            }
+            else{
+                return null;
+            }
+        } finally {
+            c.close();
+            db.close();
+        }
+    }
+
+    public String getUnidad(Integer id){
+        db = db_sca.getWritableDatabase();
+        Cursor c = db.rawQuery("SELECT unidad FROM ordenescompra WHERE ID  = '"+id+"'", null);
+        try {
+            if(c!=null && c.moveToFirst()){
+                return c.getString(0);
+            }
+            else{
+                return null;
             }
         } finally {
             c.close();

@@ -90,7 +90,7 @@
                 android:scrollbars="vertical"
                 android:fillViewport="true"
                 android:layout_width="wrap_content"
-                android:background="@color/colorlista"
+                android:background="@color/colorAccent"
                 android:fastScrollAlwaysVisible="true">
             </ListView>
 
@@ -123,7 +123,7 @@
                 android:scrollbars="vertical"
                 android:fillViewport="true"
                 android:layout_width="fill_parent"
-                android:background="@color/colorlista">
+                android:background="@color/colorAccent">
 
             </ListView>
         </LinearLayout>

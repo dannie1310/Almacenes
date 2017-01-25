@@ -55,5 +55,9 @@
     <string name="salida_material">Lista de Materiales.</string>
     <string name="salida">Salida de los Siguientes Materiales:</string>
 
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="selecciona_almacen">Selecciona un Almacén:</string>
+
 
 </resources>

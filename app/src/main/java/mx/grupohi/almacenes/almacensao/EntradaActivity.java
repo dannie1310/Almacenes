@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentManager;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -36,17 +37,12 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
     String nombre;
     Integer idfolio;
     Button guardar;
-    ListView mViajesList;
+    ListView mList;
     lista_adaptador lista;
     EditText referencia;
     EditText observaciones;
+    Integer idOrdenCompra;
 
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,20 +85,24 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
                     nombre = spinner.getSelectedItem().toString();
                     idOrden = spinnerMap.get(nombre);
                     System.out.println("add: " + idOrden + nombre);
-                            mViajesList = (ListView) findViewById(R.id.listView_materiales_ordencompra);
-                            System.out.println("valores: "+ idOrden);
-                            lista = new lista_adaptador(getApplicationContext(), OrdenCompra.getOrden(getApplicationContext(),idOrden));
-                            mViajesList.setAdapter(lista);
-
-                            mViajesList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                                @Override
-                                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                    OrdenCompra orden = lista.getItem(position);
-                                    System.out.println("Click orden: " + orden.idorden + "posicion"+ position);
+                    mList = (ListView) findViewById(R.id.listView_materiales_ordencompra);
+                    System.out.println("valores: " + idOrden);
+                    lista = new lista_adaptador(getApplicationContext(), OrdenCompra.getOrden(getApplicationContext(), idOrden));
+                    mList.setAdapter(lista);
 
 
-                                }
-                            });
+                    mList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            OrdenCompra orden = lista.getItem(position);
+                            idOrdenCompra = orden.id;
+                            System.out.println(idOrdenCompra + "Click orden: " + orden.idorden + "posicion" + position);
+
+                            showEditDialog(idOrdenCompra);
+
+
+                        }
+                    });
                 }
 
                 @Override
@@ -156,10 +156,14 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
 
     }
 
-    public void obtenerCantidad(String material, Double existencia){
+    private void showEditDialog(Integer idOrdenCompra) {
 
+        FragmentManager fm = getSupportFragmentManager();
+        CantidadEntradaFragment editNameDialogFragment = CantidadEntradaFragment.newInstance(ordenCompra.getDescripcion(idOrdenCompra), ordenCompra.getExistencia(idOrdenCompra), ordenCompra.getUnidad(idOrdenCompra));
+        editNameDialogFragment.show(fm, "Material Recibido");
 
     }
+
 
     @Override
     public void onBackPressed() {
