@@ -214,6 +214,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/colorPrimaryDark"
+                android:id="@+id/textCargo"
                 android:textSize="14sp"
                 android:layout_weight="0.25" />
 
@@ -235,8 +236,6 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/contratista"
-            android:visibility="gone"
             android:weightSum="1">
 
 

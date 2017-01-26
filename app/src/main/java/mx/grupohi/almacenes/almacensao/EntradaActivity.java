@@ -43,6 +43,8 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
     EditText observaciones;
     Integer idOrdenCompra;
 
+    CantidadEntradaFragment editNameDialogFragment;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,7 +100,11 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
                             idOrdenCompra = orden.id;
                             System.out.println(idOrdenCompra + "Click orden: " + orden.idorden + "posicion" + position);
 
-                            showEditDialog(idOrdenCompra);
+                            if(showEditDialog(idOrdenCompra)) {
+                                String almacen = editNameDialogFragment.nombre;
+                                System.out.println("respuesta: " + almacen);
+                            }
+
 
 
                         }
@@ -156,11 +162,18 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
 
     }
 
-    private void showEditDialog(Integer idOrdenCompra) {
+    private boolean showEditDialog(Integer idOrdenCompra) {
 
         FragmentManager fm = getSupportFragmentManager();
-        CantidadEntradaFragment editNameDialogFragment = CantidadEntradaFragment.newInstance(ordenCompra.getDescripcion(idOrdenCompra), ordenCompra.getExistencia(idOrdenCompra), ordenCompra.getUnidad(idOrdenCompra));
+        editNameDialogFragment = new CantidadEntradaFragment();
+        editNameDialogFragment = editNameDialogFragment.newInstance(ordenCompra.getDescripcion(idOrdenCompra), ordenCompra.getExistencia(idOrdenCompra), ordenCompra.getUnidad(idOrdenCompra));
+
         editNameDialogFragment.show(fm, "Material Recibido");
+        System.out.println("cantidad" + findViewById(R.id.textrecibido));
+
+        return true;
+
+
 
     }
 

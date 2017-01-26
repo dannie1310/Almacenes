@@ -2,7 +2,10 @@ package mx.grupohi.almacenes.almacensao;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+
+import java.util.ArrayList;
 
 /**
  * Created by Usuario on 18/01/2017.
@@ -38,5 +41,57 @@ public class Contratista {
         db = db_sca.getWritableDatabase();
         db.execSQL("DELETE FROM contratistas");
         db.close();
+    }
+
+    ArrayList<String> getArrayListContratistas() {
+
+        ArrayList<String> data = new ArrayList<>();
+        db = db_sca.getWritableDatabase();
+        Cursor c = db.rawQuery("SELECT * FROM contratistas ORDER BY razonsocial ASC", null);
+        if (c != null && c.moveToFirst())
+            try {
+
+                if (c.getCount() == 1) {
+                    data.add(c.getString(c.getColumnIndex("razonsocial")));
+                    System.out.println("razonsocial: "+ c.getString(0) + c.getString(1));
+                } else {
+                    data.add("-- Seleccione --");
+                    data.add(c.getString(c.getColumnIndex("razonsocial")));
+                    System.out.println("razonsocial: "+ c.getString(0) + c.getString(1));
+                    while (c.moveToNext()) {
+                        data.add(c.getString(c.getColumnIndex("razonsocial")));
+                        System.out.println("razonsocial: "+ c.getString(0) + c.getString(1));
+                    }
+                }
+            } finally {
+                c.close();
+                db.close();
+            }
+
+        return data;
+    }
+    ArrayList<String> getArrayListId() {
+        ArrayList<String> data = new ArrayList<>();
+        db = db_sca.getWritableDatabase();
+        Cursor c = db.rawQuery("SELECT * FROM contratistas ORDER BY razonsocial ASC", null);
+        if (c != null && c.moveToFirst())
+            try {
+                if (c.getCount() == 1) {
+                    data.add(c.getString(c.getColumnIndex("idempresa")));
+                    System.out.println("idempresa ID: "+ c.getString(0));
+                } else {
+                    data.add("0");
+                    data.add(c.getString(c.getColumnIndex("idempresa")));
+                    System.out.println("idempresa ID: "+ c.getString(0));
+                    while (c.moveToNext()) {
+                        data.add(c.getString(c.getColumnIndex("idempresa")));
+                        System.out.println("idempresa ID: "+ c.getString(0));
+                    }
+                }
+            } finally {
+                c.close();
+                db.close();
+            }
+        return data;
     }
 }
