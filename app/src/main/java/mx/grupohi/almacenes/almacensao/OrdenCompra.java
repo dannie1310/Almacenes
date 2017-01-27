@@ -72,14 +72,12 @@ public class OrdenCompra {
 
                 if (c.getCount() == 1) {
                     data.add("#"+c.getString(c.getColumnIndex("numerofolio"))+" - "+c.getString(c.getColumnIndex("razonsocial")));
-                    System.out.println("ordenescompra: "+ c.getString(0) + c.getString(2));
                 } else {
                     data.add("-- Seleccione --");
                     data.add("#"+c.getString(c.getColumnIndex("numerofolio"))+" - "+c.getString(c.getColumnIndex("razonsocial")));
-                    System.out.println("ordenescompra: "+ c.getString(0) + c.getString(2));
                     while (c.moveToNext()) {
                         data.add("#"+c.getString(c.getColumnIndex("numerofolio"))+" - "+c.getString(c.getColumnIndex("razonsocial")));
-                        System.out.println("ordenescompra: "+ c.getString(0) + c.getString(2));
+
                     }
                 }
             } finally {
@@ -97,14 +95,12 @@ public class OrdenCompra {
             try {
                 if (c.getCount() == 1) {
                     data.add(c.getString(c.getColumnIndex("numerofolio")));
-                    System.out.println("ordenescompra ID: "+ c.getString(0));
+
                 } else {
                     data.add("0");
                     data.add(c.getString(c.getColumnIndex("numerofolio")));
-                    System.out.println("ordenescompra ID: "+ c.getString(0));
                     while (c.moveToNext()) {
                         data.add(c.getString(c.getColumnIndex("numerofolio")));
-                        System.out.println("ordenescompra ID: "+ c.getString(0));
                     }
                 }
             } finally {

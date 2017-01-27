@@ -30,6 +30,8 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import static android.app.Activity.RESULT_OK;
+
 public class CantidadEntradaFragment extends DialogFragment {
 
 
@@ -63,6 +65,8 @@ public class CantidadEntradaFragment extends DialogFragment {
     Almacen catalmacenes;
     Contratista empresas;
 
+    Intent prueba;
+
 
     public CantidadEntradaFragment() {
         // Required empty public constructor
@@ -75,9 +79,12 @@ public class CantidadEntradaFragment extends DialogFragment {
     // TODO: Rename and change types and number of parameters
     public static CantidadEntradaFragment newInstance(String titulo, String cantidad, String unidad) {
         CantidadEntradaFragment frag = new CantidadEntradaFragment();
+
         Bundle args = new Bundle();
-        args.putString("title", titulo);
+        frag.isResumed();
+        args.putString("title", "aasc");
         frag.setArguments(args);
+
         tituloT = titulo;
         cantidadT = cantidad;
         unidadT = unidad;
@@ -132,6 +139,7 @@ public class CantidadEntradaFragment extends DialogFragment {
 
        // mEditText.requestFocus();
         getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+
 
         String[] spinnerArray = new String[ids.size()];
         spinnerMap = new HashMap<>();
@@ -241,6 +249,8 @@ public class CantidadEntradaFragment extends DialogFragment {
                 System.out.println("Recibir: " + recibido.getText()+textclave.getText());
                 cantidadRecibida = Double.valueOf(recibido.getText().toString());
                 onFinishEditDialog(String.valueOf(cantidadRecibida));
+                Intent returnIntent = new Intent(Intent.ACTION_PICK);
+                returnIntent.putExtra("RESULTADO", cantidadRecibida);
 
                 getDialog().dismiss();
             }
@@ -258,6 +268,7 @@ public class CantidadEntradaFragment extends DialogFragment {
     }
     public void onFinishEditDialog(String inputText) {
         Toast.makeText(getContext(), "Hi, " + inputText, Toast.LENGTH_SHORT).show();
+
     }
 
 

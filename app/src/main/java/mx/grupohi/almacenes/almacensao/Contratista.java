@@ -32,7 +32,7 @@ public class Contratista {
             this.razonsocial = data.getAsString("razonsocial");
 
         }
-        System.out.println("contratistas: "+ result + " i "+idempresa+razonsocial);
+
         db.close();
         return result;
     }
@@ -53,14 +53,14 @@ public class Contratista {
 
                 if (c.getCount() == 1) {
                     data.add(c.getString(c.getColumnIndex("razonsocial")));
-                    System.out.println("razonsocial: "+ c.getString(0) + c.getString(1));
+
                 } else {
                     data.add("-- Seleccione --");
                     data.add(c.getString(c.getColumnIndex("razonsocial")));
-                    System.out.println("razonsocial: "+ c.getString(0) + c.getString(1));
+
                     while (c.moveToNext()) {
                         data.add(c.getString(c.getColumnIndex("razonsocial")));
-                        System.out.println("razonsocial: "+ c.getString(0) + c.getString(1));
+
                     }
                 }
             } finally {
@@ -78,14 +78,11 @@ public class Contratista {
             try {
                 if (c.getCount() == 1) {
                     data.add(c.getString(c.getColumnIndex("idempresa")));
-                    System.out.println("idempresa ID: "+ c.getString(0));
                 } else {
                     data.add("0");
                     data.add(c.getString(c.getColumnIndex("idempresa")));
-                    System.out.println("idempresa ID: "+ c.getString(0));
                     while (c.moveToNext()) {
                         data.add(c.getString(c.getColumnIndex("idempresa")));
-                        System.out.println("idempresa ID: "+ c.getString(0));
                     }
                 }
             } finally {

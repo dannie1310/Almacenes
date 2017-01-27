@@ -54,14 +54,14 @@ public class Almacen {
 
                 if (c.getCount() == 1) {
                     data.add(c.getString(c.getColumnIndex("descripcion")));
-                    System.out.println("id_almacen: "+ c.getString(0) + c.getString(1));
+
                 } else {
                     data.add("-- Seleccione --");
                     data.add(c.getString(c.getColumnIndex("descripcion")));
-                    System.out.println("id_almacen: "+ c.getString(0) + c.getString(1));
+
                     while (c.moveToNext()) {
                         data.add(c.getString(c.getColumnIndex("descripcion")));
-                        System.out.println("id_almacen: "+ c.getString(0) + c.getString(1));
+
                     }
                 }
             } finally {
@@ -79,14 +79,14 @@ public class Almacen {
             try {
                 if (c.getCount() == 1) {
                     data.add(c.getString(c.getColumnIndex("id_almacen")));
-                    System.out.println("id_almacen ID: "+ c.getString(0));
+
                 } else {
                     data.add("0");
                     data.add(c.getString(c.getColumnIndex("id_almacen")));
-                    System.out.println("id_almacen ID: "+ c.getString(0));
+
                     while (c.moveToNext()) {
                         data.add(c.getString(c.getColumnIndex("id_almacen")));
-                        System.out.println("id_almacen ID: "+ c.getString(0));
+
                     }
                 }
             } finally {

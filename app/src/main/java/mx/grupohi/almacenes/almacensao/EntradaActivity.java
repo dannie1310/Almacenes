@@ -42,6 +42,7 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
     EditText referencia;
     EditText observaciones;
     Integer idOrdenCompra;
+    private final static int NOMBRE = 0;
 
     CantidadEntradaFragment editNameDialogFragment;
 
@@ -100,11 +101,7 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
                             idOrdenCompra = orden.id;
                             System.out.println(idOrdenCompra + "Click orden: " + orden.idorden + "posicion" + position);
 
-                            if(showEditDialog(idOrdenCompra)) {
-                                String almacen = editNameDialogFragment.nombre;
-                                System.out.println("respuesta: " + almacen);
-                            }
-
+                           showEditDialog(idOrdenCompra);
 
 
                         }
@@ -116,6 +113,7 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
 
                 }
             });
+
         }
 
 
@@ -124,6 +122,9 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
             @Override
             public void onClick(View v) {
                 System.out.println("add5: " + idOrden +nombre);
+                Intent i = getIntent();
+                String s= i.getStringExtra("RESULTADO");
+                System.out.println("PASARDATO" +s );
             }
         });
 
@@ -164,12 +165,15 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
 
     private boolean showEditDialog(Integer idOrdenCompra) {
 
+
         FragmentManager fm = getSupportFragmentManager();
+
         editNameDialogFragment = new CantidadEntradaFragment();
         editNameDialogFragment = editNameDialogFragment.newInstance(ordenCompra.getDescripcion(idOrdenCompra), ordenCompra.getExistencia(idOrdenCompra), ordenCompra.getUnidad(idOrdenCompra));
 
         editNameDialogFragment.show(fm, "Material Recibido");
-        System.out.println("cantidad" + findViewById(R.id.textrecibido));
+
+
 
         return true;
 
