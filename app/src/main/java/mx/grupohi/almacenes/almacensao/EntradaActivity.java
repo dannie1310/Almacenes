@@ -1,6 +1,8 @@
 package mx.grupohi.almacenes.almacensao;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -35,13 +37,17 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
     private HashMap<String, String> spinnerMap;
     String idOrden;
     String nombre;
+    String idMaterial;
     Integer idfolio;
     Button guardar;
     ListView mList;
     lista_adaptador lista;
+    ListView mListRecibido;
+    ListaDialog listaRecibido;
     EditText referencia;
     EditText observaciones;
     Integer idOrdenCompra;
+    String idCompra;
     private final static int NOMBRE = 0;
 
     CantidadEntradaFragment editNameDialogFragment;
@@ -76,7 +82,6 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
 
         final ArrayAdapter<String> a = new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, spinnerArray);
         a.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
-
         spinner.setAdapter(a);
 
 
@@ -87,9 +92,11 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
 
                     nombre = spinner.getSelectedItem().toString();
                     idOrden = spinnerMap.get(nombre);
+
                     System.out.println("add: " + idOrden + nombre);
                     mList = (ListView) findViewById(R.id.listView_materiales_ordencompra);
                     System.out.println("valores: " + idOrden);
+
                     lista = new lista_adaptador(getApplicationContext(), OrdenCompra.getOrden(getApplicationContext(), idOrden));
                     mList.setAdapter(lista);
 
@@ -100,12 +107,58 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
                             OrdenCompra orden = lista.getItem(position);
                             idOrdenCompra = orden.id;
                             System.out.println(idOrdenCompra + "Click orden: " + orden.idorden + "posicion" + position);
-
-                           showEditDialog(idOrdenCompra);
+                            idMaterial=String.valueOf(orden.idmaterial);
+                            showEditDialog(idOrdenCompra);
 
 
                         }
                     });
+
+                    System.out.println("idcompra: " + idOrden);
+                    mListRecibido = (ListView) findViewById(R.id.listView_materiales_ordencompra_temp);
+                    System.out.println("valores8: " + idOrden);
+                    //  while(idCompra != null) {
+                    listaRecibido = new ListaDialog(getApplicationContext(), DialogoRecepcion.getRecepcion(getApplicationContext(), idOrden));
+                    mListRecibido.setAdapter(listaRecibido);
+
+                    mListRecibido.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
+                            DialogoRecepcion dialog = listaRecibido.getItem(position);
+
+                            final Integer idDialogo = dialog.id;
+                            AlertDialog.Builder alert = new AlertDialog.Builder(EntradaActivity.this);
+                            alert.setTitle("Entrada a Almacén");
+                            alert.setMessage("¿Estas seguro de eliminar esta entrada del material?");
+                            alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int whichButton) {
+                                    Double cantx=Double.parseDouble(DialogoRecepcion.getCantidadRS(getApplicationContext(), idDialogo)+"");
+                                    listaRecibido.remove((DialogoRecepcion)listaRecibido.getItem(position));
+
+                                    mListRecibido.setAdapter(listaRecibido);
+                                    System.out.println("aq: "+cantx);
+                                   // DialogoRecepcion.remove(getApplicationContext(),idDialogo);
+                                    /*lista.setexistencia(cantx+objordenescomprasele.getexistencia());
+                                    lstOpciones.setAdapter(adaptador);*/
+
+                                }
+                            });
+
+                            alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int whichButton) {
+                                    // Canceled.
+                                }
+                            });
+                            alert.show();
+
+                            System.out.println(dialog.contratista + "Adaptador Dialog: posicion" + position);
+
+
+                        }
+                    });
+
+
+
                 }
 
                 @Override
@@ -114,7 +167,13 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
                 }
             });
 
+
+
         }
+
+
+
+
 
 
 
@@ -169,18 +228,16 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
         FragmentManager fm = getSupportFragmentManager();
 
         editNameDialogFragment = new CantidadEntradaFragment();
-        editNameDialogFragment = editNameDialogFragment.newInstance(ordenCompra.getDescripcion(idOrdenCompra), ordenCompra.getExistencia(idOrdenCompra), ordenCompra.getUnidad(idOrdenCompra));
+        editNameDialogFragment = editNameDialogFragment.newInstance(ordenCompra.getDescripcion(idOrdenCompra), ordenCompra.getExistencia(idOrdenCompra), ordenCompra.getUnidad(idOrdenCompra), idCompra, idMaterial);
 
         editNameDialogFragment.show(fm, "Material Recibido");
-        System.out.println("aqui "+editNameDialogFragment.getArguments());
+        System.out.println("aqui " + editNameDialogFragment.getArguments());
 
 
         return true;
 
 
-
     }
-
 
     @Override
     public void onBackPressed() {

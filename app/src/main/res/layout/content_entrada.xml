@@ -119,11 +119,12 @@
 
             <ListView
                 android:id="@+id/listView_materiales_ordencompra_temp"
-                android:layout_height="120dp"
+                android:layout_height="221dp"
                 android:scrollbars="vertical"
                 android:fillViewport="true"
                 android:layout_width="fill_parent"
-                android:background="@color/colorAccent">
+                android:background="@color/colorAccent"
+                android:fastScrollAlwaysVisible="true">
 
             </ListView>
         </LinearLayout>

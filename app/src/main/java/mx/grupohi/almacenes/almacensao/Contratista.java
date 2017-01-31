@@ -53,13 +53,16 @@ public class Contratista {
 
                 if (c.getCount() == 1) {
                     data.add(c.getString(c.getColumnIndex("razonsocial")));
+                    System.out.println(c.getString(c.getColumnIndex("razonsocial")));
 
                 } else {
                     data.add("-- Seleccione --");
                     data.add(c.getString(c.getColumnIndex("razonsocial")));
+                    System.out.println(c.getString(c.getColumnIndex("razonsocial")));
 
                     while (c.moveToNext()) {
                         data.add(c.getString(c.getColumnIndex("razonsocial")));
+                        System.out.println(c.getString(c.getColumnIndex("razonsocial")));
 
                     }
                 }
@@ -78,11 +81,14 @@ public class Contratista {
             try {
                 if (c.getCount() == 1) {
                     data.add(c.getString(c.getColumnIndex("idempresa")));
+                    System.out.println(c.getString(c.getColumnIndex("idempresa")));
                 } else {
                     data.add("0");
                     data.add(c.getString(c.getColumnIndex("idempresa")));
+                    System.out.println(c.getString(c.getColumnIndex("idempresa")));
                     while (c.moveToNext()) {
                         data.add(c.getString(c.getColumnIndex("idempresa")));
+                        System.out.println(c.getString(c.getColumnIndex("idempresa")));
                     }
                 }
             } finally {

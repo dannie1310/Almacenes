@@ -22,6 +22,7 @@ import android.database.sqlite.SQLiteOpenHelper;
             "CREATE TABLE materiales (id_material INTEGER, tipomaterial INTEGER, marca INTEGER, descripcion TEXT)",
             "CREATE TABLE material_almacen(ID INTEGER PRIMARY KEY AUTOINCREMENT, id_material INTEGER, id_almacen INTEGER, unidad TEXT, id_obra INTEGER, cantidad INTEGER)",
             "CREATE TABLE contratistas (idempresa INTEGER, razonsocial TEXT)",
+            "CREATE TABLE dialogo_recepcion (ID INTEGER PRIMARY KEY AUTOINCREMENT, cantidadTotal TEXT, cantidadRS TEXT, idalmacen TEXT, claveConcepto TEXT, idContratista TEXT, cargo INTEGER, idorden TEXT, almacen TEXT, material TEXT, unidad TEXT, contratista TEXT, idmaterial TEXT)",
     };
 
     @Override
@@ -41,6 +42,7 @@ import android.database.sqlite.SQLiteOpenHelper;
         db.execSQL("DROP TABLE IF EXISTS materiales");
         db.execSQL("DROP TABLE IF EXISTS material_almacen");
         db.execSQL("DROP TABLE IF EXISTS contratistas");
+        db.execSQL("DROP TABLE IF EXISTS dialogo_recepcion");
 
         for (String query: queries){
             db.execSQL(query);
@@ -58,6 +60,7 @@ import android.database.sqlite.SQLiteOpenHelper;
         db.execSQL("DELETE FROM materiales");
         db.execSQL("DELETE FROM material_almacen");
         db.execSQL("DELETE FROM contratistas");
+        db.execSQL("DELETE FROM dialogo_recepcion");
         db.close();
     }
 
@@ -68,6 +71,7 @@ import android.database.sqlite.SQLiteOpenHelper;
         db.execSQL("DELETE FROM materiales");
         db.execSQL("DELETE FROM material_almacen");
         db.execSQL("DELETE FROM contratistas");
+        db.execSQL("DELETE FROM dialogo_recepcion");
         db.close();
     }
 

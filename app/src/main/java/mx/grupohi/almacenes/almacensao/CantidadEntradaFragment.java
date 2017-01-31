@@ -1,5 +1,6 @@
 package mx.grupohi.almacenes.almacensao;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -39,10 +40,12 @@ public class CantidadEntradaFragment extends DialogFragment {
     private static String tituloT;
     private static String cantidadT;
     private static String unidadT;
+    static String idordenT;
     String idAlmacen;
     String nombre;
     String empresa;
     String idContratista;
+    static String idmaterial;
     Double cantidadRecibida;
     private Button guardar;
     private Button cancelar;
@@ -56,14 +59,18 @@ public class CantidadEntradaFragment extends DialogFragment {
     TextView titulo;
     TextView cantidad;
     TextView textCargo;
+    TextView error;
     EditText textclave;
     EditText recibido;
     LinearLayout spinneralmacen;
     LinearLayout vistacontratista;
     LinearLayout clave;
 
+    ContentValues data;
+
     Almacen catalmacenes;
     Contratista empresas;
+    DialogoRecepcion dialogoCreate;
 
     Intent prueba;
 
@@ -77,17 +84,17 @@ public class CantidadEntradaFragment extends DialogFragment {
     }
 
     // TODO: Rename and change types and number of parameters
-    public static CantidadEntradaFragment newInstance(String titulo, String cantidad, String unidad) {
+    public static CantidadEntradaFragment newInstance(String titulo, String cantidad, String unidad,String idorden, String material) {
         CantidadEntradaFragment frag = new CantidadEntradaFragment();
-
         Bundle args = new Bundle();
         frag.isResumed();
         args.putString("title", "aasc");
         frag.setArguments(args);
-
+        idordenT = idorden;
         tituloT = titulo;
         cantidadT = cantidad;
         unidadT = unidad;
+        idmaterial = material;
 
         return frag;
 
@@ -98,6 +105,7 @@ public class CantidadEntradaFragment extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
         getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 
         return inflater.inflate(R.layout.fragment_cantidad_entrada, container, false);
@@ -107,8 +115,10 @@ public class CantidadEntradaFragment extends DialogFragment {
     public void onViewCreated(final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         // Get field from view
+        data = new ContentValues();
         catalmacenes = new Almacen(getContext());
         empresas = new Contratista(getContext());
+        dialogoCreate = new DialogoRecepcion(getContext());
         final ArrayList<String> nombres = catalmacenes.getArrayListAlmacenes();
         final ArrayList<String> ids = catalmacenes.getArrayListId();
         final ArrayList<String> contratistas = empresas.getArrayListContratistas();
@@ -118,6 +128,7 @@ public class CantidadEntradaFragment extends DialogFragment {
         cancelar = (Button) view.findViewById(R.id.buttoncancelar);
         titulo = (TextView) view.findViewById(R.id.textTitulo);
         cantidad = (TextView) view.findViewById(R.id.textcantidad);
+        error = (TextView) view.findViewById(R.id.textError);
         recibido = (EditText) view.findViewById(R.id.textrecibido);
         almacen = (CheckBox) view.findViewById(R.id.checkBox);
         contratista = (CheckBox) view.findViewById(R.id.checkContratista);
@@ -181,7 +192,7 @@ public class CantidadEntradaFragment extends DialogFragment {
         }
 
         final ArrayAdapter<String> aux = new ArrayAdapter<>(getContext(), R.layout.support_simple_spinner_dropdown_item, array);
-        a.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+        aux.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
 
         spinnercontratista.setAdapter(aux);
 
@@ -191,8 +202,8 @@ public class CantidadEntradaFragment extends DialogFragment {
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
                     empresa = spinnercontratista.getSelectedItem().toString();
-                    idContratista = spinnerMapContra.get(nombre);
-                    System.out.println("almacenes: " + empresas + idContratista);
+                    idContratista = spinnerMapContra.get(empresa);
+                    System.out.println("contratista: " + empresa + idContratista);
 
                 }
 
@@ -246,13 +257,49 @@ public class CantidadEntradaFragment extends DialogFragment {
         guardar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                System.out.println("Recibir: " + recibido.getText()+textclave.getText());
-                cantidadRecibida = Double.valueOf(recibido.getText().toString());
-                onFinishEditDialog(String.valueOf(cantidadRecibida));
-                Intent returnIntent = new Intent(Intent.ACTION_PICK);
-                returnIntent.putExtra("RESULTADO", cantidadRecibida);
+                Integer idcargo=0;
+                System.out.println("clave: "+textclave.getText().toString());
+                if(Integer.valueOf(cantidadT) < Integer.valueOf(recibido.getText().toString())){
+                    error.setText("SOBRE PASA LA CANTIDAD DE LA ORDEN DE COMPRA.");
+                }
+                else if(almacen.isChecked() && Integer.valueOf(idAlmacen) == 0){
+                    error.setText("DEBE SELECCIONAR UN ALMACÉN.");
+                }
+                else if(!almacen.isChecked() && textclave.getText().toString().isEmpty()){
+                    error.setText("DEBE COLOCAR LA CLAVE DEL CONCEPTO.");
+                }
+                else if(contratista.isChecked() && Integer.valueOf(idContratista) == 0){
+                    error.setText("DEBE SELECCIONAR UN CONTRATISTA.");
+                }
+                else {
+                    error.setText("");
+                    if(cargo.isChecked() == true){
+                        idcargo = 1;
+                    }
+                    System.out.println("Recibir: " + recibido.getText() + textclave.getText());
+                    cantidadRecibida = Double.valueOf(recibido.getText().toString());
 
-                getDialog().dismiss();
+                    data.put("idalmacen", idAlmacen);
+                    data.put("almacen", nombre);
+                    data.put("material", tituloT);
+                    data.put("cantidadTotal", cantidadT);
+                    data.put("cantidadRS", recibido.getText().toString());
+                    data.put("unidad", unidadT);
+                    data.put("claveConcepto", textclave.getText().toString());
+                    data.put("idcontratista", idContratista);
+                    data.put("contratista", empresa);
+                    data.put("cargo", idcargo);
+                    data.put("idorden", idordenT);
+                    data.put("idmaterial", idmaterial);
+
+
+                    if(!dialogoCreate.create(data)){
+                        error.setText("ERROR INTENTE DE NUEVO.");
+                    }else {
+                        System.out.println("GUARDO");
+                        getDialog().dismiss();
+                    }
+                }
             }
         });
 

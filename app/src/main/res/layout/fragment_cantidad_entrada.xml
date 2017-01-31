@@ -251,6 +251,20 @@
             android:layout_height="3dp"
             android:layout_marginBottom="5dp"
             android:layout_marginTop="5dp" />
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="1">
+            <TextView
+                android:text=""
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/error"
+                android:id="@+id/textError"
+                android:textSize="14sp"
+                android:layout_weight="0.25" />
+        </LinearLayout>
 
         <LinearLayout
             android:orientation="horizontal"
