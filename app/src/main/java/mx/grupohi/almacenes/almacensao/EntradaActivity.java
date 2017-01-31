@@ -172,7 +172,7 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
         editNameDialogFragment = editNameDialogFragment.newInstance(ordenCompra.getDescripcion(idOrdenCompra), ordenCompra.getExistencia(idOrdenCompra), ordenCompra.getUnidad(idOrdenCompra));
 
         editNameDialogFragment.show(fm, "Material Recibido");
-
+        System.out.println("aqui "+editNameDialogFragment.getArguments());
 
 
         return true;
