@@ -154,4 +154,41 @@ public class DialogoRecepcion {
         db.close();
     }
 
+    public int valor(Context context, String idMaterial, String idOrden){
+        DBScaSqlite db_sca = new DBScaSqlite(context, "sca", null, 1);
+        SQLiteDatabase db = db_sca.getWritableDatabase();
+        System.out.println("VALORES: "+idMaterial+" "+idOrden);
+        Cursor c = db.rawQuery("SELECT SUM(cantidadRS) as suma from dialogo_recepcion WHERE idorden = '" + idOrden + "' and idmaterial = '"+idMaterial+"'", null);
+        try {
+            if(c!=null && c.moveToFirst()){
+                System.out.print("suma: "+c.getInt(0));
+                return c.getInt(0);
+            }
+            else{
+                return 0;
+            }
+        } finally {
+            c.close();
+            db.close();
+        }
+    }
+
+    public  Integer getCount(){
+        DBScaSqlite db_sca = new DBScaSqlite(context, "sca", null, 1);
+        SQLiteDatabase db = db_sca.getWritableDatabase();
+        Cursor c = db.rawQuery("SELECT * from dialogo_recepcion", null);
+        try {
+            if(c!=null && c.moveToFirst()){
+                System.out.print("existe: "+c.getCount());
+                return c.getCount();
+            }
+            else{
+                return 0;
+            }
+        } finally {
+            c.close();
+            db.close();
+        }
+    }
+
 }

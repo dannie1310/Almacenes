@@ -112,9 +112,13 @@ public class OrdenCompra {
 
     public OrdenCompra find(Integer id){
         db=db_sca.getWritableDatabase();
+        DialogoRecepcion d = new DialogoRecepcion(context);
+        Integer valor;
         Cursor c = db.rawQuery("SELECT * FROM ordenescompra WHERE ID = '"+id+"'", null);
         try{
             if(c != null && c.moveToFirst()){
+                valor = d.valor(context,c.getString(c.getColumnIndex("idmaterial")),c.getString(c.getColumnIndex("numerofolio")));
+                System.out.println("EXISTENCIA: "+valor);
                 this.id = c.getInt(c.getColumnIndex("ID"));
                 this.idmaterial = c.getInt(c.getColumnIndex("idmaterial"));
                 this.iditem = c.getInt(c.getColumnIndex("iditem"));
@@ -123,7 +127,13 @@ public class OrdenCompra {
                 this.idorden = c.getInt(c.getColumnIndex("idorden"));
                 this.descripcion = c.getString(c.getColumnIndex("descripcion"));
                 this.unidad = c.getString(c.getColumnIndex("unidad"));
-                this.existencia = c.getString(c.getColumnIndex("existencia"));
+                if(valor != 0){
+                    valor =  c.getInt(c.getColumnIndex("existencia")) - valor;
+                    this.existencia = String.valueOf(valor);
+                }else {
+                    this.existencia = c.getString(c.getColumnIndex("existencia"));
+                }
+
                 this.razonsocial = c.getString(c.getColumnIndex("razonsocial"));
             }
             return this;
@@ -212,6 +222,12 @@ public class OrdenCompra {
             c.close();
             db.close();
         }
+    }
+
+
+
+    public String getExistencia(){
+        return this.existencia;
     }
 
 }

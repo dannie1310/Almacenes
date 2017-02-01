@@ -33,6 +33,8 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
 
     Usuario usuario;
     OrdenCompra ordenCompra;
+    OrdenCompra aux;
+    DialogoRecepcion dialogoRecepcion;
     Spinner spinner;
     private HashMap<String, String> spinnerMap;
     String idOrden;
@@ -46,9 +48,8 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
     ListaDialog listaRecibido;
     EditText referencia;
     EditText observaciones;
+    Double existencia;
     Integer idOrdenCompra;
-    String idCompra;
-    private final static int NOMBRE = 0;
 
     CantidadEntradaFragment editNameDialogFragment;
 
@@ -64,7 +65,7 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
         System.out.println("extra: "+ x + y);
         usuario = new Usuario(getApplicationContext());
         usuario = usuario.getUsuario();
-
+        dialogoRecepcion = new DialogoRecepcion(getApplicationContext());
         ordenCompra = new OrdenCompra(getApplicationContext());
         referencia = (EditText) findViewById(R.id.textReferencia);
         observaciones = (EditText) findViewById(R.id.textObservaciones);
@@ -102,7 +103,7 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
 
                     nombre = spinner.getSelectedItem().toString();
                     idOrden = spinnerMap.get(nombre);
-                    actualizar(idOrden);
+
                     System.out.println("add: " + idOrden + nombre);
                     mList = (ListView) findViewById(R.id.listView_materiales_ordencompra);
                     System.out.println("valores: " + idOrden);
@@ -112,20 +113,72 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
 
 
 
+
                     mList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                             OrdenCompra orden = lista.getItem(position);
+
                             idOrdenCompra = orden.id;
-                            System.out.println(idOrdenCompra + "Click orden: " + orden.idorden + "posicion" + position);
-                            idMaterial = String.valueOf(orden.idmaterial);
-                            showEditDialog(idOrdenCompra);
+                            existencia = Double.valueOf(orden.existencia);
+                            if(existencia != 0) {
+                                System.out.println(idOrdenCompra + "Click orden: " + orden.idorden + "posicion" + position);
+                                idMaterial = String.valueOf(orden.idmaterial);
+                                showEditDialog(idOrdenCompra);
 
-                            actualizar(idOrden);
 
-                            System.out.println("idcompra: " + idOrden);
+
+                                System.out.println("idcompra: " + idOrden);
+                            }else{
+                                Toast.makeText(getApplicationContext(), "NO HAY MÁS MATERIAL PARA RECIBIR.", Toast.LENGTH_SHORT).show();
+                            }
+
                         }
                     });
+
+                    if(dialogoRecepcion.getCount() != 0) {
+                        mListRecibido = (ListView) findViewById(R.id.listView_materiales_ordencompra_temp);
+                        listaRecibido = new ListaDialog(getApplicationContext(), DialogoRecepcion.getRecepcion(getApplicationContext(), idOrden));
+                        mListRecibido.setAdapter(listaRecibido);
+
+                        mListRecibido.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
+                                DialogoRecepcion dialogR = listaRecibido.getItem(position);
+
+                                final Integer idDialogo = dialogR.id;
+                                AlertDialog.Builder alert = new AlertDialog.Builder(EntradaActivity.this);
+                                alert.setTitle("Entrada a Almacén");
+                                alert.setMessage("¿Estas seguro de eliminar esta entrada del material?");
+                                alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int whichButton) {
+                                        Double cantx = Double.parseDouble(DialogoRecepcion.getCantidadRS(getApplicationContext(), idDialogo) + "");
+                                        listaRecibido.remove((DialogoRecepcion) listaRecibido.getItem(position));
+                                        System.out.println("d: " + cantx);
+                                        mListRecibido.setAdapter(listaRecibido);
+                                        System.out.println("aq: " + cantx);
+                                        DialogoRecepcion.remove(getApplicationContext(), idDialogo);
+
+                                        lista = new lista_adaptador(getApplicationContext(), OrdenCompra.getOrden(getApplicationContext(), idOrden));
+                                        mList.setAdapter(lista);
+
+
+                                    }
+                                });
+
+                                alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int whichButton) {
+                                        // Canceled.
+                                        mListRecibido = (ListView) findViewById(R.id.listView_materiales_ordencompra_temp);
+                                        listaRecibido = new ListaDialog(getApplicationContext(), DialogoRecepcion.getRecepcion(getApplicationContext(), idOrden));
+                                        mListRecibido.setAdapter(listaRecibido);
+                                    }
+                                });
+                                alert.show();
+                                System.out.println(dialogR.contratista + "Adaptador Dialog: posicion" + position);
+                            }
+                        });
+                    }
                 }
 
                 @Override
@@ -136,11 +189,6 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
             });
 
         }
-
-        actualizar(idOrden);
-
-
-
 
 
         guardar.setOnClickListener(new View.OnClickListener() {
@@ -194,56 +242,14 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
         FragmentManager fm = getSupportFragmentManager();
 
         editNameDialogFragment = new CantidadEntradaFragment();
-        editNameDialogFragment = editNameDialogFragment.newInstance(ordenCompra.getDescripcion(idOrdenCompra), ordenCompra.getExistencia(idOrdenCompra), ordenCompra.getUnidad(idOrdenCompra), idOrden, idMaterial, referencia.getText().toString(),observaciones.getText().toString());
+        editNameDialogFragment = editNameDialogFragment.newInstance(ordenCompra.getDescripcion(idOrdenCompra), String.valueOf(existencia), ordenCompra.getUnidad(idOrdenCompra), idOrden, idMaterial, referencia.getText().toString(),observaciones.getText().toString());
 
         editNameDialogFragment.show(fm, "Material Recibido");
 
-        actualizar(idOrden);
 
         return true;
 
 
-    }
-    public  void actualizar(final String idOrdenC){
-        mListRecibido = (ListView) findViewById(R.id.listView_materiales_ordencompra_temp);
-        listaRecibido = new ListaDialog(getApplicationContext(), DialogoRecepcion.getRecepcion(getApplicationContext(), idOrdenC));
-        mListRecibido.setAdapter(listaRecibido);
-
-        mListRecibido.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
-                DialogoRecepcion dialogR = listaRecibido.getItem(position);
-
-                final Integer idDialogo = dialogR.id;
-                AlertDialog.Builder alert = new AlertDialog.Builder(EntradaActivity.this);
-                alert.setTitle("Entrada a Almacén");
-                alert.setMessage("¿Estas seguro de eliminar esta entrada del material?");
-                alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        Double cantx = Double.parseDouble(DialogoRecepcion.getCantidadRS(getApplicationContext(), idDialogo) + "");
-                        listaRecibido.remove((DialogoRecepcion) listaRecibido.getItem(position));
-
-                        mListRecibido.setAdapter(listaRecibido);
-                        System.out.println("aq: " + cantx);
-                        DialogoRecepcion.remove(getApplicationContext(),idDialogo);
-                                    /*lista.setexistencia(cantx+objordenescomprasele.getexistencia());
-                                    lstOpciones.setAdapter(adaptador);*/
-
-                    }
-                });
-
-                alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        // Canceled.
-                        mListRecibido = (ListView) findViewById(R.id.listView_materiales_ordencompra_temp);
-                        listaRecibido = new ListaDialog(getApplicationContext(), DialogoRecepcion.getRecepcion(getApplicationContext(), idOrden));
-                        mListRecibido.setAdapter(listaRecibido);
-                    }
-                });
-                alert.show();
-                System.out.println(dialogR.contratista + "Adaptador Dialog: posicion" + position);
-            }
-        });
     }
 
     @Override

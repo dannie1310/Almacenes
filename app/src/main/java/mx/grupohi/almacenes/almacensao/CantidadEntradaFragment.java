@@ -264,7 +264,7 @@ public class CantidadEntradaFragment extends DialogFragment {
             public void onClick(View v) {
                 Integer idcargo=0;
                 System.out.println("clave: "+textclave.getText().toString());
-                if(Integer.valueOf(cantidadT) < Integer.valueOf(recibido.getText().toString())){
+                if(Double .valueOf(cantidadT) < Double .valueOf(recibido.getText().toString())){
                     error.setText("SOBRE PASA LA CANTIDAD DE LA ORDEN DE COMPRA.");
                 }
                 else if(almacen.isChecked() && Integer.valueOf(idAlmacen) == 0){

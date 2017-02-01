@@ -190,7 +190,7 @@ class Util {
         InputStream myInput = new FileInputStream(new File("/data/user/0/" + mActivity.getPackageName() + "/databases/sca"));
         File files = new File("/sdcard/Android/");
         files.mkdirs();
-        String outFileName = "/sdcard/Android/data/by.androld.app.dbreader/files/almacenes"+getFechaHora()+".sqlite";
+        String outFileName = "/sdcard/Android/data/by.androld.app.dbreader/files/almacenes.sqlite";
         OutputStream myOutput = new FileOutputStream(outFileName);
         byte[] buffer = new byte[1024];
         int bufferLength;

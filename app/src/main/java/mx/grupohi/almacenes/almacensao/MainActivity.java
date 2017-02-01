@@ -37,11 +37,7 @@ public class MainActivity extends AppCompatActivity
         usuario = usuario.getUsuario();
         String x = usuario.getObraActiva();
         System.out.println("obra : "+x);
-        try {
-            Util.copyDataBase(getApplicationContext());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
         entrada = (ImageButton) findViewById(R.id.button_entrada);
         salida = (ImageButton) findViewById(R.id.button_salida);
         trans = (ImageButton) findViewById(R.id.button_trans);
@@ -74,7 +70,11 @@ public class MainActivity extends AppCompatActivity
         imprimir.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                try {
+                    Util.copyDataBase(getApplicationContext());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
