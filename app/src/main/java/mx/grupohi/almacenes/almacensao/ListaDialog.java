@@ -53,10 +53,14 @@ public class ListaDialog extends ArrayAdapter<DialogoRecepcion> {
         }else {
             almacen.setText(dialogoRecepcion.claveConcepto);
         }
-        if(dialogoRecepcion.cargo == 1){
-            contra.setText("Contratista: "+dialogoRecepcion.contratista+" (CON CARGO).");
+        if(dialogoRecepcion.contratista != null) {
+            if (dialogoRecepcion.cargo == 1) {
+                contra.setText("Contratista: " + dialogoRecepcion.contratista + " (CON CARGO).");
+            } else {
+                contra.setText("Contratista: " + dialogoRecepcion.contratista + ".");
+            }
         }else{
-            contra.setText("Contratista: "+dialogoRecepcion.contratista+".");
+            contra.setText("");
         }
 
         convertView.setVisibility(View.VISIBLE);

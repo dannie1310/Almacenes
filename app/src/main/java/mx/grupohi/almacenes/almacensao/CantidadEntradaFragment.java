@@ -1,5 +1,6 @@
 package mx.grupohi.almacenes.almacensao;
 
+import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -45,6 +46,8 @@ public class CantidadEntradaFragment extends DialogFragment {
     String nombre;
     String empresa;
     String idContratista;
+    static String observacion;
+    static String referencia;
     static String idmaterial;
     Double cantidadRecibida;
     private Button guardar;
@@ -84,7 +87,7 @@ public class CantidadEntradaFragment extends DialogFragment {
     }
 
     // TODO: Rename and change types and number of parameters
-    public static CantidadEntradaFragment newInstance(String titulo, String cantidad, String unidad,String idorden, String material) {
+    public static CantidadEntradaFragment newInstance(String titulo, String cantidad, String unidad,String idorden, String material,String referen, String obs) {
         CantidadEntradaFragment frag = new CantidadEntradaFragment();
         Bundle args = new Bundle();
         frag.isResumed();
@@ -95,6 +98,8 @@ public class CantidadEntradaFragment extends DialogFragment {
         cantidadT = cantidad;
         unidadT = unidad;
         idmaterial = material;
+        observacion = obs;
+        referencia = referen;
 
         return frag;
 
@@ -297,6 +302,11 @@ public class CantidadEntradaFragment extends DialogFragment {
                         error.setText("ERROR INTENTE DE NUEVO.");
                     }else {
                         System.out.println("GUARDO");
+                        Intent intent = new Intent(getContext(), EntradaActivity.class);
+                        intent.putExtra("observacion",observacion);
+                        intent.putExtra("referencia", referencia);
+                        startActivityForResult(intent,1);
+                        startActivity(intent);
                         getDialog().dismiss();
                     }
                 }

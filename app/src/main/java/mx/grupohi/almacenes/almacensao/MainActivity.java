@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 Intent entrada = new Intent(getApplicationContext(), EntradaActivity.class);
+               // entrada.putExtra("cargo","id2");
                 startActivity(entrada);
             }
         });
