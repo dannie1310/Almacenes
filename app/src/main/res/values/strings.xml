@@ -58,6 +58,11 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="selecciona_almacen">Selecciona un Almacén:</string>
+    <string name="error_referencia">ESCRIBE UNA REFERENCIA.</string>
+    <string name="error_OB">ESCRIBE UNA OBSERVACIÓN.</string>
+    <string name="error_recibir">NO HAZ RECIBIDO NINGUN MATERIAL.</string>
+    <string name="error_orden">DEBES SELECCIONAR UNA ORDEN DE COMPRA.</string>
+    <string name="error_entradadetalle">ERROR AL GUARDAR DATOS.</string>
 
 
 </resources>

@@ -65,7 +65,7 @@ public class DialogoRecepcion {
 
     void destroy() {
         db = db_sca.getWritableDatabase();
-        db.execSQL("DELETE FROM almacenes");
+        db.execSQL("DELETE FROM dialogo_recepcion");
         db.close();
     }
     public static List<DialogoRecepcion> getRecepcion(Context context, String idorden){

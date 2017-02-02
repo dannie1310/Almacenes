@@ -1,6 +1,7 @@
 package mx.grupohi.almacenes.almacensao;
 
 import android.app.AlertDialog;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -29,12 +30,17 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import static android.R.attr.data;
+
 public class EntradaActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     Usuario usuario;
     OrdenCompra ordenCompra;
-    OrdenCompra aux;
+    Entrada entrada;
+    EntradaDetalle entradaDetalle;
     DialogoRecepcion dialogoRecepcion;
+
+
     Spinner spinner;
     private HashMap<String, String> spinnerMap;
     String idOrden;
@@ -154,7 +160,7 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
                                     public void onClick(DialogInterface dialog, int whichButton) {
                                         Double cantx = Double.parseDouble(DialogoRecepcion.getCantidadRS(getApplicationContext(), idDialogo) + "");
                                         listaRecibido.remove((DialogoRecepcion) listaRecibido.getItem(position));
-                                        System.out.println("d: " + cantx);
+
                                         mListRecibido.setAdapter(listaRecibido);
                                         System.out.println("aq: " + cantx);
                                         DialogoRecepcion.remove(getApplicationContext(), idDialogo);
@@ -194,10 +200,73 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
         guardar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                entrada = new Entrada(getApplicationContext());
+                entradaDetalle = new EntradaDetalle(getApplicationContext());
+
                 System.out.println("add5: " + idOrden +nombre);
                 Intent i = getIntent();
+                ContentValues entradas= new ContentValues();
                 String s= i.getStringExtra("RESULTADO");
                 System.out.println("PASARDATO" +s );
+                Integer aux_orden;
+                Integer aux_material;
+                for (int z =0; z < lista.getCount(); z++){
+
+                    OrdenCompra ord= lista.getItem(z);
+                    aux_orden = ord.idorden;
+                    aux_material = ord.idmaterial;
+                    if(spinner!= null){
+                        Toast.makeText(getApplicationContext(), R.string.error_orden, Toast.LENGTH_SHORT).show();
+                    }
+                    else if(referencia.getText().toString().isEmpty()){
+                        Toast.makeText(getApplicationContext(), R.string.error_referencia, Toast.LENGTH_SHORT).show();
+                    }
+                    else if(observaciones.getText().toString().isEmpty()){
+                        Toast.makeText(getApplicationContext(), R.string.error_OB, Toast.LENGTH_SHORT).show();
+                    }
+                    else if(listaRecibido.isEmpty()){
+                        Toast.makeText(getApplicationContext(), R.string.error_recibir, Toast.LENGTH_SHORT).show();
+                    }
+                    else{
+                        entradas.clear();
+                        entradas.put("referencia", referencia.getText().toString());
+                        entradas.put("observacion", observaciones.getText().toString());
+                        entradas.put("idorden", ord.idorden);
+                        entradas.put("fecha", Util.getFecha());
+                        entradas.put("idmaterial",ord.idmaterial);
+
+                        Integer e = entrada.create(entradas);
+                        for(int l = 0; l<listaRecibido.getCount(); l++){
+                            DialogoRecepcion dr = listaRecibido.getItem(l);
+
+                            if(dr.idorden.equals(aux_orden) && dr.idmaterial.equals(aux_material)){
+
+                                entradas.clear();
+                                entradas.put("idalmacen",dr.id_almacen);
+                                entradas.put("cantidad",dr.cantidadRS);
+                                entradas.put("identrada",e);
+                                entradas.put("claveConcepto",dr.claveConcepto);
+                                entradas.put("idcontratista",dr.idcontratista);
+                                entradas.put("cargo",dr.cargo);
+                                entradas.put("unidad",dr.unidad);
+                                entradas.put("idmaterial",dr.idmaterial);
+
+                                if(!entradaDetalle.create(entradas)){
+                                    Toast.makeText(getApplicationContext(), R.string.error_entradadetalle, Toast.LENGTH_SHORT).show();
+                                }
+
+                            }
+
+                        }
+
+
+                        System.out.println("d: " + ord.existencia + " : "+ ord.descripcion);
+                    }
+
+                }
+
+
+
             }
         });
 
@@ -255,11 +324,10 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
+        DialogoRecepcion d = new DialogoRecepcion(getApplicationContext());
+        Intent main = new Intent(getApplicationContext(), MainActivity.class);
+        d.destroy();
+        startActivity(main);
     }
 
     @Override
