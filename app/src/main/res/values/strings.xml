@@ -63,6 +63,7 @@
     <string name="error_recibir">NO HAZ RECIBIDO NINGUN MATERIAL.</string>
     <string name="error_orden">DEBES SELECCIONAR UNA ORDEN DE COMPRA.</string>
     <string name="error_entradadetalle">ERROR AL GUARDAR DATOS.</string>
+    <string name="guardado">SE REGISTRO CORRECTAMENTE</string>
 
 
 </resources>

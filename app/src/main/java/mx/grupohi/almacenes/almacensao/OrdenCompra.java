@@ -27,7 +27,7 @@ public class OrdenCompra {
     Integer idorden;
     String descripcion;
     String unidad;
-    String existencia;
+    Double existencia;
     String razonsocial;
 
 
@@ -46,7 +46,7 @@ public class OrdenCompra {
             this.iditem = Integer.valueOf(data.getAsInteger("iditem"));
             this.unidad = data.getAsString("unidad");
             this.numerofolio = Integer.valueOf(data.getAsInteger("numerofolio"));
-            this.existencia = data.getAsString("existencia");
+            this.existencia = data.getAsDouble("existencia");
             this.preciounitario = Integer.valueOf(data.getAsInteger("preciounitario"));
             this.razonsocial = data.getAsString("razonsocial");
             this.idorden = Integer.valueOf(data.getAsInteger("idorden"));
@@ -113,12 +113,15 @@ public class OrdenCompra {
     public OrdenCompra find(Integer id){
         db=db_sca.getWritableDatabase();
         DialogoRecepcion d = new DialogoRecepcion(context);
-        Integer valor;
+        EntradaDetalle ed = new EntradaDetalle(context);
+        Double valor;
+        Double entradas;
         Cursor c = db.rawQuery("SELECT * FROM ordenescompra WHERE ID = '"+id+"'", null);
         try{
-            if(c != null && c.moveToFirst()){
-                valor = d.valor(context,c.getString(c.getColumnIndex("idmaterial")),c.getString(c.getColumnIndex("numerofolio")));
-                System.out.println("EXISTENCIA: "+valor);
+            if(c != null && c.moveToFirst()) {
+                valor = d.valor(context, c.getString(c.getColumnIndex("idmaterial")), c.getString(c.getColumnIndex("numerofolio")));
+                entradas = ed.sumaCantidad(c.getInt(c.getColumnIndex("idorden")), c.getInt(c.getColumnIndex("idmaterial")));
+                System.out.println("entradasddd: " + entradas + valor);
                 this.id = c.getInt(c.getColumnIndex("ID"));
                 this.idmaterial = c.getInt(c.getColumnIndex("idmaterial"));
                 this.iditem = c.getInt(c.getColumnIndex("iditem"));
@@ -127,11 +130,18 @@ public class OrdenCompra {
                 this.idorden = c.getInt(c.getColumnIndex("idorden"));
                 this.descripcion = c.getString(c.getColumnIndex("descripcion"));
                 this.unidad = c.getString(c.getColumnIndex("unidad"));
-                if(valor != 0){
-                    valor =  c.getInt(c.getColumnIndex("existencia")) - valor;
-                    this.existencia = String.valueOf(valor);
+
+                if (valor != 0 && entradas != 0) {
+                    valor = c.getInt(c.getColumnIndex("existencia")) - valor - entradas;
+                    this.existencia = valor;
+                } else if (valor != 0 && entradas == 0) {
+                    valor = c.getInt(c.getColumnIndex("existencia")) - valor;
+                    this.existencia = valor;
+                } else if (entradas != 0 && valor == 0) {
+                    entradas = c.getInt(c.getColumnIndex("existencia")) - entradas;
+                    this.existencia = entradas;
                 }else {
-                    this.existencia = c.getString(c.getColumnIndex("existencia"));
+                    this.existencia = c.getDouble(c.getColumnIndex("existencia"));
                 }
 
                 this.razonsocial = c.getString(c.getColumnIndex("razonsocial"));
@@ -226,7 +236,7 @@ public class OrdenCompra {
 
 
 
-    public String getExistencia(){
+    public Double getExistencia(){
         return this.existencia;
     }
 

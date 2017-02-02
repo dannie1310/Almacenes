@@ -154,7 +154,7 @@ public class DialogoRecepcion {
         db.close();
     }
 
-    public int valor(Context context, String idMaterial, String idOrden){
+    public Double valor(Context context, String idMaterial, String idOrden){
         DBScaSqlite db_sca = new DBScaSqlite(context, "sca", null, 1);
         SQLiteDatabase db = db_sca.getWritableDatabase();
         System.out.println("VALORES: "+idMaterial+" "+idOrden);
@@ -162,10 +162,10 @@ public class DialogoRecepcion {
         try {
             if(c!=null && c.moveToFirst()){
                 System.out.print("suma: "+c.getInt(0));
-                return c.getInt(0);
+                return c.getDouble(0);
             }
             else{
-                return 0;
+                return 0.0;
             }
         } finally {
             c.close();

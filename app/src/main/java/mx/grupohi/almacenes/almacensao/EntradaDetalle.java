@@ -2,6 +2,7 @@ package mx.grupohi.almacenes.almacensao;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 /**
@@ -16,7 +17,7 @@ public class EntradaDetalle {
     private DBScaSqlite db_sca;
 
     Integer id;
-    String cantidad;
+    Double cantidad;
     String claveConcepto;
     String idcontratista;
     Integer cargo;
@@ -39,7 +40,7 @@ public class EntradaDetalle {
         if (result) {
 
             this.idalmacen = data.getAsString("idalmacen");
-            this.cantidad = data.getAsString("cantidadTotal");
+            this.cantidad = data.getAsDouble("cantidadTotal");
             this.identrada = data.getAsInteger("identrada");
             this.claveConcepto = data.getAsString("claveConcepto");
             this.idcontratista = data.getAsString("idcontratista");
@@ -57,5 +58,22 @@ public class EntradaDetalle {
         db = db_sca.getWritableDatabase();
         db.execSQL("DELETE FROM entradadetalle");
         db.close();
+    }
+
+    public Double sumaCantidad(Integer idorden, Integer material){
+        DBScaSqlite db_sca = new DBScaSqlite(context, "sca", null, 1);
+        SQLiteDatabase db = db_sca.getWritableDatabase();
+        Cursor c = db.rawQuery(" SELECT SUM(cantidad) as resta FROM  entradadetalle INNER JOIN entrada e ON e.id = entradadetalle.identrada WHERE e.idorden = '"+idorden+"' and e.idmaterial = '"+material+"' GROUP BY e.idmaterial", null);
+        try {
+            if(c!=null && c.moveToFirst()){
+                return c.getDouble(0);
+            }
+            else{
+                return 0.0;
+            }
+        } finally {
+            c.close();
+            db.close();
+        }
     }
 }

@@ -27,6 +27,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.StringBufferInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -204,18 +205,18 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
                 entradaDetalle = new EntradaDetalle(getApplicationContext());
 
                 System.out.println("add5: " + idOrden +nombre);
-                Intent i = getIntent();
-                ContentValues entradas= new ContentValues();
-                String s= i.getStringExtra("RESULTADO");
-                System.out.println("PASARDATO" +s );
-                Integer aux_orden;
-                Integer aux_material;
-                for (int z =0; z < lista.getCount(); z++){
 
+                ContentValues entradas= new ContentValues();
+                Integer a = 0;
+                String aux_orden;
+                String aux_material;
+                for (int z =0; z < lista.getCount(); z++){
+                    a=z;
                     OrdenCompra ord= lista.getItem(z);
-                    aux_orden = ord.idorden;
-                    aux_material = ord.idmaterial;
-                    if(spinner!= null){
+                    aux_orden = String.valueOf(ord.numerofolio);
+                    aux_material = String.valueOf(ord.idmaterial);
+                    //System.out.println("EXPYTY: "+listaRecibido.getCount());
+                    if(spinner == null){
                         Toast.makeText(getApplicationContext(), R.string.error_orden, Toast.LENGTH_SHORT).show();
                     }
                     else if(referencia.getText().toString().isEmpty()){
@@ -224,7 +225,7 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
                     else if(observaciones.getText().toString().isEmpty()){
                         Toast.makeText(getApplicationContext(), R.string.error_OB, Toast.LENGTH_SHORT).show();
                     }
-                    else if(listaRecibido.isEmpty()){
+                    else if(listaRecibido == null){
                         Toast.makeText(getApplicationContext(), R.string.error_recibir, Toast.LENGTH_SHORT).show();
                     }
                     else{
@@ -232,14 +233,16 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
                         entradas.put("referencia", referencia.getText().toString());
                         entradas.put("observacion", observaciones.getText().toString());
                         entradas.put("idorden", ord.idorden);
-                        entradas.put("fecha", Util.getFecha());
+                        entradas.put("fecha", Util.timeStamp());
                         entradas.put("idmaterial",ord.idmaterial);
 
                         Integer e = entrada.create(entradas);
+                        System.out.println("entrada: "+e+" "+entradas);
+
                         for(int l = 0; l<listaRecibido.getCount(); l++){
                             DialogoRecepcion dr = listaRecibido.getItem(l);
-
-                            if(dr.idorden.equals(aux_orden) && dr.idmaterial.equals(aux_material)){
+                            System.out.println("ffff: "+aux_orden+" "+aux_material+" "+dr.idorden+" "+ord.idmaterial);
+                            if( aux_material.equals(dr.idmaterial) && aux_orden.equals(dr.idorden) ){
 
                                 entradas.clear();
                                 entradas.put("idalmacen",dr.id_almacen);
@@ -250,6 +253,7 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
                                 entradas.put("cargo",dr.cargo);
                                 entradas.put("unidad",dr.unidad);
                                 entradas.put("idmaterial",dr.idmaterial);
+                                System.out.println("entradaDetalle: "+entradas);
 
                                 if(!entradaDetalle.create(entradas)){
                                     Toast.makeText(getApplicationContext(), R.string.error_entradadetalle, Toast.LENGTH_SHORT).show();
@@ -259,10 +263,15 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
 
                         }
 
-
-                        System.out.println("d: " + ord.existencia + " : "+ ord.descripcion);
                     }
 
+                }
+                a++;
+                if(a==lista.getCount()) {
+                    Toast.makeText(getApplicationContext(), R.string.guardado, Toast.LENGTH_SHORT).show();
+                    Intent main = new Intent(getApplicationContext(), MainActivity.class);
+                    dialogoRecepcion.destroy();
+                    startActivity(main);
                 }
 
 
