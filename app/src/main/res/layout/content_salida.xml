@@ -147,7 +147,7 @@
                 android:scrollbars="vertical"
                 android:fillViewport="true"
                 android:layout_width="fill_parent"
-                android:background="@color/colorlista" >
+                android:background="@color/colorAccent" >
             </ListView>
 
         </LinearLayout>
@@ -177,7 +177,7 @@
                 android:scrollbars="vertical"
                 android:fillViewport="true"
                 android:layout_width="fill_parent"
-                android:background="@color/colorlista" >
+                android:background="@color/colorAccent" >
 
             </ListView>
         </LinearLayout>
@@ -210,7 +210,7 @@
             <EditText
                 android:layout_width="0dp"
                 android:layout_height="38dp"
-                android:id="@+id/textObservaciones"
+                android:id="@+id/textObservacionesSalida"
                 android:layout_weight="0.37"
                 android:textAppearance="@android:style/TextAppearance.DeviceDefault"
                 android:textSize="18sp"

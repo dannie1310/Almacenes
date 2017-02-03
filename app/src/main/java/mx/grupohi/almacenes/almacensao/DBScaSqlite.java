@@ -20,7 +20,7 @@ import android.database.sqlite.SQLiteOpenHelper;
             "CREATE TABLE ordenescompra (ID INTEGER PRIMARY KEY AUTOINCREMENT, descripcion TEXT, unidad TEXT, existencia DOUBLE, idmaterial INTEGER, iditem INTEGER, razonsocial TEXT, numerofolio INTEGER, preciounitario INTEGER, idorden INTEGER)",
             "CREATE TABLE almacenes (id_almacen INTEGER, descripcion TEXT)",
             "CREATE TABLE materiales (id_material INTEGER, tipomaterial INTEGER, marca INTEGER, descripcion TEXT)",
-            "CREATE TABLE material_almacen(ID INTEGER PRIMARY KEY AUTOINCREMENT, id_material INTEGER, id_almacen INTEGER, unidad TEXT, id_obra INTEGER, cantidad INTEGER)",
+            "CREATE TABLE material_almacen(ID INTEGER PRIMARY KEY AUTOINCREMENT, id_material INTEGER, id_almacen INTEGER, unidad TEXT, id_obra INTEGER, cantidad DOUBLE)",
             "CREATE TABLE contratistas (idempresa INTEGER, razonsocial TEXT)",
             "CREATE TABLE dialogo_recepcion (ID INTEGER PRIMARY KEY AUTOINCREMENT, cantidadTotal TEXT, cantidadRS TEXT, idalmacen TEXT, claveConcepto TEXT, idContratista TEXT, cargo INTEGER, idorden TEXT, almacen TEXT, material TEXT, unidad TEXT, contratista TEXT, idmaterial TEXT)",
             "CREATE TABLE entrada (ID INTEGER PRIMARY KEY AUTOINCREMENT,  idorden TEXT, idmaterial TEXT, referencia TEXT, observacion TEXT, fecha VARCHAR(8))",

@@ -76,4 +76,21 @@ public class EntradaDetalle {
             db.close();
         }
     }
+    public  Double getCantidad(Integer material, Integer almacen){
+
+        SQLiteDatabase db = db_sca.getWritableDatabase();
+        Cursor c = db.rawQuery("SELECT SUM(cantidad) FROM entradadetalle WHERE idmaterial = '"+material+"' and idalmacen = '"+almacen+"'", null);
+        try {
+            if(c!=null && c.moveToFirst()){
+                System.out.println("entrda: "+material +" "+almacen +" "+c.getDouble(0));
+                return c.getDouble(0);
+            }
+            else{
+                return 0.0;
+            }
+        } finally {
+            c.close();
+            db.close();
+        }
+    }
 }

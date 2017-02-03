@@ -13,12 +13,38 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class SalidaActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     Usuario usuario;
+    Almacen almacen;
+    ListaMaterialAdaptador lista;
+
+    private HashMap<String, String> spinnerMap;
+    EditText concepto;
+    EditText referenica_salida;
+    EditText observacion_salida;
+    ListView materiales;
+    ListView salida;
+    Spinner almacen_spinner;
+    Button botonSalida;
+
+    String nombrealmacen;
+    String idAlmacen;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +54,81 @@ public class SalidaActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
         usuario = new Usuario(this);
         usuario = usuario.getUsuario();
+        almacen = new Almacen(getApplicationContext());
+        concepto = (EditText) findViewById(R.id.textConcepto);
+        referenica_salida = (EditText) findViewById(R.id.textReferenciaSalida);
+        observacion_salida = (EditText) findViewById(R.id.textObservacionesSalida);
+        botonSalida = (Button) findViewById(R.id.buttonSalida);
+
+        almacen_spinner = (Spinner) findViewById(R.id.spinner_almacen);
+
+
+        final ArrayList<String> almacenes = almacen.getArrayListAlmacenes();
+        final ArrayList<String> ids = almacen.getArrayListId();
+
+        String[] spinnerArray = new String[ids.size()];
+        spinnerMap = new HashMap<>();
+
+        for (int i = 0; i < ids.size(); i++) {
+            spinnerMap.put(almacenes.get(i), ids.get(i));
+            spinnerArray[i] = almacenes.get(i);
+        }
+
+        final ArrayAdapter<String> a = new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, spinnerArray);
+        a.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+        almacen_spinner.setAdapter(a);
+
+
+        if (almacen_spinner != null) {
+            almacen_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                    nombrealmacen = almacen_spinner.getSelectedItem().toString();
+                    idAlmacen = spinnerMap.get(nombrealmacen);
+                    System.out.println("almacenes: " + idAlmacen + nombrealmacen);
+
+
+                    materiales = (ListView) findViewById(R.id.listView_lista_materiales);
+                    lista = new ListaMaterialAdaptador(getApplicationContext(), MaterialesAlmacen.getMateriales(getApplicationContext(), idAlmacen));
+                    materiales.setAdapter(lista);
+
+
+
+
+                    materiales.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            MaterialesAlmacen m = lista.getItem(position);
+
+                           /* idOrdenCompra = orden.id;
+                            existencia = Double.valueOf(orden.existencia);
+                            if(existencia != 0) {
+                                System.out.println(idOrdenCompra + "Click orden: " + orden.idorden + "posicion" + position);
+                                idMaterial = String.valueOf(orden.idmaterial);
+                                showEditDialog(idOrdenCompra);
+
+
+
+                                System.out.println("idcompra: " + idOrden);
+                            }else{
+                                Toast.makeText(getApplicationContext(), "NO HAY MÁS MATERIAL PARA RECIBIR.", Toast.LENGTH_SHORT).show();
+                            }*/
+
+                        }
+                    });
+
+
+
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+
+                }
+            });
+        }
+
 
         final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
