@@ -145,7 +145,7 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
 
                     if(dialogoRecepcion.getCount() != 0) {
                         mListRecibido = (ListView) findViewById(R.id.listView_materiales_ordencompra_temp);
-                        listaRecibido = new ListaDialog(getApplicationContext(), DialogoRecepcion.getRecepcion(getApplicationContext(), idOrden));
+                        listaRecibido = new ListaDialog(getApplicationContext(), DialogoRecepcion.getRecepcion(getApplicationContext(), idOrden, "null"));
                         mListRecibido.setAdapter(listaRecibido);
 
                         mListRecibido.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -177,7 +177,7 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
                                     public void onClick(DialogInterface dialog, int whichButton) {
                                         // Canceled.
                                         mListRecibido = (ListView) findViewById(R.id.listView_materiales_ordencompra_temp);
-                                        listaRecibido = new ListaDialog(getApplicationContext(), DialogoRecepcion.getRecepcion(getApplicationContext(), idOrden));
+                                        listaRecibido = new ListaDialog(getApplicationContext(), DialogoRecepcion.getRecepcion(getApplicationContext(), idOrden, "null"));
                                         mListRecibido.setAdapter(listaRecibido);
                                     }
                                 });

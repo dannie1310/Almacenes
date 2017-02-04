@@ -1,0 +1,258 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+tools:context="mx.grupohi.almacenes.almacensao.SalidaFragment"
+android:weightSum="1"
+android:orientation="vertical"
+android:baselineAligned="false">
+
+<!-- TODO: Update blank fragment layout -->
+
+        <LinearLayout
+        android:orientation="vertical"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="1"
+        android:layout_weight="0.90">
+
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="1">
+
+            <ImageView
+                android:layout_width="58dp"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_action_salida"
+                android:id="@+id/image" />
+
+            <TextView
+                android:text="Nombre Material"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="18sp"
+                android:textStyle="normal|bold"
+                android:id="@+id/textTituloSalida" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:background="@color/colorAccent"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="1">
+            <TextView
+                android:text="Cantidad Total"
+                android:layout_width="156dp"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="18sp" />
+
+            <TextView
+                android:text="20 PIEZAS"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="18sp"
+                android:id="@+id/textcantidadSalida" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp" />
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="1">
+            <TextView
+                android:text="Cantidad Recibida:"
+                android:layout_width="156dp"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="18sp" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/textrecibidoSalida"
+                android:inputType="numberDecimal"
+                android:textAppearance="@android:style/TextAppearance.DeviceDefault"
+                android:textStyle="normal|bold" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp" />
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp" />
+
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/claveSalida"
+            android:weightSum="1">
+            <TextView
+                android:text="Escriba la Clave de Concepto:"
+                android:layout_width="337dp"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/textclaveSalida"
+                android:textAppearance="@android:style/TextAppearance.DeviceDefault"
+                android:textSize="18sp"
+                android:focusable="true"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textCapCharacters"
+                android:textStyle="normal|bold" />
+
+        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="1">
+
+            <TextView
+                android:text="¿Entrega a Contratista?"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="14sp"
+                android:layout_weight="0.32" />
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:shadowColor="@color/colorAccent"
+                android:layout_height="wrap_content"
+                android:id="@+id/checkContratistaSalida"
+                android:layout_weight="0.21" />
+
+            <TextView
+                android:text="¿Con Cargo?"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorPrimaryDark"
+                android:id="@+id/textCargoSalida"
+                android:textSize="14sp"
+                android:layout_weight="0.25" />
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:shadowColor="@color/colorAccent"
+                android:layout_height="wrap_content"
+                android:id="@+id/cargoSalida" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp" />
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="1">
+
+
+            <Spinner
+                android:id="@+id/spinner_contratistaSalida"
+                android:layout_width="match_parent"
+                android:layout_height="41dp" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp" />
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="1">
+            <TextView
+                android:text=""
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/error"
+                android:id="@+id/textErrorSalida"
+                android:textSize="14sp"
+                android:layout_weight="0.25" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="1">
+
+            <Button
+                android:text="Cancelar"
+                android:layout_width="144dp"
+                android:layout_height="match_parent"
+                android:textAlignment="center"
+                android:id="@+id/buttoncancelarSalida"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:textSize="20sp"
+                android:layout_weight="0.36" />
+
+            <Button
+                android:text="Guardar"
+                android:layout_width="154dp"
+                android:layout_height="match_parent"
+                android:id="@+id/buttonRecibirSalida"
+                android:textAlignment="center"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:textSize="20sp"
+                android:layout_weight="0.13" />
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+</LinearLayout>
+

@@ -60,26 +60,29 @@ public class MaterialesAlmacen {
         db=db_sca.getWritableDatabase();
         Cursor c = db.rawQuery("SELECT * FROM materiales m LEFT JOIN material_almacen ma  ON m.id_material = ma.id_material LEFT JOIN entradadetalle ed ON ed.idmaterial = m.id_material WHERE m.id_material = '"+id+"'", null);
         EntradaDetalle e = new EntradaDetalle(context);
+        DialogoRecepcion d = new DialogoRecepcion(context);
         Double cantidad_entrada;
         Double cantidad_almacen;
+        Double salida;
         try{
             if(c != null && c.moveToFirst()){
                 cantidad_entrada = e.getCantidad(id,almacen);
                 cantidad_almacen = getCantidad(id,almacen);
-                System.out.println("almacen: "+cantidad_almacen +" "+cantidad_entrada+almacen);
+                salida =  d.valorSalida(context,id, almacen);
+                System.out.println("almacen: "+c.getString(7) +" "+c.getString(17)+almacen);
 
                 this.id_material = c.getInt(c.getColumnIndex("id_material"));
                 this.id_almacen = c.getInt(c.getColumnIndex("id_almacen"));
                 this.id_obra = c.getInt(c.getColumnIndex("id_obra"));
-                if(cantidad_almacen != 0 || cantidad_entrada != 0){
-                    this.cantidad = cantidad_almacen +cantidad_entrada;
+                if(cantidad_almacen != 0 || cantidad_entrada != 0 || salida != 0){
+                    this.cantidad = (cantidad_almacen +cantidad_entrada) - salida;
                 }else{
                     this.cantidad = c.getDouble(c.getColumnIndex("cantidad"));
                 }
-                if(c.getString(c.getColumnIndex("unidad")) == null){
-                    this.unidad = c.getString(18);
+                if(c.getString(7) == null){
+                    this.unidad = c.getString(17);
                 }else{
-                    this.unidad = c.getString(c.getColumnIndex("unidad"));
+                    this.unidad = c.getString(7);
                 }
 
                 this.descripcion = c.getString(c.getColumnIndex("descripcion"));

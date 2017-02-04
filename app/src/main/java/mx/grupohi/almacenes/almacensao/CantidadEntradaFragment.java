@@ -227,6 +227,7 @@ public class CantidadEntradaFragment extends DialogFragment {
                 if(almacen.isChecked()){
                     spinneralmacen.setVisibility(View.VISIBLE);
                     clave.setVisibility(View.GONE);
+                    textclave.setText("");
 
                 }else{
                     spinneralmacen.setVisibility(View.GONE);

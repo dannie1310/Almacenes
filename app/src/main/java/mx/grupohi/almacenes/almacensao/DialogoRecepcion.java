@@ -68,20 +68,29 @@ public class DialogoRecepcion {
         db.execSQL("DELETE FROM dialogo_recepcion");
         db.close();
     }
-    public static List<DialogoRecepcion> getRecepcion(Context context, String idorden){
+    public static List<DialogoRecepcion> getRecepcion(Context context, String idorden, String idmaterial){
         DBScaSqlite db_sca = new DBScaSqlite(context, "sca", null, 1);
-        System.out.println("folioRecepcion: "+idorden);
+        System.out.println("folioRecepcion: "+idorden+idmaterial+idorden.equals(null));
         SQLiteDatabase db = db_sca.getWritableDatabase();
-        Cursor c = db.rawQuery("SELECT * FROM dialogo_recepcion WHERE idorden ='"+idorden+"'",null);
-        ArrayList ordenes = new ArrayList<DialogoRecepcion>();
-        try {
-            if (c != null){
-                while (c.moveToNext()){
-                    DialogoRecepcion orden = new DialogoRecepcion(context);
-                    orden = orden.find(c.getInt(0));
-                    ordenes.add(orden);
-                    System.out.println("dialog: "+c.getInt(0));
-                }
+        String consulta= null;
+        if(!idorden.equals(null)){
+            consulta = "SELECT * FROM dialogo_recepcion WHERE idorden ='"+idorden+"'";
+        }
+        else if(!idmaterial.equals(null)){
+            consulta ="SELECT * FROM dialogo_recepcion WHERE idmaterial ='"+idmaterial+"'";
+        }
+        if (consulta != null) {
+            System.out.println("consulta: "+consulta);
+            Cursor c =  db.rawQuery(consulta,null);
+            ArrayList ordenes = new ArrayList<DialogoRecepcion>();
+            try {
+                if (c != null){
+                    while (c.moveToNext()){
+                        DialogoRecepcion orden = new DialogoRecepcion(context);
+                        orden = orden.find(c.getInt(0));
+                        ordenes.add(orden);
+                        System.out.println("dialog: "+c.getInt(0));
+                    }
               /*  Collections.sort(ordenes, new Comparator<OrdenCompra>() {
                     @Override
                     public int compare(OrdenCompra v1, OrdenCompra v2) {
@@ -89,14 +98,17 @@ public class DialogoRecepcion {
                     }
                 });*/
 
-                return ordenes;
+                    return ordenes;
+                }
+                else {
+                    return new ArrayList<>();
+                }
+            } finally {
+                c.close();
+                db.close();
             }
-            else {
-                return new ArrayList<>();
-            }
-        } finally {
-            c.close();
-            db.close();
+        }  else {
+            return new ArrayList<>();
         }
     }
 
@@ -184,6 +196,25 @@ public class DialogoRecepcion {
             }
             else{
                 return 0;
+            }
+        } finally {
+            c.close();
+            db.close();
+        }
+    }
+
+    public Double valorSalida(Context context, Integer idMaterial, Integer idalmacen){
+        DBScaSqlite db_sca = new DBScaSqlite(context, "sca", null, 1);
+        SQLiteDatabase db = db_sca.getWritableDatabase();
+        System.out.println("VALORES SALIDA: "+idMaterial+" "+idalmacen);
+        Cursor c = db.rawQuery("SELECT SUM(cantidadRS) as suma from dialogo_recepcion WHERE idalmacen = '" + idalmacen + "' and idmaterial = '"+idMaterial+"'", null);
+        try {
+            if(c!=null && c.moveToFirst()){
+                System.out.print("suma: "+c.getInt(0));
+                return c.getDouble(0);
+            }
+            else{
+                return 0.0;
             }
         } finally {
             c.close();

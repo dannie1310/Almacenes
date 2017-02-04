@@ -1,9 +1,12 @@
 package mx.grupohi.almacenes.almacensao;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentManager;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -31,6 +34,7 @@ public class SalidaActivity extends AppCompatActivity
     Usuario usuario;
     Almacen almacen;
     ListaMaterialAdaptador lista;
+    DialogoRecepcion dialogoRecepcion;
 
     private HashMap<String, String> spinnerMap;
     EditText concepto;
@@ -43,6 +47,13 @@ public class SalidaActivity extends AppCompatActivity
 
     String nombrealmacen;
     String idAlmacen;
+    Integer idMaterial;
+    Integer posicion_almacen;
+    Double cantidad;
+    ListView mListRecibido;
+    ListaDialog listaRecibido;
+
+    SalidaFragment salidaFragment;
 
 
 
@@ -55,6 +66,13 @@ public class SalidaActivity extends AppCompatActivity
         usuario = new Usuario(this);
         usuario = usuario.getUsuario();
         almacen = new Almacen(getApplicationContext());
+        dialogoRecepcion = new DialogoRecepcion(getApplicationContext());
+        String x = getIntent().getStringExtra("observacion");
+        String y = getIntent().getStringExtra("referencia");
+        String z = getIntent().getStringExtra("concepto");
+        String w =getIntent().getStringExtra("posicion");
+        System.out.println("extra: "+ x + y + z + w);
+
         concepto = (EditText) findViewById(R.id.textConcepto);
         referenica_salida = (EditText) findViewById(R.id.textReferenciaSalida);
         observacion_salida = (EditText) findViewById(R.id.textObservacionesSalida);
@@ -78,6 +96,19 @@ public class SalidaActivity extends AppCompatActivity
         a.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
         almacen_spinner.setAdapter(a);
 
+        if (x != null){
+            observacion_salida.setText(x);
+        }
+        if (y != null){
+            referenica_salida.setText(y);
+        }
+        if(z != "" || z != null){
+            concepto.setText(z);
+        }
+        if(w != null){
+            almacen_spinner.setSelection(Integer.valueOf(w));
+            System.out.println("valor:. "+w);
+        }
 
         if (almacen_spinner != null) {
             almacen_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -86,6 +117,7 @@ public class SalidaActivity extends AppCompatActivity
 
                     nombrealmacen = almacen_spinner.getSelectedItem().toString();
                     idAlmacen = spinnerMap.get(nombrealmacen);
+                    posicion_almacen = position;
                     System.out.println("almacenes: " + idAlmacen + nombrealmacen);
 
 
@@ -101,25 +133,26 @@ public class SalidaActivity extends AppCompatActivity
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                             MaterialesAlmacen m = lista.getItem(position);
 
-                           /* idOrdenCompra = orden.id;
-                            existencia = Double.valueOf(orden.existencia);
-                            if(existencia != 0) {
-                                System.out.println(idOrdenCompra + "Click orden: " + orden.idorden + "posicion" + position);
-                                idMaterial = String.valueOf(orden.idmaterial);
-                                showEditDialog(idOrdenCompra);
+                            idMaterial = m.id_material;
+                            cantidad = Double.valueOf(m.cantidad);
+                            if(cantidad != 0) {
+                                System.out.println(idMaterial + "Click orden: " + m.id_material + "posicion" + position);
+                               // idMaterial = String.valueOf(orden.idmaterial);
+                              //  showEditDialog(idMaterial);
+                                FragmentManager fm = getSupportFragmentManager();
+
+                                salidaFragment = new SalidaFragment();
+                                salidaFragment = salidaFragment.newInstance(String.valueOf(cantidad),m.unidad , idMaterial, m.descripcion, m.id_almacen,concepto.getText().toString(), referenica_salida.getText().toString(),observacion_salida.getText().toString(), posicion_almacen);
+
+                                salidaFragment.show(fm, "Material Recibido");
 
 
-
-                                System.out.println("idcompra: " + idOrden);
                             }else{
                                 Toast.makeText(getApplicationContext(), "NO HAY MÁS MATERIAL PARA RECIBIR.", Toast.LENGTH_SHORT).show();
-                            }*/
+                            }
 
                         }
                     });
-
-
-
                 }
 
                 @Override
@@ -127,6 +160,48 @@ public class SalidaActivity extends AppCompatActivity
 
                 }
             });
+
+            if(dialogoRecepcion.getCount() != 0) {
+                mListRecibido = (ListView) findViewById(R.id.listView_salida_materiales);
+                listaRecibido = new ListaDialog(getApplicationContext(), DialogoRecepcion.getRecepcion(getApplicationContext(), "null", String.valueOf(idMaterial)));
+                mListRecibido.setAdapter(listaRecibido);
+
+                mListRecibido.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
+                        DialogoRecepcion dialogR = listaRecibido.getItem(position);
+
+                        final Integer idDialogo = dialogR.id;
+                        AlertDialog.Builder alert = new AlertDialog.Builder(SalidaActivity.this);
+                        alert.setTitle("Salida de Almacén");
+                        alert.setMessage("¿Estas seguro de eliminar esta salida del material?");
+                        alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                Double cantx = Double.parseDouble(DialogoRecepcion.getCantidadRS(getApplicationContext(), idDialogo) + "");
+                                listaRecibido.remove((DialogoRecepcion) listaRecibido.getItem(position));
+
+                                mListRecibido.setAdapter(listaRecibido);
+                                System.out.println("aq: " + cantx);
+                                DialogoRecepcion.remove(getApplicationContext(), idDialogo);
+
+                                lista = new ListaMaterialAdaptador(getApplicationContext(), MaterialesAlmacen.getMateriales(getApplicationContext(), idAlmacen));
+                                materiales.setAdapter(lista);
+                            }
+                        });
+
+                        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                // Canceled.
+                                mListRecibido = (ListView) findViewById(R.id.listView_salida_materiales);
+                                listaRecibido = new ListaDialog(getApplicationContext(), DialogoRecepcion.getRecepcion(getApplicationContext(), "null", String.valueOf(idMaterial)));
+                                mListRecibido.setAdapter(listaRecibido);
+                            }
+                        });
+                        alert.show();
+                        System.out.println(dialogR.contratista + "Adaptador Dialog: posicion" + position);
+                    }
+                });
+            }
         }
 
 
