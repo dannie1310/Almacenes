@@ -6,11 +6,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 /**
- * Created by Usuario on 01/02/2017.
+ * Created by Usuario on 08/02/2017.
  */
 
-public class EntradaDetalle {
-
+public class SalidaDetalle {
 
     Context context;
     private SQLiteDatabase db;
@@ -21,14 +20,13 @@ public class EntradaDetalle {
     String claveConcepto;
     String idcontratista;
     Integer cargo;
-    Integer identrada;
-    String idalmacen;
+    Integer idsalida;
     String fecha;
     String unidad;
     String idmaterial;
 
 
-    EntradaDetalle(Context context) {
+    SalidaDetalle(Context context) {
         this.context = context;
         db_sca = new DBScaSqlite(context, "sca", null, 1);
     }
@@ -36,34 +34,33 @@ public class EntradaDetalle {
     boolean create(ContentValues data) {
         db = db_sca.getWritableDatabase();
         System.out.println("datos: "+data);
-        Boolean result = db.insert("entradadetalle", null, data) > -1;
+        Boolean result = db.insert("salidadetalle", null, data) > -1;
         if (result) {
 
-            this.idalmacen = data.getAsString("idalmacen");
-            this.cantidad = data.getAsDouble("cantidadTotal");
-            this.identrada = data.getAsInteger("identrada");
+            this.idmaterial = data.getAsString("idmaterial");
+            this.cantidad = data.getAsDouble("cantidad");
+            this.idsalida = data.getAsInteger("idsalida");
             this.claveConcepto = data.getAsString("claveConcepto");
             this.idcontratista = data.getAsString("idcontratista");
             this.cargo = data.getAsInteger("cargo");
             this.unidad = data.getAsString("unidad");
-            this.idmaterial = data.getAsString("idmaterial");
 
         }
-        System.out.println("resultAlmacen: "+ identrada + " i "+idalmacen);
+        System.out.println("resultAlmacen: "+ idsalida + " i "+idmaterial);
         db.close();
         return result;
     }
 
     void destroy() {
         db = db_sca.getWritableDatabase();
-        db.execSQL("DELETE FROM entradadetalle");
+        db.execSQL("DELETE FROM salidadetalle");
         db.close();
     }
 
     public Double sumaCantidad(Integer idorden, Integer material){
         DBScaSqlite db_sca = new DBScaSqlite(context, "sca", null, 1);
         SQLiteDatabase db = db_sca.getWritableDatabase();
-        Cursor c = db.rawQuery(" SELECT SUM(cantidad) as resta FROM  entradadetalle INNER JOIN entrada e ON e.id = entradadetalle.identrada WHERE e.idorden = '"+idorden+"' and e.idmaterial = '"+material+"' GROUP BY e.idmaterial", null);
+        Cursor c = db.rawQuery(" SELECT SUM(cantidad) as resta FROM  salidadetalle INNER JOIN entrada e ON e.id = entradadetalle.identrada WHERE e.idorden = '"+idorden+"' and e.idmaterial = '"+material+"' GROUP BY e.idmaterial", null);
         try {
             if(c!=null && c.moveToFirst()){
                 return c.getDouble(0);
@@ -79,7 +76,7 @@ public class EntradaDetalle {
     public  Double getCantidad(Integer material, Integer almacen){
 
         SQLiteDatabase db = db_sca.getWritableDatabase();
-        Cursor c = db.rawQuery("SELECT SUM(cantidad) FROM entradadetalle WHERE idmaterial = '"+material+"' and idalmacen = '"+almacen+"'", null);
+        Cursor c = db.rawQuery("SELECT SUM(cantidad) FROM salidadetalle WHERE idmaterial = '"+material+"' and idalmacen = '"+almacen+"'", null);
         try {
             if(c!=null && c.moveToFirst()){
                 System.out.println("entrda: "+material +" "+almacen +" "+c.getDouble(0));
@@ -96,7 +93,7 @@ public class EntradaDetalle {
 
     Boolean find(Integer idsalida){
         db = db_sca.getWritableDatabase();
-        Cursor c = db.rawQuery("SELECT * FROM entradadetalle WHERE identrada  = '"+idsalida+"'", null);
+        Cursor c = db.rawQuery("SELECT * FROM salidadetalle WHERE idsalida  = '"+idsalida+"'", null);
         try {
             if(c!=null && c.moveToFirst()){
                 System.out.println("encontrar true"+idsalida + c.getString(2));
@@ -111,4 +108,6 @@ public class EntradaDetalle {
             db.close();
         }
     }
+
+
 }

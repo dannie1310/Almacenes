@@ -25,6 +25,8 @@ import android.database.sqlite.SQLiteOpenHelper;
             "CREATE TABLE dialogo_recepcion (ID INTEGER PRIMARY KEY AUTOINCREMENT, cantidadTotal TEXT, cantidadRS TEXT, idalmacen TEXT, claveConcepto TEXT, idContratista TEXT, cargo INTEGER, idorden TEXT, almacen TEXT, material TEXT, unidad TEXT, contratista TEXT, idmaterial TEXT)",
             "CREATE TABLE entrada (ID INTEGER PRIMARY KEY AUTOINCREMENT,  idorden TEXT, idmaterial TEXT, referencia TEXT, observacion TEXT, fecha VARCHAR(8))",
             "CREATE TABLE entradadetalle (ID INTEGER PRIMARY KEY AUTOINCREMENT, identrada INTEGER, cantidad DOUBLE, idalmacen TEXT, claveConcepto TEXT, idContratista TEXT, cargo INTEGER,  unidad TEXT, idmaterial TEXT, fecha DATETIME DEFAULT CURRENT_TIMESTAMP)",
+            "CREATE TABLE salida (ID INTEGER PRIMARY KEY AUTOINCREMENT,  idalmacen TEXT, referencia TEXT, observacion TEXT, concepto TEXT, fecha TEXT)",
+            "CREATE TABLE salidadetalle (ID INTEGER PRIMARY KEY AUTOINCREMENT, idsalida INTEGER, cantidad DOUBLE, idmaterial TEXT, claveConcepto TEXT, idContratista TEXT, cargo INTEGER,  unidad TEXT,  fecha DATETIME DEFAULT CURRENT_TIMESTAMP)",
     };
 
     @Override

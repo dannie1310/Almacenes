@@ -263,6 +263,12 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
 
                         }
 
+                        System.out.println("FUNCION: "+e);
+                        if(!entradaDetalle.find(e)){
+                            Entrada.remove(getApplicationContext(), e);
+                            System.out.println("remove: "+e);
+                        }
+
                     }
 
                 }
