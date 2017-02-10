@@ -210,52 +210,53 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
                 Integer a = 0;
                 String aux_orden;
                 String aux_material;
-                for (int z =0; z < lista.getCount(); z++){
-                    a=z;
-                    OrdenCompra ord= lista.getItem(z);
-                    aux_orden = String.valueOf(ord.numerofolio);
-                    aux_material = String.valueOf(ord.idmaterial);
-                    //System.out.println("EXPYTY: "+listaRecibido.getCount());
-                    if(spinner == null){
-                        Toast.makeText(getApplicationContext(), R.string.error_orden, Toast.LENGTH_SHORT).show();
-                    }
-                    else if(referencia.getText().toString().isEmpty()){
-                        Toast.makeText(getApplicationContext(), R.string.error_referencia, Toast.LENGTH_SHORT).show();
-                    }
-                    else if(observaciones.getText().toString().isEmpty()){
-                        Toast.makeText(getApplicationContext(), R.string.error_OB, Toast.LENGTH_SHORT).show();
-                    }
-                    else if(listaRecibido == null){
-                        Toast.makeText(getApplicationContext(), R.string.error_recibir, Toast.LENGTH_SHORT).show();
-                    }
-                    else{
+                if(idOrden.equals("0")){
+                    Toast.makeText(getApplicationContext(), R.string.error_orden, Toast.LENGTH_SHORT).show();
+                }
+                else if(referencia.getText().toString().isEmpty()){
+                    Toast.makeText(getApplicationContext(), R.string.error_referencia, Toast.LENGTH_SHORT).show();
+                }
+                else if(listaRecibido == null){
+                    Toast.makeText(getApplicationContext(), R.string.error_recibir, Toast.LENGTH_SHORT).show();
+                }
+                else if(observaciones.getText().toString().isEmpty()){
+                    Toast.makeText(getApplicationContext(), R.string.error_OB, Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    for (int z = 0; z < lista.getCount(); z++) {
+                        a = z;
+                        OrdenCompra ord = lista.getItem(z);
+                        aux_orden = String.valueOf(ord.numerofolio);
+                        aux_material = String.valueOf(ord.idmaterial);
+                        //System.out.println("EXPYTY: "+listaRecibido.getCount());
+
                         entradas.clear();
                         entradas.put("referencia", referencia.getText().toString());
                         entradas.put("observacion", observaciones.getText().toString());
                         entradas.put("idorden", ord.idorden);
                         entradas.put("fecha", Util.timeStamp());
-                        entradas.put("idmaterial",ord.idmaterial);
+                        entradas.put("idmaterial", ord.idmaterial);
 
                         Integer e = entrada.create(entradas);
-                        System.out.println("entrada: "+e+" "+entradas);
+                        System.out.println("entrada: " + e + " " + entradas);
 
-                        for(int l = 0; l<listaRecibido.getCount(); l++){
+                        for (int l = 0; l < listaRecibido.getCount(); l++) {
                             DialogoRecepcion dr = listaRecibido.getItem(l);
-                            System.out.println("ffff: "+aux_orden+" "+aux_material+" "+dr.idorden+" "+ord.idmaterial);
-                            if( aux_material.equals(dr.idmaterial) && aux_orden.equals(dr.idorden) ){
+                            System.out.println("ffff: " + aux_orden + " " + aux_material + " " + dr.idorden + " " + ord.idmaterial);
+                            if (aux_material.equals(dr.idmaterial) && aux_orden.equals(dr.idorden)) {
 
                                 entradas.clear();
-                                entradas.put("idalmacen",dr.id_almacen);
-                                entradas.put("cantidad",dr.cantidadRS);
-                                entradas.put("identrada",e);
-                                entradas.put("claveConcepto",dr.claveConcepto);
-                                entradas.put("idcontratista",dr.idcontratista);
-                                entradas.put("cargo",dr.cargo);
-                                entradas.put("unidad",dr.unidad);
-                                entradas.put("idmaterial",dr.idmaterial);
-                                System.out.println("entradaDetalle: "+entradas);
+                                entradas.put("idalmacen", dr.id_almacen);
+                                entradas.put("cantidad", dr.cantidadRS);
+                                entradas.put("identrada", e);
+                                entradas.put("claveConcepto", dr.claveConcepto);
+                                entradas.put("idcontratista", dr.idcontratista);
+                                entradas.put("cargo", dr.cargo);
+                                entradas.put("unidad", dr.unidad);
+                                entradas.put("idmaterial", dr.idmaterial);
+                                System.out.println("entradaDetalle: " + entradas);
 
-                                if(!entradaDetalle.create(entradas)){
+                                if (!entradaDetalle.create(entradas)) {
                                     Toast.makeText(getApplicationContext(), R.string.error_entradadetalle, Toast.LENGTH_SHORT).show();
                                 }
 
@@ -263,24 +264,22 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
 
                         }
 
-                        System.out.println("FUNCION: "+e);
-                        if(!entradaDetalle.find(e)){
+                        System.out.println("FUNCION: " + e);
+                        if (!entradaDetalle.find(e)) {
                             Entrada.remove(getApplicationContext(), e);
-                            System.out.println("remove: "+e);
+                            System.out.println("remove: " + e);
                         }
 
                     }
 
+                    a++;
+                    if (a == lista.getCount()) {
+                        Toast.makeText(getApplicationContext(), R.string.guardado, Toast.LENGTH_SHORT).show();
+                        Intent main = new Intent(getApplicationContext(), MainActivity.class);
+                        dialogoRecepcion.destroy();
+                        startActivity(main);
+                    }
                 }
-                a++;
-                if(a==lista.getCount()) {
-                    Toast.makeText(getApplicationContext(), R.string.guardado, Toast.LENGTH_SHORT).show();
-                    Intent main = new Intent(getApplicationContext(), MainActivity.class);
-                    dialogoRecepcion.destroy();
-                    startActivity(main);
-                }
-
-
 
             }
         });

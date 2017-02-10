@@ -109,7 +109,6 @@ public class SalidaActivity extends AppCompatActivity
         }
         if(w != null){
             almacen_spinner.setSelection(Integer.valueOf(w));
-            System.out.println("valor:. "+w);
         }
 
         if (almacen_spinner != null) {
@@ -120,7 +119,6 @@ public class SalidaActivity extends AppCompatActivity
                     nombrealmacen = almacen_spinner.getSelectedItem().toString();
                     idAlmacen = spinnerMap.get(nombrealmacen);
                     posicion_almacen = position;
-                    System.out.println("almacenes: " + idAlmacen + nombrealmacen);
 
 
                     materiales = (ListView) findViewById(R.id.listView_lista_materiales);
@@ -183,7 +181,6 @@ public class SalidaActivity extends AppCompatActivity
                                 listaRecibido.remove((DialogoRecepcion) listaRecibido.getItem(position));
 
                                 mListRecibido.setAdapter(listaRecibido);
-                                System.out.println("aq: " + cantx);
                                 DialogoRecepcion.remove(getApplicationContext(), idDialogo);
 
                                 lista = new ListaMaterialAdaptador(getApplicationContext(), MaterialesAlmacen.getMateriales(getApplicationContext(), idAlmacen));
@@ -213,87 +210,79 @@ public class SalidaActivity extends AppCompatActivity
                 salida = new Salida(getApplicationContext());
                 salidaDetalle = new SalidaDetalle(getApplicationContext());
 
-                System.out.println("add5: " + idMaterial +cantidad);
 
-                ContentValues salidas= new ContentValues();
+                ContentValues salidas = new ContentValues();
                 Integer a = 0;
                 String aux_material;
                 String aux_almacen;
-                for (int z =0; z < lista.getCount(); z++){
-                    a=z;
-                    MaterialesAlmacen ord= lista.getItem(z);
-                    aux_almacen = String.valueOf(ord.id_almacen);
-                    aux_material = String.valueOf(ord.id_material);
-                    //System.out.println("EXPYTY: "+listaRecibido.getCount());
-                    if(almacen_spinner == null){
-                        Toast.makeText(getApplicationContext(), R.string.error_orden, Toast.LENGTH_SHORT).show();
-                    }
-                    else if(referenica_salida.getText().toString().isEmpty()){
-                        Toast.makeText(getApplicationContext(), R.string.error_referencia, Toast.LENGTH_SHORT).show();
-                    }
-                    else if(concepto.getText().toString().isEmpty()){
-                        Toast.makeText(getApplicationContext(), R.string.error_concepto, Toast.LENGTH_SHORT).show();
-                    }
-                    else if(observacion_salida.getText().toString().isEmpty()){
-                        Toast.makeText(getApplicationContext(), R.string.error_OB, Toast.LENGTH_SHORT).show();
-                    }
-                    else if(listaRecibido == null){
-                        Toast.makeText(getApplicationContext(), R.string.error_recibir, Toast.LENGTH_SHORT).show();
-                    }
-                    else{
+                System.out.println("almacen:  "+idAlmacen.toString());
+                if (concepto.getText().toString().isEmpty()) {
+                    Toast.makeText(getApplicationContext(), R.string.error_concepto, Toast.LENGTH_SHORT).show();
+                } else if (referenica_salida.getText().toString().isEmpty()) {
+                    Toast.makeText(getApplicationContext(), R.string.error_referencia, Toast.LENGTH_SHORT).show();
+                } else if (idAlmacen.equals("0")) {
+                    Toast.makeText(getApplicationContext(), R.string.error_almacen, Toast.LENGTH_SHORT).show();
+                } else if (listaRecibido == null) {
+                    Toast.makeText(getApplicationContext(), R.string.error_recibir, Toast.LENGTH_SHORT).show();
+                } else if (observacion_salida.getText().toString().isEmpty()) {
+                    Toast.makeText(getApplicationContext(), R.string.error_OB, Toast.LENGTH_SHORT).show();
+                } else {
+                    for (int z = 0; z < lista.getCount(); z++) {
+                        a = z;
+                        MaterialesAlmacen ord = lista.getItem(z);
+                        aux_almacen = String.valueOf(ord.id_almacen);
+                        aux_material = String.valueOf(ord.id_material);
+
+
                         salidas.clear();
                         salidas.put("referencia", referenica_salida.getText().toString());
                         salidas.put("observacion", observacion_salida.getText().toString());
                         salidas.put("idalmacen", ord.id_almacen);
                         salidas.put("fecha", Util.timeStamp());
-                        salidas.put("concepto",concepto.getText().toString());
+                        salidas.put("concepto", concepto.getText().toString());
 
 
                         Integer e = salida.create(salidas);
-                        System.out.println("salidas: "+e+" "+salidas);
+                        System.out.println("salidas: " + e + " " + salidas);
 
-                        for(int l = 0; l<listaRecibido.getCount(); l++){
+                        for (int l = 0; l < listaRecibido.getCount(); l++) {
                             DialogoRecepcion dr = listaRecibido.getItem(l);
-                            System.out.println("ffff: "+aux_almacen+" "+aux_material+" "+dr.id_almacen+" "+ord.id_material);
-                            if(aux_almacen.equals(dr.id_almacen) && aux_material.equals(dr.idmaterial) ){
+                            System.out.println("ffff: " + aux_almacen + " " + aux_material + " " + dr.id_almacen + " " + ord.id_material);
+                            if (aux_almacen.equals(dr.id_almacen) && aux_material.equals(dr.idmaterial)) {
 
                                 salidas.clear();
-                                salidas.put("cantidad",dr.cantidadRS);
-                                salidas.put("idsalida",e);
-                                salidas.put("claveConcepto",dr.claveConcepto);
-                                salidas.put("idcontratista",dr.idcontratista);
-                                salidas.put("cargo",dr.cargo);
-                                salidas.put("unidad",dr.unidad);
-                                salidas.put("idmaterial",dr.idmaterial);
+                                salidas.put("cantidad", dr.cantidadRS);
+                                salidas.put("idsalida", e);
+                                salidas.put("claveConcepto", dr.claveConcepto);
+                                salidas.put("idcontratista", dr.idcontratista);
+                                salidas.put("cargo", dr.cargo);
+                                salidas.put("unidad", dr.unidad);
+                                salidas.put("idmaterial", dr.idmaterial);
 
-                                System.out.println("entradaDetalle: "+salidas);
+                                System.out.println("entradaDetalle: " + salidas);
 
-                                if(!salidaDetalle.create(salidas)){
+                                if (!salidaDetalle.create(salidas)) {
                                     Toast.makeText(getApplicationContext(), R.string.error_entradadetalle, Toast.LENGTH_SHORT).show();
                                 }
 
                             }
 
                         }
-                        System.out.println("FUNCION: "+e);
-                        if(!salidaDetalle.find(e)){
+                        System.out.println("FUNCION: " + e);
+                        if (!salidaDetalle.find(e)) {
                             Salida.remove(getApplicationContext(), e);
-                            System.out.println("remove: "+e);
+                            System.out.println("remove: " + e);
                         }
 
                     }
-
                 }
                 a++;
-                if(a==lista.getCount()) {
+                if (a == lista.getCount()) {
                     Toast.makeText(getApplicationContext(), R.string.guardado, Toast.LENGTH_SHORT).show();
                     Intent main = new Intent(getApplicationContext(), MainActivity.class);
                     dialogoRecepcion.destroy();
                     startActivity(main);
                 }
-
-
-
             }
         });
 
@@ -334,11 +323,10 @@ public class SalidaActivity extends AppCompatActivity
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
+        DialogoRecepcion d = new DialogoRecepcion(getApplicationContext());
+        Intent main = new Intent(getApplicationContext(), MainActivity.class);
+        d.destroy();
+        startActivity(main);
     }
 
     @Override

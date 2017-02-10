@@ -61,24 +61,40 @@ public class MaterialesAlmacen {
         Cursor c = db.rawQuery("SELECT * FROM materiales m LEFT JOIN material_almacen ma  ON m.id_material = ma.id_material LEFT JOIN entradadetalle ed ON ed.idmaterial = m.id_material WHERE m.id_material = '"+id+"'", null);
         EntradaDetalle e = new EntradaDetalle(context);
         DialogoRecepcion d = new DialogoRecepcion(context);
+        SalidaDetalle s = new SalidaDetalle(context);
         Double cantidad_entrada;
         Double cantidad_almacen;
         Double salida;
+        Double salidasDetalle;
+        Double aux_cantidad = 0.0;
+        System.out.println("PROBANDO: "+ c!= null);
         try{
             if(c != null && c.moveToFirst()){
                 cantidad_entrada = e.getCantidad(id,almacen);
                 cantidad_almacen = getCantidad(id,almacen);
+                salidasDetalle = s.getCantidad(id, almacen);
                 salida =  d.valorSalida(context,id, almacen);
-                System.out.println("almacen: "+c.getString(7) +" "+c.getString(17)+almacen);
-
-                this.id_material = c.getInt(c.getColumnIndex("id_material"));
-                this.id_almacen = c.getInt(c.getColumnIndex("id_almacen"));
-                this.id_obra = c.getInt(c.getColumnIndex("id_obra"));
-                if(cantidad_almacen != 0 || cantidad_entrada != 0 || salida != 0){
-                    this.cantidad = (cantidad_almacen +cantidad_entrada) - salida;
+                this.id_material = c.getInt(0);
+                if(c.getInt(6)==0){
+                    this.id_almacen = c.getInt(13);
                 }else{
-                    this.cantidad = c.getDouble(c.getColumnIndex("cantidad"));
+                    this.id_almacen = c.getInt(6);
                 }
+                this.id_obra = c.getInt(c.getColumnIndex("id_obra"));
+                if(cantidad_almacen != 0){
+                    aux_cantidad = aux_cantidad +cantidad_almacen;
+                }
+                if(cantidad_entrada != 0){
+                    aux_cantidad = aux_cantidad + cantidad_entrada;
+                }
+                if(salida != 0){
+                    aux_cantidad = aux_cantidad - salida;
+                }
+                if(salidasDetalle !=0){
+                    aux_cantidad = aux_cantidad - salidasDetalle;
+                }
+                this.cantidad = aux_cantidad;
+
                 if(c.getString(7) == null){
                     this.unidad = c.getString(17);
                 }else{
@@ -86,7 +102,6 @@ public class MaterialesAlmacen {
                 }
 
                 this.descripcion = c.getString(c.getColumnIndex("descripcion"));
-
             }
             return this;
         }finally {
@@ -107,7 +122,7 @@ public class MaterialesAlmacen {
                     MaterialesAlmacen material = new MaterialesAlmacen(context);
                     material = material.find(c.getInt(0),Integer.valueOf(almacen));
                     ordenes.add(material);
-                    System.out.println("ordenes:aaaaa "+c.getInt(0));
+
                 }
                 Collections.sort(ordenes, new Comparator<MaterialesAlmacen>() {
                     @Override

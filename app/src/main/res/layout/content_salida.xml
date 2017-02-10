@@ -22,7 +22,6 @@
         android:layout_alignParentStart="true">
 
 
-
         <LinearLayout
             android:orientation="horizontal"
             android:gravity="center"
@@ -36,19 +35,9 @@
                 android:layout_weight="0.23"
                 android:textAppearance="@style/TextAppearance.AppCompat.Title" />
 
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-
             <EditText
                 android:layout_width="0dp"
-                android:layout_height="38dp"
+                android:layout_height="50dp"
                 android:id="@+id/textConcepto"
                 android:layout_weight="0.37"
                 android:textAppearance="@android:style/TextAppearance.DeviceDefault"
@@ -69,19 +58,9 @@
                 android:layout_weight="0.23"
                 android:textAppearance="@style/TextAppearance.AppCompat.Title" />
 
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-
             <EditText
                 android:layout_width="0dp"
-                android:layout_height="38dp"
+                android:layout_height="58dp"
                 android:id="@+id/textReferenciaSalida"
                 android:layout_weight="0.37"
                 android:textAppearance="@android:style/TextAppearance.DeviceDefault"
@@ -213,7 +192,7 @@
 
             <EditText
                 android:layout_width="0dp"
-                android:layout_height="38dp"
+                android:layout_height="75dp"
                 android:id="@+id/textObservacionesSalida"
                 android:layout_weight="0.37"
                 android:textAppearance="@android:style/TextAppearance.DeviceDefault"

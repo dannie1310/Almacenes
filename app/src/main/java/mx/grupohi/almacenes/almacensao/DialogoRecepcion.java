@@ -210,7 +210,6 @@ public class DialogoRecepcion {
         Cursor c = db.rawQuery("SELECT SUM(cantidadRS) as suma from dialogo_recepcion WHERE idalmacen = '" + idalmacen + "' and idmaterial = '"+idMaterial+"'", null);
         try {
             if(c!=null && c.moveToFirst()){
-                System.out.print("suma: "+c.getInt(0));
                 return c.getDouble(0);
             }
             else{

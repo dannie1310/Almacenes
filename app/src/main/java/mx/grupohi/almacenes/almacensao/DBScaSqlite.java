@@ -23,9 +23,9 @@ import android.database.sqlite.SQLiteOpenHelper;
             "CREATE TABLE material_almacen(ID INTEGER PRIMARY KEY AUTOINCREMENT, id_material INTEGER, id_almacen INTEGER, unidad TEXT, id_obra INTEGER, cantidad DOUBLE)",
             "CREATE TABLE contratistas (idempresa INTEGER, razonsocial TEXT)",
             "CREATE TABLE dialogo_recepcion (ID INTEGER PRIMARY KEY AUTOINCREMENT, cantidadTotal TEXT, cantidadRS TEXT, idalmacen TEXT, claveConcepto TEXT, idContratista TEXT, cargo INTEGER, idorden TEXT, almacen TEXT, material TEXT, unidad TEXT, contratista TEXT, idmaterial TEXT)",
-            "CREATE TABLE entrada (ID INTEGER PRIMARY KEY AUTOINCREMENT,  idorden TEXT, idmaterial TEXT, referencia TEXT, observacion TEXT, fecha VARCHAR(8))",
+            "CREATE TABLE entrada (ID INTEGER PRIMARY KEY AUTOINCREMENT,  idorden TEXT, idmaterial TEXT, referencia TEXT, observacion TEXT, fecha VARCHAR(8), idobra INTEGER)",
             "CREATE TABLE entradadetalle (ID INTEGER PRIMARY KEY AUTOINCREMENT, identrada INTEGER, cantidad DOUBLE, idalmacen TEXT, claveConcepto TEXT, idContratista TEXT, cargo INTEGER,  unidad TEXT, idmaterial TEXT, fecha DATETIME DEFAULT CURRENT_TIMESTAMP)",
-            "CREATE TABLE salida (ID INTEGER PRIMARY KEY AUTOINCREMENT,  idalmacen TEXT, referencia TEXT, observacion TEXT, concepto TEXT, fecha TEXT)",
+            "CREATE TABLE salida (ID INTEGER PRIMARY KEY AUTOINCREMENT,  idalmacen TEXT, referencia TEXT, observacion TEXT, concepto TEXT, fecha TEXT, idobra INTEGER)",
             "CREATE TABLE salidadetalle (ID INTEGER PRIMARY KEY AUTOINCREMENT, idsalida INTEGER, cantidad DOUBLE, idmaterial TEXT, claveConcepto TEXT, idContratista TEXT, cargo INTEGER,  unidad TEXT,  fecha DATETIME DEFAULT CURRENT_TIMESTAMP)",
     };
 
@@ -49,6 +49,8 @@ import android.database.sqlite.SQLiteOpenHelper;
         db.execSQL("DROP TABLE IF EXISTS dialogo_recepcion");
         db.execSQL("DROP TABLE IF EXISTS entrada");
         db.execSQL("DROP TABLE IF EXISTS entradadetalle");
+        db.execSQL("DROP TABLE IF EXISTS salida");
+        db.execSQL("DROP TABLE IF EXISTS salidadetalle");
 
         for (String query: queries){
             db.execSQL(query);
@@ -69,6 +71,8 @@ import android.database.sqlite.SQLiteOpenHelper;
         db.execSQL("DELETE FROM dialogo_recepcion");
         db.execSQL("DELETE FROM entrada");
         db.execSQL("DELETE FROM entradadetalle");
+        db.execSQL("DELETE FROM salida");
+        db.execSQL("DELETE FROM salidadetalle");
 
         db.close();
     }
@@ -83,6 +87,8 @@ import android.database.sqlite.SQLiteOpenHelper;
         db.execSQL("DELETE FROM dialogo_recepcion");
         db.execSQL("DELETE FROM entrada");
         db.execSQL("DELETE FROM entradadetalle");
+        db.execSQL("DELETE FROM salida");
+        db.execSQL("DELETE FROM salidadetalle");
 
         db.close();
     }

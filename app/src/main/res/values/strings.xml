@@ -50,7 +50,7 @@
     <string name="title_activity_salida">Salida de Almacén</string>
 
     <string name="action_settings">Settings</string>
-    <string name="concepto">Concepto</string>
+    <string name="concepto">Concepto:</string>
     <string name="seleccionaAlmacen">Seleccione un Almacén:</string>
     <string name="salida_material">Lista de Materiales.</string>
     <string name="salida">Salida de los Siguientes Materiales:</string>
@@ -62,6 +62,7 @@
     <string name="error_OB">ESCRIBE UNA OBSERVACIÓN.</string>
     <string name="error_recibir">NO HAZ RECIBIDO NINGUN MATERIAL.</string>
     <string name="error_orden">DEBES SELECCIONAR UNA ORDEN DE COMPRA.</string>
+    <string name="error_almacen">DEBES SELECCIONAR UN ALMACÉN.</string>
     <string name="error_entradadetalle">ERROR AL GUARDAR DATOS.</string>
     <string name="guardado">SE REGISTRO CORRECTAMENTE</string>
     <string name="error_concepto">ESCRIBE UN CONCEPTO.</string>

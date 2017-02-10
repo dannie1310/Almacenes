@@ -82,7 +82,6 @@ public class EntradaDetalle {
         Cursor c = db.rawQuery("SELECT SUM(cantidad) FROM entradadetalle WHERE idmaterial = '"+material+"' and idalmacen = '"+almacen+"'", null);
         try {
             if(c!=null && c.moveToFirst()){
-                System.out.println("entrda: "+material +" "+almacen +" "+c.getDouble(0));
                 return c.getDouble(0);
             }
             else{
@@ -99,11 +98,9 @@ public class EntradaDetalle {
         Cursor c = db.rawQuery("SELECT * FROM entradadetalle WHERE identrada  = '"+idsalida+"'", null);
         try {
             if(c!=null && c.moveToFirst()){
-                System.out.println("encontrar true"+idsalida + c.getString(2));
                 return true;
             }
             else{
-                System.out.println("encontrar false"+idsalida+c.toString());
                 return false;
             }
         } finally {
