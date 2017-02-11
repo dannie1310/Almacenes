@@ -236,6 +236,7 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
                         entradas.put("idorden", ord.idorden);
                         entradas.put("fecha", Util.timeStamp());
                         entradas.put("idmaterial", ord.idmaterial);
+                        entradas.put("idobra",usuario.getIdObra());
 
                         Integer e = entrada.create(entradas);
                         System.out.println("entrada: " + e + " " + entradas);
@@ -371,9 +372,11 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+        DialogoRecepcion d= new DialogoRecepcion(getApplicationContext());
 
         if (id == R.id.nav_inicio) {
             Intent inicio = new Intent(this, MainActivity.class);
+            d.destroy();
             startActivity(inicio);
 
         } else if (id == R.id.nav_imprimir) {
@@ -381,11 +384,13 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
         } else if (id == R.id.nav_entrada) {
 
             Intent intent = getIntent();
+            d.destroy();
             finish();
             startActivity(intent);
 
         } else if (id == R.id.nav_salida) {
             Intent salida = new Intent(getApplicationContext(), SalidaActivity.class);
+            d.destroy();
             startActivity(salida);
 
         } else if (id == R.id.nav_trans) {
@@ -394,10 +399,12 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
 
         } else if (id == R.id.nav_cambio) {
             Intent seleccionar = new Intent(this, SeleccionaObraActivity.class);
+            d.destroy();
             startActivity(seleccionar);
 
         } else if (id == R.id.nav_cerrar) {
             usuario.destroy();
+            d.destroy();
             Intent loginActivity = new Intent(this, LoginActivity.class);
             startActivity(loginActivity);
         }

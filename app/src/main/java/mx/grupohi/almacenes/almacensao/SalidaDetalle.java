@@ -57,26 +57,10 @@ public class SalidaDetalle {
         db.close();
     }
 
-    public Double sumaCantidad(Integer idorden, Integer material){
-        DBScaSqlite db_sca = new DBScaSqlite(context, "sca", null, 1);
-        SQLiteDatabase db = db_sca.getWritableDatabase();
-        Cursor c = db.rawQuery(" SELECT SUM(cantidad) as resta FROM  salidadetalle INNER JOIN entrada e ON e.id = entradadetalle.identrada WHERE e.idorden = '"+idorden+"' and e.idmaterial = '"+material+"' GROUP BY e.idmaterial", null);
-        try {
-            if(c!=null && c.moveToFirst()){
-                return c.getDouble(0);
-            }
-            else{
-                return 0.0;
-            }
-        } finally {
-            c.close();
-            db.close();
-        }
-    }
-    public  Double getCantidad(Integer material, Integer almacen){
+    public  Double getCantidad(Integer material, Integer almacen, Integer idobra){
 
         SQLiteDatabase db = db_sca.getWritableDatabase();
-        Cursor c = db.rawQuery("SELECT SUM(sd.cantidad) FROM salidadetalle sd INNER JOIN salida s ON s.id = sd.idsalida WHERE sd.idmaterial = '"+material+"' and s.idalmacen = '"+almacen+"'", null);
+        Cursor c = db.rawQuery("SELECT SUM(sd.cantidad) FROM salidadetalle sd INNER JOIN salida s ON s.id = sd.idsalida WHERE sd.idmaterial = '"+material+"' and s.idalmacen = '"+almacen+"' and s.idobra = '"+idobra+"'", null);
         try {
             if(c!=null && c.moveToFirst()){
                 return c.getDouble(0);

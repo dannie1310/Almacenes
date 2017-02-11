@@ -63,7 +63,10 @@ public class EntradaDetalle {
     public Double sumaCantidad(Integer idorden, Integer material){
         DBScaSqlite db_sca = new DBScaSqlite(context, "sca", null, 1);
         SQLiteDatabase db = db_sca.getWritableDatabase();
-        Cursor c = db.rawQuery(" SELECT SUM(cantidad) as resta FROM  entradadetalle INNER JOIN entrada e ON e.id = entradadetalle.identrada WHERE e.idorden = '"+idorden+"' and e.idmaterial = '"+material+"' GROUP BY e.idmaterial", null);
+        Usuario usuario = new Usuario(context);
+        Integer idobra = usuario.getIdObra();
+        System.out.println("idobra: "+idobra);
+        Cursor c = db.rawQuery("SELECT SUM(cantidad) as resta FROM  entradadetalle ed INNER JOIN entrada e ON e.id = ed.identrada WHERE e.idorden = '"+idorden+"' and e.idmaterial = '"+material+"' and e.idobra = '"+idobra+"' GROUP BY e.idmaterial", null);
         try {
             if(c!=null && c.moveToFirst()){
                 return c.getDouble(0);
@@ -76,10 +79,10 @@ public class EntradaDetalle {
             db.close();
         }
     }
-    public  Double getCantidad(Integer material, Integer almacen){
+    public  Double getCantidad(Integer material, Integer almacen, Integer idobra){
 
         SQLiteDatabase db = db_sca.getWritableDatabase();
-        Cursor c = db.rawQuery("SELECT SUM(cantidad) FROM entradadetalle WHERE idmaterial = '"+material+"' and idalmacen = '"+almacen+"'", null);
+        Cursor c = db.rawQuery("SELECT SUM(cantidad) FROM entradadetalle ed INNER JOIN entrada e ON e.id = ed.identrada WHERE ed.idmaterial = '"+material+"' and ed.idalmacen = '"+almacen+"' and e.idobra = '"+idobra+"'", null);
         try {
             if(c!=null && c.moveToFirst()){
                 return c.getDouble(0);

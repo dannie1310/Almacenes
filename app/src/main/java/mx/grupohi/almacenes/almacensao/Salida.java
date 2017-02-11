@@ -2,6 +2,7 @@ package mx.grupohi.almacenes.almacensao;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -22,6 +23,7 @@ public class Salida {
     String observacion;
     String concepto;
     String fecha;
+    Integer idobra;
 
     Salida(Context context) {
         this.context = context;
@@ -43,6 +45,7 @@ public class Salida {
                     this.idalmacen = data.getAsString("idalmacen");
                     this.fecha = data.getAsString("fecha");
                     this.concepto = data.getAsString("concepto");
+                    this.idobra = data.getAsInteger("idobra");
                 }
             } finally {
                 c.close();

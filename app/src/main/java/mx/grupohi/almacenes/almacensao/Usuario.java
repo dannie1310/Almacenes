@@ -2,6 +2,7 @@ package mx.grupohi.almacenes.almacensao;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -149,6 +150,24 @@ class Usuario {
         try {
             if(c!=null && c.moveToFirst() && c.getString(0) != String.valueOf(0)){
                return  c.getString(0);
+            }else {
+                return null;
+            }
+        } finally {
+            c.close();
+            db.close();
+
+        }
+    }
+
+    Integer getIdObra(){
+
+        db = db_sca.getWritableDatabase();
+        Cursor c = db.rawQuery("SELECT  o.idobra FROM obras as o INNER JOIN user as u on u.idobraactiva = o.ID WHERE u.idobraactiva=o.ID", null);
+
+        try {
+            if(c!=null && c.moveToFirst() && c.getString(0) != String.valueOf(0)){
+                return  c.getInt(0);
             }else {
                 return null;
             }

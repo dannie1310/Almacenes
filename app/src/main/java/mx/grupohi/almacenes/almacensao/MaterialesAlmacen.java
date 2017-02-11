@@ -2,6 +2,7 @@ package mx.grupohi.almacenes.almacensao;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -56,9 +57,9 @@ public class MaterialesAlmacen {
         db.close();
     }
 
-    public MaterialesAlmacen find(Integer id, Integer almacen){
+    public MaterialesAlmacen find(Integer id, Integer almacen, Integer idobra){
         db=db_sca.getWritableDatabase();
-        Cursor c = db.rawQuery("SELECT * FROM materiales m LEFT JOIN material_almacen ma  ON m.id_material = ma.id_material LEFT JOIN entradadetalle ed ON ed.idmaterial = m.id_material WHERE m.id_material = '"+id+"'", null);
+        Cursor c = db.rawQuery("SELECT * FROM materiales m LEFT JOIN material_almacen ma  ON m.id_material = ma.id_material LEFT JOIN entradadetalle ed ON ed.idmaterial = m.id_material WHERE m.id_material = '"+id+"' and ma.id_almacen = '"+almacen+"' or ed.idalmacen = '"+almacen+"' ", null);
         EntradaDetalle e = new EntradaDetalle(context);
         DialogoRecepcion d = new DialogoRecepcion(context);
         SalidaDetalle s = new SalidaDetalle(context);
@@ -70,9 +71,9 @@ public class MaterialesAlmacen {
         System.out.println("PROBANDO: "+ c!= null);
         try{
             if(c != null && c.moveToFirst()){
-                cantidad_entrada = e.getCantidad(id,almacen);
-                cantidad_almacen = getCantidad(id,almacen);
-                salidasDetalle = s.getCantidad(id, almacen);
+                cantidad_entrada = e.getCantidad(id,almacen, idobra);
+                cantidad_almacen = getCantidad(id,almacen, idobra);
+                salidasDetalle = s.getCantidad(id, almacen, idobra);
                 salida =  d.valorSalida(context,id, almacen);
                 this.id_material = c.getInt(0);
                 if(c.getInt(6)==0){
@@ -100,6 +101,7 @@ public class MaterialesAlmacen {
                 }else{
                     this.unidad = c.getString(7);
                 }
+                this.id_obra = idobra;
 
                 this.descripcion = c.getString(c.getColumnIndex("descripcion"));
             }
@@ -111,23 +113,23 @@ public class MaterialesAlmacen {
         }
     }
 
-    public static List<MaterialesAlmacen> getMateriales(Context context, String almacen){
+    public static List<MaterialesAlmacen> getMateriales(Context context, String almacen, Integer idobra){
         DBScaSqlite db_sca = new DBScaSqlite(context, "sca", null, 1);
         SQLiteDatabase db = db_sca.getWritableDatabase();
-        Cursor c = db.rawQuery("SELECT * FROM materiales m LEFT JOIN material_almacen ma  ON m.id_material = ma.id_material LEFT JOIN entradadetalle ed ON ed.idmaterial = m.id_material WHERE ma.id_almacen = '"+almacen+"' or ed.idalmacen = '"+almacen+"' GROUP BY ma.id_material",null);
+        Cursor c = db.rawQuery("SELECT * FROM materiales m LEFT JOIN material_almacen ma  ON m.id_material = ma.id_material LEFT JOIN entradadetalle ed ON ed.idmaterial = m.id_material LEFT JOIN entrada e ON e.id = ed.identrada  WHERE ma.id_almacen = '"+almacen+"' or ed.idalmacen = '"+almacen+"' GROUP BY ma.id_material",null);
         ArrayList ordenes = new ArrayList<MaterialesAlmacen>();
         try {
             if (c != null){
                 while (c.moveToNext()){
                     MaterialesAlmacen material = new MaterialesAlmacen(context);
-                    material = material.find(c.getInt(0),Integer.valueOf(almacen));
+                    material = material.find(c.getInt(0),Integer.valueOf(almacen),idobra);
                     ordenes.add(material);
 
                 }
                 Collections.sort(ordenes, new Comparator<MaterialesAlmacen>() {
                     @Override
                     public int compare(MaterialesAlmacen v1, MaterialesAlmacen v2) {
-                        return Integer.valueOf(v2.id_almacen).compareTo(Integer.valueOf(v1.id_almacen));
+                        return Integer.valueOf(v2.id_obra).compareTo(Integer.valueOf(v1.id_obra));
                     }
                 });
 
@@ -142,9 +144,9 @@ public class MaterialesAlmacen {
         }
     }
 
-    public Double getCantidad(Integer material, Integer almacen){
+    public Double getCantidad(Integer material, Integer almacen, Integer idobra){
         db = db_sca.getWritableDatabase();
-        Cursor c = db.rawQuery("SELECT SUM(cantidad) FROM material_almacen WHERE id_material = '"+material+"'  and id_almacen = '"+almacen+"'", null);
+        Cursor c = db.rawQuery("SELECT SUM(cantidad) FROM material_almacen WHERE id_material = '"+material+"'  and id_almacen = '"+almacen+"' and id_obra = '"+idobra+"'", null);
         try {
             if(c!=null && c.moveToFirst()){
                 return c.getDouble(0);

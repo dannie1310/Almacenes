@@ -122,7 +122,7 @@ public class SalidaActivity extends AppCompatActivity
 
 
                     materiales = (ListView) findViewById(R.id.listView_lista_materiales);
-                    lista = new ListaMaterialAdaptador(getApplicationContext(), MaterialesAlmacen.getMateriales(getApplicationContext(), idAlmacen));
+                    lista = new ListaMaterialAdaptador(getApplicationContext(), MaterialesAlmacen.getMateriales(getApplicationContext(), idAlmacen, usuario.getIdObra()));
                     materiales.setAdapter(lista);
 
 
@@ -183,7 +183,7 @@ public class SalidaActivity extends AppCompatActivity
                                 mListRecibido.setAdapter(listaRecibido);
                                 DialogoRecepcion.remove(getApplicationContext(), idDialogo);
 
-                                lista = new ListaMaterialAdaptador(getApplicationContext(), MaterialesAlmacen.getMateriales(getApplicationContext(), idAlmacen));
+                                lista = new ListaMaterialAdaptador(getApplicationContext(), MaterialesAlmacen.getMateriales(getApplicationContext(), idAlmacen, usuario.getIdObra()));
                                 materiales.setAdapter(lista);
                             }
                         });
@@ -240,6 +240,7 @@ public class SalidaActivity extends AppCompatActivity
                         salidas.put("idalmacen", ord.id_almacen);
                         salidas.put("fecha", Util.timeStamp());
                         salidas.put("concepto", concepto.getText().toString());
+                        salidas.put("idobra",usuario.getIdObra());
 
 
                         Integer e = salida.create(salidas);
@@ -356,19 +357,23 @@ public class SalidaActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+        DialogoRecepcion d= new DialogoRecepcion(getApplicationContext());
 
         if (id == R.id.nav_inicio) {
             Intent inicio = new Intent(this, MainActivity.class);
+            d.destroy();
             startActivity(inicio);
         } else if (id == R.id.nav_imprimir) {
-
+            d.destroy();
         } else if (id == R.id.nav_entrada) {
 
             Intent entrada = new Intent(getApplicationContext(), EntradaActivity.class);
+            d.destroy();
             startActivity(entrada);
 
         } else if (id == R.id.nav_salida) {
             Intent intent = getIntent();
+            d.destroy();
             finish();
             startActivity(intent);
         } else if (id == R.id.nav_trans) {
@@ -377,10 +382,12 @@ public class SalidaActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_cambio) {
             Intent seleccionar = new Intent(this, SeleccionaObraActivity.class);
+            d.destroy();
             startActivity(seleccionar);
 
         } else if (id == R.id.nav_cerrar) {
             usuario.destroy();
+            d.destroy();
             Intent loginActivity = new Intent(this, LoginActivity.class);
             startActivity(loginActivity);
         }

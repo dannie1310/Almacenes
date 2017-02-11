@@ -22,6 +22,7 @@ public class Entrada {
     String observacion;
     String idmaterial;
     String fecha;
+    Integer idobra;
 
    Entrada(Context context) {
         this.context = context;
@@ -43,6 +44,7 @@ public class Entrada {
                     this.idorden = data.getAsString("idorden");
                     this.fecha = data.getAsString("fecha");
                     this.idmaterial = data.getAsString("idmaterial");
+                    this.idobra = data.getAsInteger("idobra");
                 }
             } finally {
                 c.close();
