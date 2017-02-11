@@ -85,10 +85,6 @@ import android.database.sqlite.SQLiteOpenHelper;
         db.execSQL("DELETE FROM material_almacen");
         db.execSQL("DELETE FROM contratistas");
         db.execSQL("DELETE FROM dialogo_recepcion");
-        db.execSQL("DELETE FROM entrada");
-        db.execSQL("DELETE FROM entradadetalle");
-        db.execSQL("DELETE FROM salida");
-        db.execSQL("DELETE FROM salidadetalle");
 
         db.close();
     }
