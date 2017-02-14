@@ -64,8 +64,9 @@
     <string name="error_orden">DEBES SELECCIONAR UNA ORDEN DE COMPRA.</string>
     <string name="error_almacen">DEBES SELECCIONAR UN ALMACÉN.</string>
     <string name="error_entradadetalle">ERROR AL GUARDAR DATOS.</string>
-    <string name="guardado">SE REGISTRO CORRECTAMENTE</string>
+    <string name="guardado">SE REGISTRO CORRECTAMENTE.</string>
     <string name="error_concepto">ESCRIBE UN CONCEPTO.</string>
+    <string name="title_activity_transferencia">Transferencia de Material</string>
 
 
 </resources>

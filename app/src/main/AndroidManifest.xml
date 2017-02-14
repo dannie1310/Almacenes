@@ -19,8 +19,8 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".LoginActivity"
-            android:screenOrientation="portrait"
-            android:label="@string/app_name">
+            android:label="@string/app_name"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -43,6 +43,11 @@
         <activity
             android:name=".SalidaActivity"
             android:label="@string/title_activity_salida"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".TransferenciaActivity"
+            android:label="@string/title_activity_transferencia"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

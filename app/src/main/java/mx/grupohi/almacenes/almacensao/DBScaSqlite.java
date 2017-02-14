@@ -22,11 +22,13 @@ import android.database.sqlite.SQLiteOpenHelper;
             "CREATE TABLE materiales (id_material INTEGER, tipomaterial INTEGER, marca INTEGER, descripcion TEXT)",
             "CREATE TABLE material_almacen(ID INTEGER PRIMARY KEY AUTOINCREMENT, id_material INTEGER, id_almacen INTEGER, unidad TEXT, id_obra INTEGER, cantidad DOUBLE)",
             "CREATE TABLE contratistas (idempresa INTEGER, razonsocial TEXT)",
-            "CREATE TABLE dialogo_recepcion (ID INTEGER PRIMARY KEY AUTOINCREMENT, cantidadTotal TEXT, cantidadRS TEXT, idalmacen TEXT, claveConcepto TEXT, idContratista TEXT, cargo INTEGER, idorden TEXT, almacen TEXT, material TEXT, unidad TEXT, contratista TEXT, idmaterial TEXT)",
+            "CREATE TABLE dialogo_recepcion (ID INTEGER PRIMARY KEY AUTOINCREMENT, cantidadTotal TEXT, cantidadRS TEXT, idalmacen TEXT, claveConcepto TEXT, idContratista TEXT, cargo INTEGER, idorden TEXT, almacen TEXT, material TEXT, unidad TEXT, contratista TEXT, idmaterial TEXT, auxalmacen TEXT)",
             "CREATE TABLE entrada (ID INTEGER PRIMARY KEY AUTOINCREMENT,  idorden TEXT, idmaterial TEXT, referencia TEXT, observacion TEXT, fecha VARCHAR(8), idobra INTEGER)",
             "CREATE TABLE entradadetalle (ID INTEGER PRIMARY KEY AUTOINCREMENT, identrada INTEGER, cantidad DOUBLE, idalmacen TEXT, claveConcepto TEXT, idContratista TEXT, cargo INTEGER,  unidad TEXT, idmaterial TEXT, fecha DATETIME DEFAULT CURRENT_TIMESTAMP)",
             "CREATE TABLE salida (ID INTEGER PRIMARY KEY AUTOINCREMENT,  idalmacen TEXT, referencia TEXT, observacion TEXT, concepto TEXT, fecha TEXT, idobra INTEGER)",
             "CREATE TABLE salidadetalle (ID INTEGER PRIMARY KEY AUTOINCREMENT, idsalida INTEGER, cantidad DOUBLE, idmaterial TEXT, claveConcepto TEXT, idContratista TEXT, cargo INTEGER,  unidad TEXT,  fecha DATETIME DEFAULT CURRENT_TIMESTAMP)",
+            "CREATE TABLE transferencia (ID INTEGER PRIMARY KEY AUTOINCREMENT,  idalmacenOrigen TEXT, referencia TEXT, observacion TEXT, fecha TEXT, idobra INTEGER)",
+            "CREATE TABLE transferenciadetalle (ID INTEGER PRIMARY KEY AUTOINCREMENT, idtransferencia INTEGER,  idalmacenOrigen TEXT, idalmacenDestino TEXT,  cantidad DOUBLE, idmaterial TEXT, idContratista TEXT, cargo INTEGER,  unidad TEXT,  fecha DATETIME DEFAULT CURRENT_TIMESTAMP)",
     };
 
     @Override
@@ -51,6 +53,8 @@ import android.database.sqlite.SQLiteOpenHelper;
         db.execSQL("DROP TABLE IF EXISTS entradadetalle");
         db.execSQL("DROP TABLE IF EXISTS salida");
         db.execSQL("DROP TABLE IF EXISTS salidadetalle");
+        db.execSQL("DROP TABLE IF EXISTS transferencia");
+        db.execSQL("DROP TABLE IF EXISTS transferenciadetalle");
 
         for (String query: queries){
             db.execSQL(query);
@@ -73,6 +77,8 @@ import android.database.sqlite.SQLiteOpenHelper;
         db.execSQL("DELETE FROM entradadetalle");
         db.execSQL("DELETE FROM salida");
         db.execSQL("DELETE FROM salidadetalle");
+        db.execSQL("DELETE FROM transferencia");
+        db.execSQL("DELETE FROM transferenciadetalle");
 
         db.close();
     }

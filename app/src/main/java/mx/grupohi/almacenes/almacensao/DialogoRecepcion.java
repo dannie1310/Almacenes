@@ -14,8 +14,6 @@ import java.util.List;
 
 public class DialogoRecepcion {
 
-
-
     Context context;
     private SQLiteDatabase db;
     private DBScaSqlite db_sca;
@@ -32,7 +30,6 @@ public class DialogoRecepcion {
     String unidad;
     String contratista;
     String idmaterial;
-
 
     DialogoRecepcion(Context context) {
         this.context = context;
@@ -203,17 +200,25 @@ public class DialogoRecepcion {
         }
     }
 
-    public Double valorSalida(Context context, Integer idMaterial, Integer idalmacen){
+    public Double valorSalida(Context context, Integer idMaterial, Integer idalmacen){ // revisar aqui!!!!
         DBScaSqlite db_sca = new DBScaSqlite(context, "sca", null, 1);
         SQLiteDatabase db = db_sca.getWritableDatabase();
         System.out.println("VALORES SALIDA: "+idMaterial+" "+idalmacen);
+
         Cursor c = db.rawQuery("SELECT SUM(cantidadRS) as suma from dialogo_recepcion WHERE idalmacen = '" + idalmacen + "' and idmaterial = '"+idMaterial+"'", null);
         try {
             if(c!=null && c.moveToFirst()){
+                System.out.println("idalmacen: "+idalmacen+" "+c.getDouble(0));
                 return c.getDouble(0);
             }
             else{
-                return 0.0;
+                Cursor x = db.rawQuery("SELECT SUM(cantidadRS) as suma from dialogo_recepcion WHERE auxalmacen = '" + idalmacen + "' and idmaterial = '"+idMaterial+"'", null);
+                if(x!=null && x.moveToFirst()){
+                    System.out.println("aux: "+idalmacen+" "+x.getDouble(0));
+                    return x.getDouble(0);
+                }else {
+                    return 0.0;
+                }
             }
         } finally {
             c.close();

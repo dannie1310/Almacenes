@@ -59,15 +59,19 @@ public class MaterialesAlmacen {
 
     public MaterialesAlmacen find(Integer id, Integer almacen, Integer idobra){
         db=db_sca.getWritableDatabase();
-        Cursor c = db.rawQuery("SELECT * FROM materiales m LEFT JOIN material_almacen ma  ON m.id_material = ma.id_material LEFT JOIN entradadetalle ed ON ed.idmaterial = m.id_material WHERE m.id_material = '"+id+"' and ma.id_almacen = '"+almacen+"' or ed.idalmacen = '"+almacen+"' ", null);
+        Cursor c = db.rawQuery("SELECT * FROM materiales m LEFT JOIN material_almacen ma  ON m.id_material = ma.id_material LEFT JOIN entradadetalle ed ON ed.idmaterial = m.id_material LEFT JOIN transferenciadetalle td ON td.idmaterial = m.id_material WHERE m.id_material = '"+id+"' and ma.id_almacen = '"+almacen+"' or ed.idalmacen = '"+almacen+"' or td.idalmacenDestino = '"+almacen+"'", null);
         EntradaDetalle e = new EntradaDetalle(context);
         DialogoRecepcion d = new DialogoRecepcion(context);
         SalidaDetalle s = new SalidaDetalle(context);
+        TransferenciaDetalle td = new TransferenciaDetalle(context);
+
         Double cantidad_entrada;
         Double cantidad_almacen;
         Double salida;
         Double salidasDetalle;
         Double aux_cantidad = 0.0;
+        Double aux_transferenciaEntrada;
+        Double aux_transferenciaSalida;
         System.out.println("PROBANDO: "+ c!= null);
         try{
             if(c != null && c.moveToFirst()){
@@ -75,6 +79,9 @@ public class MaterialesAlmacen {
                 cantidad_almacen = getCantidad(id,almacen, idobra);
                 salidasDetalle = s.getCantidad(id, almacen, idobra);
                 salida =  d.valorSalida(context,id, almacen);
+                aux_transferenciaEntrada = td.getCantidadEntrada(id,almacen,idobra);
+                aux_transferenciaSalida = td.getCantidadSalida(id,almacen,idobra);
+
                 this.id_material = c.getInt(0);
                 if(c.getInt(6)==0){
                     this.id_almacen = c.getInt(13);
@@ -88,11 +95,17 @@ public class MaterialesAlmacen {
                 if(cantidad_entrada != 0){
                     aux_cantidad = aux_cantidad + cantidad_entrada;
                 }
+                if(aux_transferenciaEntrada != 0){
+                    aux_cantidad =aux_cantidad + aux_transferenciaEntrada;
+                }
                 if(salida != 0){
                     aux_cantidad = aux_cantidad - salida;
                 }
                 if(salidasDetalle !=0){
                     aux_cantidad = aux_cantidad - salidasDetalle;
+                }
+                if(aux_transferenciaSalida != 0){
+                    aux_cantidad = aux_cantidad - aux_transferenciaSalida;
                 }
                 this.cantidad = aux_cantidad;
 
@@ -104,6 +117,7 @@ public class MaterialesAlmacen {
                 this.id_obra = idobra;
 
                 this.descripcion = c.getString(c.getColumnIndex("descripcion"));
+                System.out.println("datos: "+id_material+" "+cantidad+" "+unidad+" "+id_obra+ " "+ descripcion);
             }
             return this;
         }finally {
@@ -116,7 +130,7 @@ public class MaterialesAlmacen {
     public static List<MaterialesAlmacen> getMateriales(Context context, String almacen, Integer idobra){
         DBScaSqlite db_sca = new DBScaSqlite(context, "sca", null, 1);
         SQLiteDatabase db = db_sca.getWritableDatabase();
-        Cursor c = db.rawQuery("SELECT * FROM materiales m LEFT JOIN material_almacen ma  ON m.id_material = ma.id_material LEFT JOIN entradadetalle ed ON ed.idmaterial = m.id_material LEFT JOIN entrada e ON e.id = ed.identrada  WHERE ma.id_almacen = '"+almacen+"' or ed.idalmacen = '"+almacen+"' GROUP BY ma.id_material",null);
+        Cursor c = db.rawQuery("SELECT * FROM materiales m LEFT JOIN material_almacen ma  ON m.id_material = ma.id_material LEFT JOIN entradadetalle ed ON ed.idmaterial = m.id_material LEFT JOIN entrada e ON e.id = ed.identrada  LEFT JOIN transferenciadetalle td ON td.idmaterial = m.id_material  WHERE ma.id_almacen = '"+almacen+"' or ed.idalmacen = '"+almacen+"' or td.idalmacenDestino = '"+almacen+"' GROUP BY ma.id_material",null);
         ArrayList ordenes = new ArrayList<MaterialesAlmacen>();
         try {
             if (c != null){

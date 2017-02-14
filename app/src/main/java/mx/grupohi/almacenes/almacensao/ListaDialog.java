@@ -50,6 +50,8 @@ public class ListaDialog extends ArrayAdapter<DialogoRecepcion> {
         cantidad.setText(dialogoRecepcion.material);
         if(dialogoRecepcion.claveConcepto.isEmpty()){
             almacen.setText(dialogoRecepcion.almacen);
+        }else if(!dialogoRecepcion.id_almacen.equals("0")){
+            almacen.setText(dialogoRecepcion.almacen);
         }else {
             almacen.setText(dialogoRecepcion.claveConcepto);
         }

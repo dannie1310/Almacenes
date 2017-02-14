@@ -394,7 +394,8 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
             startActivity(salida);
 
         } else if (id == R.id.nav_trans) {
-
+            Intent t = new Intent(getApplicationContext(), TransferenciaActivity.class);
+            startActivity(t);
         } else if (id == R.id.nav_syn) {
 
         } else if (id == R.id.nav_cambio) {

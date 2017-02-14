@@ -29,64 +29,59 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class SalidaActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+public class TransferenciaActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     Usuario usuario;
     Almacen almacen;
-    Salida salida;
-    SalidaDetalle salidaDetalle;
-    ListaMaterialAdaptador lista;
+    TransferenciaFragment transferenciaFragment;
     DialogoRecepcion dialogoRecepcion;
+    Transferencia transferencia;
+    TransferenciaDetalle transferenciaDetalle;
 
+    EditText referencia;
+    EditText observacion;
+    Spinner spinner;
     private HashMap<String, String> spinnerMap;
-    EditText concepto;
-    EditText referenica_salida;
-    EditText observacion_salida;
-    ListView materiales;
-    Spinner almacen_spinner;
-    Button botonSalida;
+    ListView mList;
+    ListaMaterialAdaptador lista;
+    ListView mListRecibido;
+    ListaDialog listaRecibido;
+    Button guardar;
 
     String nombrealmacen;
     String idAlmacen;
-    Integer idMaterial;
+
     Integer posicion_almacen;
+    Integer idMaterial;
     Double cantidad;
-    ListView mListRecibido;
-    ListaDialog listaRecibido;
-
-    SalidaFragment salidaFragment;
-
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_salida);
+        setContentView(R.layout.activity_transferencia);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        usuario = new Usuario(this);
-        usuario = usuario.getUsuario();
+        usuario = new Usuario(getApplicationContext());
         almacen = new Almacen(getApplicationContext());
+        usuario = usuario.getUsuario();
         dialogoRecepcion = new DialogoRecepcion(getApplicationContext());
+
         String x = getIntent().getStringExtra("observacion");
         String y = getIntent().getStringExtra("referencia");
-        String z = getIntent().getStringExtra("concepto");
         String w =getIntent().getStringExtra("posicion");
-        System.out.println("extra: "+ x + y + z + w);
+        System.out.println("extra: "+ x + y + w);
 
-        concepto = (EditText) findViewById(R.id.textConcepto);
-        referenica_salida = (EditText) findViewById(R.id.textReferenciaSalida);
-        observacion_salida = (EditText) findViewById(R.id.textObservacionesSalida);
-        botonSalida = (Button) findViewById(R.id.buttonSalida);
-
-        almacen_spinner = (Spinner) findViewById(R.id.spinner_almacen);
+        referencia = (EditText) findViewById(R.id.textReferenciaT);
+        observacion = (EditText) findViewById(R.id.textObservacionesT);
+        spinner = (Spinner) findViewById(R.id.spinner_T);
+        guardar = (Button) findViewById(R.id.buttonT);
 
 
         final ArrayList<String> almacenes = almacen.getArrayListAlmacenes();
         final ArrayList<String> ids = almacen.getArrayListId();
 
-        String[] spinnerArray = new String[ids.size()];
+        final String[] spinnerArray = new String[ids.size()];
         spinnerMap = new HashMap<>();
 
         for (int i = 0; i < ids.size(); i++) {
@@ -96,39 +91,36 @@ public class SalidaActivity extends AppCompatActivity
 
         final ArrayAdapter<String> a = new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, spinnerArray);
         a.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
-        almacen_spinner.setAdapter(a);
+        spinner.setAdapter(a);
 
-        if (x != null){
-            observacion_salida.setText(x);
+       if (x != null){
+            observacion.setText(x);
         }
         if (y != null){
-            referenica_salida.setText(y);
-        }
-        if(z != "" || z != null){
-            concepto.setText(z);
+            referencia.setText(y);
         }
         if(w != null){
-            almacen_spinner.setSelection(Integer.valueOf(w));
+            spinner.setSelection(Integer.valueOf(w));
         }
 
-        if (almacen_spinner != null) {
-            almacen_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        if (spinner != null) {
+            spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-                    nombrealmacen = almacen_spinner.getSelectedItem().toString();
+                    nombrealmacen = spinner.getSelectedItem().toString();
                     idAlmacen = spinnerMap.get(nombrealmacen);
                     posicion_almacen = position;
 
 
-                    materiales = (ListView) findViewById(R.id.listView_lista_materiales);
+                    mList = (ListView) findViewById(R.id.listView_lista_T);
                     lista = new ListaMaterialAdaptador(getApplicationContext(), MaterialesAlmacen.getMateriales(getApplicationContext(), idAlmacen, usuario.getIdObra()));
-                    materiales.setAdapter(lista);
+                    mList.setAdapter(lista);
 
 
 
 
-                    materiales.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    mList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                             MaterialesAlmacen m = lista.getItem(position);
@@ -137,14 +129,13 @@ public class SalidaActivity extends AppCompatActivity
                             cantidad = Double.valueOf(m.cantidad);
                             if(cantidad != 0) {
                                 System.out.println(idMaterial + "Click orden: " + m.id_material + "posicion" + position);
-                               // idMaterial = String.valueOf(orden.idmaterial);
-                              //  showEditDialog(idMaterial);
+
                                 FragmentManager fm = getSupportFragmentManager();
 
-                                salidaFragment = new SalidaFragment();
-                                salidaFragment = salidaFragment.newInstance(String.valueOf(cantidad),m.unidad , idMaterial, m.descripcion, m.id_almacen,concepto.getText().toString(), referenica_salida.getText().toString(),observacion_salida.getText().toString(), posicion_almacen);
+                                transferenciaFragment = new TransferenciaFragment();
+                                transferenciaFragment = transferenciaFragment.newInstance(String.valueOf(cantidad),m.unidad , idMaterial, m.descripcion, m.id_almacen, referencia.getText().toString(),observacion.getText().toString(), posicion_almacen);
 
-                                salidaFragment.show(fm, "Material Recibido");
+                                transferenciaFragment.show(fm, "Material Recibido");
 
 
                             }else{
@@ -161,8 +152,8 @@ public class SalidaActivity extends AppCompatActivity
                 }
             });
 
-            if(dialogoRecepcion.getCount() != 0) {
-                mListRecibido = (ListView) findViewById(R.id.listView_salida_materiales);
+          if(dialogoRecepcion.getCount() != 0) {
+                mListRecibido = (ListView) findViewById(R.id.listView_T_materiales);
                 listaRecibido = new ListaDialog(getApplicationContext(), DialogoRecepcion.getRecepcion(getApplicationContext(), "null", String.valueOf(idMaterial)));
                 mListRecibido.setAdapter(listaRecibido);
 
@@ -172,9 +163,9 @@ public class SalidaActivity extends AppCompatActivity
                         DialogoRecepcion dialogR = listaRecibido.getItem(position);
 
                         final Integer idDialogo = dialogR.id;
-                        AlertDialog.Builder alert = new AlertDialog.Builder(SalidaActivity.this);
-                        alert.setTitle("Salida de Almacén");
-                        alert.setMessage("¿Estas seguro de eliminar esta salida del material?");
+                        AlertDialog.Builder alert = new AlertDialog.Builder(TransferenciaActivity.this);
+                        alert.setTitle("Transferencia entre Almacenes");
+                        alert.setMessage("¿Estas seguro de eliminar este material?");
                         alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 Double cantx = Double.parseDouble(DialogoRecepcion.getCantidadRS(getApplicationContext(), idDialogo) + "");
@@ -184,7 +175,7 @@ public class SalidaActivity extends AppCompatActivity
                                 DialogoRecepcion.remove(getApplicationContext(), idDialogo);
 
                                 lista = new ListaMaterialAdaptador(getApplicationContext(), MaterialesAlmacen.getMateriales(getApplicationContext(), idAlmacen, usuario.getIdObra()));
-                                materiales.setAdapter(lista);
+                                mList.setAdapter(lista);
                             }
                         });
 
@@ -204,11 +195,11 @@ public class SalidaActivity extends AppCompatActivity
         }
 
 
-        botonSalida.setOnClickListener(new View.OnClickListener() {
+        guardar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                salida = new Salida(getApplicationContext());
-                salidaDetalle = new SalidaDetalle(getApplicationContext());
+                transferencia = new Transferencia(getApplicationContext());
+                transferenciaDetalle = new TransferenciaDetalle(getApplicationContext());
 
 
                 ContentValues salidas = new ContentValues();
@@ -216,15 +207,14 @@ public class SalidaActivity extends AppCompatActivity
                 String aux_material;
                 String aux_almacen;
                 System.out.println("almacen:  "+idAlmacen.toString());
-                if (concepto.getText().toString().isEmpty()) {
-                    Toast.makeText(getApplicationContext(), R.string.error_concepto, Toast.LENGTH_SHORT).show();
-                } else if (referenica_salida.getText().toString().isEmpty()) {
+
+                if (referencia.getText().toString().isEmpty()) {
                     Toast.makeText(getApplicationContext(), R.string.error_referencia, Toast.LENGTH_SHORT).show();
                 } else if (idAlmacen.equals("0")) {
                     Toast.makeText(getApplicationContext(), R.string.error_almacen, Toast.LENGTH_SHORT).show();
                 } else if (listaRecibido == null) {
                     Toast.makeText(getApplicationContext(), R.string.error_recibir, Toast.LENGTH_SHORT).show();
-                } else if (observacion_salida.getText().toString().isEmpty()) {
+                } else if (observacion.getText().toString().isEmpty()) {
                     Toast.makeText(getApplicationContext(), R.string.error_OB, Toast.LENGTH_SHORT).show();
                 } else {
                     for (int z = 0; z < lista.getCount(); z++) {
@@ -235,34 +225,35 @@ public class SalidaActivity extends AppCompatActivity
 
 
                         salidas.clear();
-                        salidas.put("referencia", referenica_salida.getText().toString());
-                        salidas.put("observacion", observacion_salida.getText().toString());
-                        salidas.put("idalmacen", ord.id_almacen);
+                        salidas.put("referencia", referencia.getText().toString());
+                        salidas.put("observacion", observacion.getText().toString());
+                        salidas.put("idalmacenOrigen", ord.id_almacen);
                         salidas.put("fecha", Util.timeStamp());
-                        salidas.put("concepto", concepto.getText().toString());
                         salidas.put("idobra",usuario.getIdObra());
 
 
-                        Integer e = salida.create(salidas);
+                        Integer e = transferencia.create(salidas);
                         System.out.println("salidas: " + e + " " + salidas);
 
                         for (int l = 0; l < listaRecibido.getCount(); l++) {
                             DialogoRecepcion dr = listaRecibido.getItem(l);
                             System.out.println("ffff: " + aux_almacen + " " + aux_material + " " + dr.id_almacen + " " + ord.id_material);
-                            if (aux_almacen.equals(dr.id_almacen) && aux_material.equals(dr.idmaterial)) {
+                            if (aux_material.equals(dr.idmaterial)) {
 
                                 salidas.clear();
                                 salidas.put("cantidad", dr.cantidadRS);
-                                salidas.put("idsalida", e);
-                                salidas.put("claveConcepto", dr.claveConcepto);
+                                salidas.put("idtransferencia", e);
+                                salidas.put("idmaterial", dr.idmaterial);
+                                salidas.put("idalmacenOrigen", ord.id_almacen);
+                                salidas.put("idalmacenDestino",dr.id_almacen);
                                 salidas.put("idcontratista", dr.idcontratista);
                                 salidas.put("cargo", dr.cargo);
                                 salidas.put("unidad", dr.unidad);
-                                salidas.put("idmaterial", dr.idmaterial);
+
 
                                 System.out.println("entradaDetalle: " + salidas);
 
-                                if (!salidaDetalle.create(salidas)) {
+                                if (!transferenciaDetalle.create(salidas)) {
                                     Toast.makeText(getApplicationContext(), R.string.error_entradadetalle, Toast.LENGTH_SHORT).show();
                                 }
 
@@ -270,8 +261,8 @@ public class SalidaActivity extends AppCompatActivity
 
                         }
                         System.out.println("FUNCION: " + e);
-                        if (!salidaDetalle.find(e)) {
-                            Salida.remove(getApplicationContext(), e);
+                        if (!transferenciaDetalle.find(e)) {
+                            Transferencia.remove(getApplicationContext(), e);
                             System.out.println("remove: " + e);
                         }
 
@@ -288,7 +279,7 @@ public class SalidaActivity extends AppCompatActivity
         });
 
 
-        final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        final DrawerLayout drawer = (DrawerLayout) findViewById(R. id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         if(drawer != null)
@@ -324,18 +315,13 @@ public class SalidaActivity extends AppCompatActivity
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        DialogoRecepcion d = new DialogoRecepcion(getApplicationContext());
-        Intent main = new Intent(getApplicationContext(), MainActivity.class);
-        d.destroy();
-        startActivity(main);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -357,38 +343,36 @@ public class SalidaActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-        DialogoRecepcion d= new DialogoRecepcion(getApplicationContext());
 
         if (id == R.id.nav_inicio) {
-            Intent inicio = new Intent(this, MainActivity.class);
-            d.destroy();
-            startActivity(inicio);
+
+            Intent main = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(main);
+
         } else if (id == R.id.nav_imprimir) {
-            d.destroy();
+
         } else if (id == R.id.nav_entrada) {
 
             Intent entrada = new Intent(getApplicationContext(), EntradaActivity.class);
-            d.destroy();
             startActivity(entrada);
 
         } else if (id == R.id.nav_salida) {
+            Intent salida = new Intent(getApplicationContext(), SalidaActivity.class);
+            startActivity(salida);
+        } else if (id == R.id.nav_trans) {
+
             Intent intent = getIntent();
-            d.destroy();
             finish();
             startActivity(intent);
-        } else if (id == R.id.nav_trans) {
-            Intent t = new Intent(getApplicationContext(), TransferenciaActivity.class);
-            startActivity(t);
+
         } else if (id == R.id.nav_syn) {
 
         } else if (id == R.id.nav_cambio) {
             Intent seleccionar = new Intent(this, SeleccionaObraActivity.class);
-            d.destroy();
             startActivity(seleccionar);
 
         } else if (id == R.id.nav_cerrar) {
             usuario.destroy();
-            d.destroy();
             Intent loginActivity = new Intent(this, LoginActivity.class);
             startActivity(loginActivity);
         }

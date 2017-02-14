@@ -63,7 +63,8 @@ public class MainActivity extends AppCompatActivity
         trans.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent t = new Intent(getApplicationContext(), TransferenciaActivity.class);
+                startActivity(t);
             }
         });
 
@@ -155,6 +156,9 @@ public class MainActivity extends AppCompatActivity
             Intent salida = new Intent(getApplicationContext(), SalidaActivity.class);
             startActivity(salida);
         } else if (id == R.id.nav_trans) {
+
+            Intent t = new Intent(getApplicationContext(), TransferenciaActivity.class);
+            startActivity(t);
 
         } else if (id == R.id.nav_syn) {
 
