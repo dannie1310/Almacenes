@@ -38,7 +38,7 @@ public class DialogoRecepcion {
 
     boolean create(ContentValues data) {
         db = db_sca.getWritableDatabase();
-        System.out.println("datos: "+data);
+        System.out.println("dBUSCAAAs: "+data);
         Boolean result = db.insert("dialogo_recepcion", null, data) > -1;
         if (result) {
             this.id_almacen = data.getAsString("idalmacen");
@@ -200,25 +200,25 @@ public class DialogoRecepcion {
         }
     }
 
-    public Double valorSalida(Context context, Integer idMaterial, Integer idalmacen){ // revisar aqui!!!!
+    public Double valorSalida(Context context, Integer idMaterial, Integer idalmacen){
         DBScaSqlite db_sca = new DBScaSqlite(context, "sca", null, 1);
         SQLiteDatabase db = db_sca.getWritableDatabase();
-        System.out.println("VALORES SALIDA: "+idMaterial+" "+idalmacen);
 
-        Cursor c = db.rawQuery("SELECT SUM(cantidadRS) as suma from dialogo_recepcion WHERE idalmacen = '" + idalmacen + "' and idmaterial = '"+idMaterial+"'", null);
+        Cursor c = db.rawQuery("SELECT SUM(cantidadRS) as suma from dialogo_recepcion WHERE (idalmacen = '" + idalmacen + "' or auxalmacen = '"+idalmacen+"') and idmaterial = '"+idMaterial+"'", null);
+        System.out.println("VALOR SALIDA: "+idalmacen+" "+idMaterial);
         try {
             if(c!=null && c.moveToFirst()){
                 System.out.println("idalmacen: "+idalmacen+" "+c.getDouble(0));
                 return c.getDouble(0);
             }
             else{
-                Cursor x = db.rawQuery("SELECT SUM(cantidadRS) as suma from dialogo_recepcion WHERE auxalmacen = '" + idalmacen + "' and idmaterial = '"+idMaterial+"'", null);
+               /* Cursor x = db.rawQuery("SELECT SUM(cantidadRS) as suma from dialogo_recepcion WHERE auxalmacen = '" + idalmacen + "' and idmaterial = '"+idMaterial+"'", null);
                 if(x!=null && x.moveToFirst()){
                     System.out.println("aux: "+idalmacen+" "+x.getDouble(0));
                     return x.getDouble(0);
-                }else {
+                }else {*/
                     return 0.0;
-                }
+               // }
             }
         } finally {
             c.close();

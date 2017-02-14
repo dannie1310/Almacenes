@@ -117,6 +117,7 @@ public class MaterialesAlmacen {
                 this.id_obra = idobra;
 
                 this.descripcion = c.getString(c.getColumnIndex("descripcion"));
+                System.out.println("valores: "+cantidad_almacen+" + "+cantidad_entrada+" + "+aux_transferenciaEntrada+" - "+salida+ " - "+ salidasDetalle +" - "+aux_transferenciaSalida+" = "+cantidad);
                 System.out.println("datos: "+id_material+" "+cantidad+" "+unidad+" "+id_obra+ " "+ descripcion);
             }
             return this;

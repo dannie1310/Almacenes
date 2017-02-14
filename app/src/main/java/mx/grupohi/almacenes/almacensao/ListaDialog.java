@@ -48,11 +48,10 @@ public class ListaDialog extends ArrayAdapter<DialogoRecepcion> {
         assert dialogoRecepcion != null;
         descripcion.setText(dialogoRecepcion.cantidadRS+ " - " + dialogoRecepcion.unidad);
         cantidad.setText(dialogoRecepcion.material);
-        if(dialogoRecepcion.claveConcepto.isEmpty()){
+        System.out.println("vista: "+dialogoRecepcion.material + " "+ dialogoRecepcion.almacen+" "+dialogoRecepcion.claveConcepto);
+        if(dialogoRecepcion.claveConcepto.isEmpty() || dialogoRecepcion.claveConcepto.equals("null")){
             almacen.setText(dialogoRecepcion.almacen);
-        }else if(!dialogoRecepcion.id_almacen.equals("0")){
-            almacen.setText(dialogoRecepcion.almacen);
-        }else {
+        }else{
             almacen.setText(dialogoRecepcion.claveConcepto);
         }
         if(dialogoRecepcion.contratista != null) {

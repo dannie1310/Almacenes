@@ -26,6 +26,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -136,7 +137,7 @@ public class SalidaActivity extends AppCompatActivity
                             idMaterial = m.id_material;
                             cantidad = Double.valueOf(m.cantidad);
                             if(cantidad != 0) {
-                                System.out.println(idMaterial + "Click orden: " + m.id_material + "posicion" + position);
+                               // System.out.println(idMaterial + "Click orden: " + m.id_material +": "+m.id_almacen +" posicion" + position);
                                // idMaterial = String.valueOf(orden.idmaterial);
                               //  showEditDialog(idMaterial);
                                 FragmentManager fm = getSupportFragmentManager();
@@ -197,7 +198,7 @@ public class SalidaActivity extends AppCompatActivity
                             }
                         });
                         alert.show();
-                        System.out.println(dialogR.contratista + "Adaptador Dialog: posicion" + position);
+                        //System.out.println(dialogR.contratista + "Adaptador Dialog: posicion" + position);
                     }
                 });
             }
@@ -215,7 +216,7 @@ public class SalidaActivity extends AppCompatActivity
                 Integer a = 0;
                 String aux_material;
                 String aux_almacen;
-                System.out.println("almacen:  "+idAlmacen.toString());
+                //System.out.println("almacen:  "+idAlmacen.toString());
                 if (concepto.getText().toString().isEmpty()) {
                     Toast.makeText(getApplicationContext(), R.string.error_concepto, Toast.LENGTH_SHORT).show();
                 } else if (referenica_salida.getText().toString().isEmpty()) {
@@ -364,7 +365,13 @@ public class SalidaActivity extends AppCompatActivity
             d.destroy();
             startActivity(inicio);
         } else if (id == R.id.nav_imprimir) {
-            d.destroy();
+            //d.destroy();
+
+            try {
+                Util.copyDataBase(getApplicationContext());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         } else if (id == R.id.nav_entrada) {
 
             Intent entrada = new Intent(getApplicationContext(), EntradaActivity.class);

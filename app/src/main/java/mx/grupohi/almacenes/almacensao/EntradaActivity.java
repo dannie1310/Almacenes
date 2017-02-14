@@ -27,6 +27,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.io.StringBufferInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -380,7 +381,11 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
             startActivity(inicio);
 
         } else if (id == R.id.nav_imprimir) {
-
+            try {
+                Util.copyDataBase(getApplicationContext());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         } else if (id == R.id.nav_entrada) {
 
             Intent intent = getIntent();
