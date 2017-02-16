@@ -9,6 +9,7 @@ import android.net.NetworkInfo;
 import android.os.Build;
 import android.provider.Settings;
 import android.text.TextUtils;
+import android.util.Log;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -184,6 +185,15 @@ class Util {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public static String folio() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyMMddHHmmssSS");
+        String currentDateandTime = sdf.format(new Date());
+        Log.e("tiempo decimal", currentDateandTime);
+        //Log.e("exadecimal",   Hex.getHex(currentDateandTime));
+        Log.e("exadecimal to ", Long.toHexString(Long.parseLong(currentDateandTime)));
+        return Long.toHexString(Long.parseLong(currentDateandTime)).toUpperCase();
     }
 
     public static void copyDataBase(Context mActivity) throws IOException {

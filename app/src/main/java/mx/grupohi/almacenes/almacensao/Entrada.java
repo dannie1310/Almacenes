@@ -18,6 +18,7 @@ public class Entrada {
 
 
     String idorden;
+    String folio;
     String referencia;
     String observacion;
     String idmaterial;
@@ -45,6 +46,7 @@ public class Entrada {
                     this.fecha = data.getAsString("fecha");
                     this.idmaterial = data.getAsString("idmaterial");
                     this.idobra = data.getAsInteger("idobra");
+                    this.folio = data.getAsString("folio");
                 }
             } finally {
                 c.close();
@@ -69,5 +71,22 @@ public class Entrada {
         System.out.println("eliminar: ENTRADA: "+id);
         db.execSQL("DELETE FROM entrada WHERE ID = '" + id + "'");
         db.close();
+    }
+
+    Boolean folio(String folio){
+        db = db_sca.getWritableDatabase();
+        Cursor c = db.rawQuery("SELECT * FROM entrada WHERE folio  = '"+folio+"'", null);
+        try {
+            if(c!=null && c.moveToFirst()){
+                System.out.println("folio? : "+folio +" "+true);
+                return true;
+            }
+            else{
+                return false;
+            }
+        } finally {
+            c.close();
+            db.close();
+        }
     }
 }
