@@ -118,7 +118,7 @@ public class EntradaDetalle {
         JSONObject JSON = new JSONObject();
         DBScaSqlite db_sca = new DBScaSqlite(context, "sca", null, 1);
         SQLiteDatabase db = db_sca.getWritableDatabase();
-        Cursor c = db.rawQuery("SELECT * FROM entradadetalle ed INNER JOIN entrada e ON e.id = ed.identrada LEFT JOIN almacenes a ON ed.idalmacen = a.id_almacen LEFT JOIN contratistas c ON c.idempresa = ed.idContratista INNER JOIN materiales m ON m.id_material = ed.idmaterial WHERE e.folio = '"+folio+"' ORDER BY id", null);
+        Cursor c = db.rawQuery("SELECT * FROM entradadetalle ed INNER JOIN entrada e ON e.id = ed.identrada LEFT JOIN almacenes a ON ed.idalmacen = a.id_almacen LEFT JOIN contratistas c ON c.idempresa = ed.idContratista INNER JOIN materiales m ON m.id_material = ed.idmaterial WHERE e.folio = '"+folio+"' ORDER BY a.id_almacen", null);
         try {
             if(c != null && c.moveToFirst()) {
                 Integer i = 0;
@@ -143,8 +143,19 @@ public class EntradaDetalle {
                     json.put("fecha", c.getString(15));
                     json.put("idobra", c.getString(16));
                     json.put("folio", c.getString(17));
-                    json.put("almacen", c.getString(19));
-                    json.put("contratista", c.getString(21));
+
+                    if(c.getString(19)== null){
+                        json.put("almacen","null");
+                    }else{
+                        json.put("almacen", c.getString(19));
+                    }
+                    if(c.getString(21) == null){
+                        json.put("contratista", "null");
+                    }else{
+                        json.put("contratista", c.getString(21));
+                    }
+                    System.out.println("contrat: "+c.getString(19));
+
                     json.put("material", c.getString(25));
 
                     JSON.put(i + "", json);
