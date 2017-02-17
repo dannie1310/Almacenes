@@ -5,6 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import org.json.JSONObject;
+
 /**
  * Created by Usuario on 01/02/2017.
  */
@@ -110,5 +112,55 @@ public class EntradaDetalle {
             c.close();
             db.close();
         }
+    }
+
+   static JSONObject getEntradasDetalle(Context context, String folio) {
+        JSONObject JSON = new JSONObject();
+        DBScaSqlite db_sca = new DBScaSqlite(context, "sca", null, 1);
+        SQLiteDatabase db = db_sca.getWritableDatabase();
+        Cursor c = db.rawQuery("SELECT * FROM entradadetalle ed INNER JOIN entrada e ON e.id = ed.identrada LEFT JOIN almacenes a ON ed.idalmacen = a.id_almacen LEFT JOIN contratistas c ON c.idempresa = ed.idContratista INNER JOIN materiales m ON m.id_material = ed.idmaterial WHERE e.folio = '"+folio+"' ORDER BY id", null);
+        try {
+            if(c != null && c.moveToFirst()) {
+                Integer i = 0;
+                do {
+
+                    JSONObject json = new JSONObject();
+
+                    json.put("id", c.getString(0));
+                    json.put("identrada", c.getString(1));
+                    json.put("cantidad", c.getString(2));
+                    json.put("idalmacen", c.getInt(3));
+                    json.put("clave", c.getString(4));
+                    json.put("idcontratista", c.getString(5));
+                    json.put("cargo", c.getString(6));
+                    json.put("unidad", c.getString(7));
+                    json.put("idmaterial", c.getString(8));
+                    json.put("fecha", c.getString(9));
+                    json.put("idorden", c.getString(11));
+                    json.put("idmaterialE", c.getString(12));
+                    json.put("referencia", c.getString(13));
+                    json.put("observacion", c.getString(14));
+                    json.put("fecha", c.getString(15));
+                    json.put("idobra", c.getString(16));
+                    json.put("folio", c.getString(17));
+                    json.put("almacen", c.getString(19));
+                    json.put("contratista", c.getString(21));
+                    json.put("material", c.getString(25));
+
+                    JSON.put(i + "", json);
+                    i++;
+
+                } while (c.moveToNext());
+
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            c.close();
+            db.close();
+        }
+        System.out.println("JSON: "+JSON);
+        return JSON;
     }
 }

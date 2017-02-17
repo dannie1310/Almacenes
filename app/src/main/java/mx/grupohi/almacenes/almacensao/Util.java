@@ -211,4 +211,8 @@ class Util {
         myOutput.close();
         myInput.close();
     }
+
+    public static String formatoFecha() {
+        return (String) android.text.format.DateFormat.format("dd/MM/yyyy HH:mm:ss", new Date());
+    }
 }
