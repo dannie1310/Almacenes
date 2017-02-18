@@ -78,7 +78,6 @@ public class Entrada {
         Cursor c = db.rawQuery("SELECT * FROM entrada WHERE folio  = '"+folio+"'", null);
         try {
             if(c!=null && c.moveToFirst()){
-                System.out.println("folio? : "+folio +" "+true);
                 return true;
             }
             else{

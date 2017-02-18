@@ -23,6 +23,7 @@ public class Salida {
     String observacion;
     String concepto;
     String fecha;
+    String folio;
     Integer idobra;
 
     Salida(Context context) {
@@ -46,6 +47,7 @@ public class Salida {
                     this.fecha = data.getAsString("fecha");
                     this.concepto = data.getAsString("concepto");
                     this.idobra = data.getAsInteger("idobra");
+                    this.folio = data.getAsString("folio");
                 }
             } finally {
                 c.close();
@@ -70,5 +72,22 @@ public class Salida {
         System.out.println("eliminar: salida: "+id);
         db.execSQL("DELETE FROM salida WHERE ID = '" + id + "'");
         db.close();
+    }
+
+    Boolean folio(String folio){
+        db = db_sca.getWritableDatabase();
+        Cursor c = db.rawQuery("SELECT * FROM salida WHERE folio  = '"+folio+"'", null);
+        try {
+            if(c!=null && c.moveToFirst()){
+                System.out.println("folio? : "+folio +" "+true);
+                return true;
+            }
+            else{
+                return false;
+            }
+        } finally {
+            c.close();
+            db.close();
+        }
     }
 }
