@@ -86,7 +86,6 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
     private Toolbar toolbar;
     private String mConnectedDeviceName = null;
     static String espacio = "   ";
-    Integer mensaje = 0;
 
 
     CantidadEntradaFragment editNameDialogFragment;
@@ -318,6 +317,8 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
                         guardar.setVisibility(View.GONE);
                         buttonImprimir.setVisibility(View.VISIBLE);
                         salir.setVisibility(View.VISIBLE);
+                        mList.setEnabled(false);
+                        mListRecibido.setEnabled(false);
 
                         //buttonImprimir.performClick();
                     }
@@ -368,7 +369,7 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
                                                                   printTextTwoColumns(espacio+"Referencia: ", referencia.getText() + " \n",0);
 
 
-                                                                  printTextTwoColumns(espacio+"Observaciones: ", observaciones.getText() + "\n",0);
+                                                                  //printTextTwoColumns(espacio+"Observaciones: ", observaciones.getText() + "\n",0);
                                                                   printTextTwoColumns(espacio+"Checador: " + usuario.getNombre(), Util.formatoFecha() + "\n",0);
                                                                   JSONObject edetalle = entradaDetalle.getEntradasDetalle(getApplicationContext(), folio);
                                                                   System.out.println("JSON "+ edetalle);
@@ -666,12 +667,10 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
                         case BixolonPrinter.STATE_CONNECTED:
                             Log.i("Handler", "BixolonPrinter.STATE_CONNECTED");
 
-                            Toast.makeText(getApplicationContext(), "Impresora Contectada " + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
+                           // Toast.makeText(getApplicationContext(), "Impresora Contectada " + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
                             //toolbar.setSubtitle("Impresora Contectada " + mConnectedDeviceName);
                             connectedPrinter = true;
-                            System.out.println("imprimir: "+imprimir);
                             if(imprimir) {
-                                System.out.println("imprimir: "+imprimir);
                                 buttonImprimir.performClick();
                             }
                             break;
@@ -725,7 +724,7 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
                 case BixolonPrinter.MESSAGE_DEVICE_NAME:
                     Log.i("Handler", "BixolonPrinter.MESSAGE_DEVICE_NAME - " + msg.getData().getString(BixolonPrinter.KEY_STRING_DEVICE_NAME));
                     mConnectedDeviceName = msg.getData().getString(BixolonPrinter.KEY_STRING_DEVICE_NAME);
-                    Toast.makeText(getApplicationContext(), "Impresora Conectada como: " + mConnectedDeviceName, Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Impresora Conectada como: " + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
                     break;
 
                 case BixolonPrinter.MESSAGE_TOAST:
@@ -746,9 +745,9 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
                     break;
 
                 case BixolonPrinter.MESSAGE_PRINT_COMPLETE:
-                    Log.i("Handler", "BixolonPrinter.MESSAGE_PRINT_COMPLETE"+mensaje);
+                    Log.i("Handler", "BixolonPrinter.MESSAGE_PRINT_COMPLETE");
 
-                    Toast.makeText(getApplicationContext(),"Impresión Completa."+mensaje, Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(),"Impresión Completa.", Toast.LENGTH_SHORT).show();
                     break;
 
                 case BixolonPrinter.MESSAGE_COMPLETE_PROCESS_BITMAP:
