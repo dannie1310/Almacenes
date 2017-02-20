@@ -187,6 +187,7 @@ public class SalidaActivity extends AppCompatActivity
 
                         }
                     });
+
                 }
 
                 @Override
@@ -236,6 +237,7 @@ public class SalidaActivity extends AppCompatActivity
                 });
             }
         }
+
 
 
         botonSalida.setOnClickListener(new View.OnClickListener() {
