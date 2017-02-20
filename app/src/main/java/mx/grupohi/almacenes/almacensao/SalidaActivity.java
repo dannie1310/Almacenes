@@ -108,8 +108,8 @@ public class SalidaActivity extends AppCompatActivity
         referenica_salida = (EditText) findViewById(R.id.textReferenciaSalida);
         observacion_salida = (EditText) findViewById(R.id.textObservacionesSalida);
         botonSalida = (Button) findViewById(R.id.buttonSalida);
-        buttonImprimir = (Button) findViewById(R.id.ImprimirEntrada);
-        salir = (Button) findViewById(R.id.salir);
+        buttonImprimir = (Button) findViewById(R.id.ImprimirSalida);
+        salir = (Button) findViewById(R.id.salirS);
         buttonImprimir.setVisibility(View.GONE);
         salir.setVisibility(View.GONE);
 
@@ -270,11 +270,11 @@ public class SalidaActivity extends AppCompatActivity
 
 
                         salidas.clear();
-                        salidas.put("referencia", referenica_salida.getText().toString());
-                        salidas.put("observacion", observacion_salida.getText().toString());
+                        salidas.put("referencia", referenica_salida.getText().toString().replaceAll(" +"," ").trim());
+                        salidas.put("observacion", observacion_salida.getText().toString().replaceAll(" +"," ").trim());
                         salidas.put("idalmacen", ord.id_almacen);
                         salidas.put("fecha", Util.timeStamp());
-                        salidas.put("concepto", concepto.getText().toString());
+                        salidas.put("concepto", concepto.getText().toString().replaceAll(" +"," ").trim());
                         salidas.put("idobra",usuario.getIdObra());
                         salidas.put("folio", folio);
 
@@ -288,9 +288,9 @@ public class SalidaActivity extends AppCompatActivity
                             if (aux_almacen.equals(dr.id_almacen) && aux_material.equals(dr.idmaterial)) {
 
                                 salidas.clear();
-                                salidas.put("cantidad", dr.cantidadRS);
+                                salidas.put("cantidad", dr.cantidadRS.replaceAll(" +"," ").trim());
                                 salidas.put("idsalida", e);
-                                salidas.put("claveConcepto", dr.claveConcepto);
+                                salidas.put("claveConcepto", dr.claveConcepto.replaceAll(" +"," ").trim());
                                 salidas.put("idcontratista", dr.idcontratista);
                                 salidas.put("cargo", dr.cargo);
                                 salidas.put("unidad", dr.unidad);
@@ -354,31 +354,28 @@ public class SalidaActivity extends AppCompatActivity
 
                                 bixolonPrinterApi.setSingleByteFont(BixolonPrinter.CODE_PAGE_858_EURO);
 
-                                // Thread.sleep(PRINTING_SLEEP_TIME);
                                 BitmapDrawable drawable = (BitmapDrawable) getResources().getDrawable(R.mipmap.ic_logo);
                                 Bitmap bitmap = drawable.getBitmap();
-                                //bixolonPrinterApi.printBitmap(bitmap, BixolonPrinter.ALIGNMENT_CENTER, 220, 50, true);
-                                // bixolonPrinterApi.lineFeed(1, true);
-                                printheadproyecto(espacio+"COMPROBANTE RECEPCIÓN DE MATERIALES.",usuario.getObraActiva());
+                                printheadproyecto(espacio+"COMPROBANTE SALIDA DE MATERIALES.",usuario.getObraActiva());
                                 System.out.println("IMPRIMIENDO");
 
 
                                 bixolonPrinterApi.lineFeed(1, true);
-                                //bixolonPrinterApi.printText("Folio: "+folio+" \n", BixolonPrinter.ALIGNMENT_RIGHT, BixolonPrinter.TEXT_ATTRIBUTE_FONT_C, 0, false);
+
                                 printTextTwoColumns(espacio+"Folio: ", folio + " \n",0);
-                                printTextTwoColumns(espacio+"Orden Compra: ",idOrden + " \n",0);
-                                printTextTwoColumns(espacio+"Referencia: ", referencia.getText() + " \n",0);
+                                printTextTwoColumns(espacio+"Almacén: ",nombrealmacen + " \n",0);
+                                printTextTwoColumns(espacio+"Referencia: ", referenica_salida.getText().toString().replaceAll(" +"," ").trim() + " \n",0);
+                                printTextTwoColumns(espacio+"Concepto: ",concepto.getText().toString().replaceAll(" +"," ").trim()+"\n",0);
 
 
-                                //printTextTwoColumns(espacio+"Observaciones: ", observaciones.getText() + "\n",0);
                                 printTextTwoColumns(espacio+"Checador: " + usuario.getNombre(), Util.formatoFecha() + "\n",0);
-                                JSONObject edetalle = entradaDetalle.getEntradasDetalle(getApplicationContext(), folio);
+                                JSONObject edetalle = salidaDetalle.getSalidaDetalle(getApplicationContext(), folio);
                                 System.out.println("JSON "+ edetalle);
                                 bixolonPrinterApi.lineFeed(1, true);
                                 bixolonPrinterApi.printText(espacio+"=============================================   ", BixolonPrinter.ALIGNMENT_CENTER, BixolonPrinter.TEXT_ATTRIBUTE_FONT_A, 0, false);
-                                bixolonPrinterApi.printText(espacio+"RELACIÓN DE MATERIALES RECIBIDOS. \n", BixolonPrinter.ALIGNMENT_CENTER, BixolonPrinter.TEXT_ATTRIBUTE_FONT_A, 0, false);
+                                bixolonPrinterApi.printText(espacio+"RELACIÓN DE SALIDA DE MATERIALES. \n", BixolonPrinter.ALIGNMENT_CENTER, BixolonPrinter.TEXT_ATTRIBUTE_FONT_A, 0, false);
                                 bixolonPrinterApi.printText(espacio+"============================================= \n", BixolonPrinter.ALIGNMENT_CENTER, BixolonPrinter.TEXT_ATTRIBUTE_FONT_A, 0, false);
-                                //bixolonPrinterApi.lineFeed(1, true);
+
                                 JSONObject aux;
                                 for (int i = 0; i < edetalle.length(); i++) {
                                     System.out.println("obras: " + edetalle.getJSONObject(String.valueOf(i)));
@@ -386,45 +383,33 @@ public class SalidaActivity extends AppCompatActivity
                                     if(i!=0) {
                                         aux = edetalle.getJSONObject(String.valueOf(i - 1));
 
-                                        if (aux.getString("idalmacen") != info.getString("idalmacen")) {
+                                        if (!aux.getString("clave").equals(info.getString("clave"))) {
                                             bixolonPrinterApi.printText(espacio+"_____________________________________________________________ \n", BixolonPrinter.ALIGNMENT_CENTER, BixolonPrinter.TEXT_ATTRIBUTE_FONT_C, 0, false);
-                                            bixolonPrinterApi.printText(espacio+"Almacén: " + info.getString("almacen") + " \n", BixolonPrinter.ALIGNMENT_LEFT, BixolonPrinter.TEXT_ATTRIBUTE_FONT_C, 0, false);
+                                            bixolonPrinterApi.printText(espacio+"Clave Concepto: " + info.getString("clave") + " \n", BixolonPrinter.ALIGNMENT_LEFT, BixolonPrinter.TEXT_ATTRIBUTE_FONT_C, 0, false);
                                         }
                                     }
-                                    else if (info.getString("almacen") != "null"){
-                                        bixolonPrinterApi.printText(espacio+"Almacén: " + info.getString("almacen") + " \n", BixolonPrinter.ALIGNMENT_LEFT, BixolonPrinter.TEXT_ATTRIBUTE_FONT_C, 0, false);
-                                    }
-
-                                    if(info.getString("almacen") == "null"){
-                                                                         /* if(i!=0){
-                                                                              bixolonPrinterApi.lineFeed(1, true);
-                                                                              //bixolonPrinterApi.printText("_____________________________________________________________ \n", BixolonPrinter.ALIGNMENT_CENTER, BixolonPrinter.TEXT_ATTRIBUTE_FONT_C, 0, false);
-                                                                          }*/
+                                    else{
                                         bixolonPrinterApi.printText(espacio+"Clave Concepto: " + info.getString("clave") + " \n", BixolonPrinter.ALIGNMENT_LEFT, BixolonPrinter.TEXT_ATTRIBUTE_FONT_C, 0, false);
-
                                     }
-                                    //bixolonPrinterApi.printText(info.getString("material").toUpperCase()+" \n", BixolonPrinter.ALIGNMENT_LEFT, BixolonPrinter.TEXT_ATTRIBUTE_FONT_C, 0, false);
+
+
                                     printTextTwoColumns(espacio+info.getString("material").toUpperCase(), info.getString("cantidad")+ " "+info.getString("unidad")+ "\n",1);
 
                                     if(info.getString("contratista") != "null"){
 
-                                        bixolonPrinterApi.printText(espacio+"Contratista: " + info.getString("contratista")+"\n", BixolonPrinter.ALIGNMENT_LEFT, BixolonPrinter.TEXT_ATTRIBUTE_FONT_C, 0, false);
+                                        bixolonPrinterApi.printText(espacio+"Contratista: " + info.getString("contratista"), BixolonPrinter.ALIGNMENT_LEFT, BixolonPrinter.TEXT_ATTRIBUTE_FONT_C, 0, false);
 
                                         if(info.getString("cargo").equals("1")){
                                             bixolonPrinterApi.printText(espacio+"(CON CARGO)", BixolonPrinter.ALIGNMENT_CENTER, BixolonPrinter.TEXT_ATTRIBUTE_FONT_C, 0, false);
                                         }
+                                        bixolonPrinterApi.printText("\n", BixolonPrinter.ALIGNMENT_LEFT, BixolonPrinter.TEXT_ATTRIBUTE_FONT_C, 0, false);
                                     }
 
-                                    bixolonPrinterApi.lineFeed(1, true);
                                 }
-                                printTextTwoColumns(espacio+"Observaciones: ", observaciones.getText() + "\n",0);
+                                bixolonPrinterApi.lineFeed(1, true);
+                                printTextTwoColumns(espacio+"Observaciones: ", observacion_salida.getText() + "\n",0);
 
                                 printfoot();
-
-                                // }
-                                //bixolonPrinterApi.lineFeed(1,true);
-                                //
-                                //bixolonPrinterApi.printQrCode("NUEVO", BixolonPrinter.ALIGNMENT_CENTER, BixolonPrinter.QR_CODE_MODEL2, 5, false);
 
                                 bixolonPrinterApi.lineFeed(2, true);
 
@@ -595,11 +580,7 @@ public class SalidaActivity extends AppCompatActivity
         int size = 0;
 
         bixolonPrinterApi.setSingleByteFont(BixolonPrinter.CODE_PAGE_858_EURO);
-        // bixolonPrinterApi.printText(text, alignment, attribute, size, false);
-       /* bixolonPrinterApi.lineFeed(1, false);
-        bixolonPrinterApi.print1dBarcode(codex.toUpperCase(), BixolonPrinter.BAR_CODE_ITF, BixolonPrinter.ALIGNMENT_CENTER, 4, 200, BixolonPrinter.HRI_CHARACTER_NOT_PRINTED, true);
-        // bixolonPrinterApi.formFeed(true);
-        bixolonPrinterApi.printText(codex.toUpperCase(), BixolonPrinter.ALIGNMENT_CENTER, attribute, size, false);*/
+
         bixolonPrinterApi.lineFeed(3, true);
         bixolonPrinterApi.printText(espacio+usuario.getNombre()+"\n", BixolonPrinter.ALIGNMENT_CENTER, BixolonPrinter.TEXT_ATTRIBUTE_FONT_B, 0, false);
         bixolonPrinterApi.printText(espacio+"_______________________________________________ \n", BixolonPrinter.ALIGNMENT_CENTER, BixolonPrinter.TEXT_ATTRIBUTE_FONT_C, 0, false);
@@ -651,8 +632,6 @@ public class SalidaActivity extends AppCompatActivity
                         case BixolonPrinter.STATE_CONNECTED:
                             Log.i("Handler", "BixolonPrinter.STATE_CONNECTED");
 
-                            // Toast.makeText(getApplicationContext(), "Impresora Contectada " + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
-                            //toolbar.setSubtitle("Impresora Contectada " + mConnectedDeviceName);
                             connectedPrinter = true;
                             if(imprimir) {
                                 buttonImprimir.performClick();

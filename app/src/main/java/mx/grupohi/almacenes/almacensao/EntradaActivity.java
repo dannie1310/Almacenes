@@ -407,15 +407,15 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
 
                                                                       if(info.getString("contratista") != "null"){
 
-                                                                          bixolonPrinterApi.printText(espacio+"Contratista: " + info.getString("contratista")+"\n", BixolonPrinter.ALIGNMENT_LEFT, BixolonPrinter.TEXT_ATTRIBUTE_FONT_C, 0, false);
+                                                                          bixolonPrinterApi.printText(espacio+"Contratista: " + info.getString("contratista"), BixolonPrinter.ALIGNMENT_LEFT, BixolonPrinter.TEXT_ATTRIBUTE_FONT_C, 0, false);
 
                                                                           if(info.getString("cargo").equals("1")){
                                                                               bixolonPrinterApi.printText(espacio+"(CON CARGO)", BixolonPrinter.ALIGNMENT_CENTER, BixolonPrinter.TEXT_ATTRIBUTE_FONT_C, 0, false);
                                                                           }
+                                                                          bixolonPrinterApi.printText("\n", BixolonPrinter.ALIGNMENT_LEFT, BixolonPrinter.TEXT_ATTRIBUTE_FONT_C, 0, false);
                                                                       }
-
-                                                                      bixolonPrinterApi.lineFeed(1, true);
                                                                   }
+                                                                  bixolonPrinterApi.lineFeed(1, true);
                                                                   printTextTwoColumns(espacio+"Observaciones: ", observaciones.getText() + "\n",0);
 
                                                                   printfoot();

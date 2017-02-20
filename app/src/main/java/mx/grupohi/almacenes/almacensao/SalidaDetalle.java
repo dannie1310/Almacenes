@@ -5,6 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import org.json.JSONObject;
+
 /**
  * Created by Usuario on 08/02/2017.
  */
@@ -90,6 +92,65 @@ public class SalidaDetalle {
             c.close();
             db.close();
         }
+    }
+
+    static JSONObject getSalidaDetalle(Context context, String folio) {
+        JSONObject JSON = new JSONObject();
+        DBScaSqlite db_sca = new DBScaSqlite(context, "sca", null, 1);
+        SQLiteDatabase db = db_sca.getWritableDatabase();
+        Cursor c = db.rawQuery("SELECT * FROM salidadetalle sd INNER JOIN salida s ON s.id = sd.idsalida LEFT JOIN almacenes a ON s.idalmacen = a.id_almacen LEFT JOIN contratistas c ON c.idempresa = sd.idContratista INNER JOIN materiales m ON m.id_material = sd.idmaterial WHERE s.folio = '"+folio+"' ORDER BY a.id_almacen", null);
+        try {
+            if(c != null && c.moveToFirst()) {
+                Integer i = 0;
+                do {
+
+                    JSONObject json = new JSONObject();
+
+                    json.put("id", c.getString(0));
+                    json.put("idsalida", c.getString(1));
+                    json.put("cantidad", c.getString(2));
+                    json.put("idmaterial", c.getInt(3));
+                    json.put("clave", c.getString(4).replaceAll(" +"," ").trim());
+                    json.put("idcontratista", c.getString(5));
+                    json.put("cargo", c.getString(6));
+                    json.put("unidad", c.getString(7));
+                    json.put("fecha", c.getString(8));
+                    json.put("idalmacen", c.getString(10));
+                    json.put("referencia", c.getString(11));
+                    json.put("observacion", c.getString(12));
+                    json.put("concepto", c.getString(13));
+
+                    json.put("folio", c.getString(16));
+
+                    if(c.getString(18)== null){
+                        json.put("almacen","null");
+                    }else{
+                        json.put("almacen", c.getString(18));
+                    }
+                    if(c.getString(20) == null){
+                        json.put("contratista", "null");
+                    }else{
+                        json.put("contratista", c.getString(20));
+                    }
+                    System.out.println("contrat: "+c.getString(20));
+
+                    json.put("material", c.getString(24));
+
+                    JSON.put(i + "", json);
+                    i++;
+
+                } while (c.moveToNext());
+
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            c.close();
+            db.close();
+        }
+        System.out.println("JSON: "+JSON);
+        return JSON;
     }
 
 
