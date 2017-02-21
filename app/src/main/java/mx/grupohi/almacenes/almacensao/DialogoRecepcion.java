@@ -60,10 +60,18 @@ public class DialogoRecepcion {
         return result;
     }
 
-    void destroy() {
+    Boolean destroy() {
         db = db_sca.getWritableDatabase();
+        Boolean x;
+
+        if(getCount()!=0){
+            x = true;
+        }else{
+            x = false;
+        }
         db.execSQL("DELETE FROM dialogo_recepcion");
         db.close();
+        return x;
     }
     public static List<DialogoRecepcion> getRecepcion(Context context, String idorden, String idmaterial){
         DBScaSqlite db_sca = new DBScaSqlite(context, "sca", null, 1);

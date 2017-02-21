@@ -23,6 +23,7 @@ public class Transferencia {
     String idalmacenNew;
     String fecha;
     Integer idobra;
+    String folio;
 
     Transferencia(Context context) {
         this.context = context;
@@ -45,6 +46,7 @@ public class Transferencia {
                     this.idalmacenOrigen = data.getAsString("idalmacenOrigen");
                     this.fecha = data.getAsString("fecha");
                     this.idobra = data.getAsInteger("idobra");
+                    this.folio = data.getAsString("folio");
                 }
             } finally {
                 c.close();
@@ -67,5 +69,22 @@ public class Transferencia {
         System.out.println("eliminar: transferencia: "+id);
         db.execSQL("DELETE FROM transferencia WHERE ID = '" + id + "'");
         db.close();
+    }
+
+    Boolean folio(String folio){
+        db = db_sca.getWritableDatabase();
+        Cursor c = db.rawQuery("SELECT * FROM transferencia WHERE folio  = '"+folio+"'", null);
+        try {
+            if(c!=null && c.moveToFirst()){
+                System.out.println("folio? : "+folio +" "+true);
+                return true;
+            }
+            else{
+                return false;
+            }
+        } finally {
+            c.close();
+            db.close();
+        }
     }
 }

@@ -27,7 +27,7 @@ import android.database.sqlite.SQLiteOpenHelper;
             "CREATE TABLE entradadetalle (ID INTEGER PRIMARY KEY AUTOINCREMENT, identrada INTEGER, cantidad DOUBLE, idalmacen TEXT, claveConcepto TEXT, idContratista TEXT, cargo INTEGER,  unidad TEXT, idmaterial TEXT, fecha DATETIME DEFAULT CURRENT_TIMESTAMP)",
             "CREATE TABLE salida (ID INTEGER PRIMARY KEY AUTOINCREMENT,  idalmacen TEXT, referencia TEXT, observacion TEXT, concepto TEXT, fecha TEXT, idobra INTEGER, folio TEXT)",
             "CREATE TABLE salidadetalle (ID INTEGER PRIMARY KEY AUTOINCREMENT, idsalida INTEGER, cantidad DOUBLE, idmaterial TEXT, claveConcepto TEXT, idContratista TEXT, cargo INTEGER,  unidad TEXT,  fecha DATETIME DEFAULT CURRENT_TIMESTAMP)",
-            "CREATE TABLE transferencia (ID INTEGER PRIMARY KEY AUTOINCREMENT,  idalmacenOrigen TEXT, referencia TEXT, observacion TEXT, fecha TEXT, idobra INTEGER)",
+            "CREATE TABLE transferencia (ID INTEGER PRIMARY KEY AUTOINCREMENT,  idalmacenOrigen TEXT, referencia TEXT, observacion TEXT, fecha TEXT, idobra INTEGER, folio TEXT)",
             "CREATE TABLE transferenciadetalle (ID INTEGER PRIMARY KEY AUTOINCREMENT, idtransferencia INTEGER,  idalmacenOrigen TEXT, idalmacenDestino TEXT,  cantidad DOUBLE, idmaterial TEXT, idContratista TEXT, cargo INTEGER,  unidad TEXT,  fecha DATETIME DEFAULT CURRENT_TIMESTAMP)",
     };
 
