@@ -307,7 +307,8 @@ public class TransferenciaActivity extends AppCompatActivity implements Navigati
                     guardar.setVisibility(View.GONE);
                     buttonImprimir.setVisibility(View.VISIBLE);
                     salir.setVisibility(View.VISIBLE);
-                    spinner.setEnabled(false);
+                    mList.setEnabled(false);
+                   // spinner.setEnabled(false);
                     mListRecibido.setEnabled(false);
                 }
             }

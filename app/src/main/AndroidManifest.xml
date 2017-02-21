@@ -48,6 +48,12 @@
         <activity
             android:name=".TransferenciaActivity"
             android:label="@string/title_activity_transferencia"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ImpresionActivity"
+            android:label="@string/title_activity_impresion"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
