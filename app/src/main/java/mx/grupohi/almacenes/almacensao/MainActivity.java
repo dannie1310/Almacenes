@@ -76,6 +76,8 @@ public class MainActivity extends AppCompatActivity
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+                Intent t = new Intent(getApplicationContext(), ImpresionActivity.class);
+                startActivity(t);
             }
         });
 
@@ -146,7 +148,8 @@ public class MainActivity extends AppCompatActivity
             finish();
             startActivity(intent);
         } else if (id == R.id.nav_imprimir) {
-
+            Intent t = new Intent(getApplicationContext(), ImpresionActivity.class);
+            startActivity(t);
         } else if (id == R.id.nav_entrada) {
 
             Intent entrada = new Intent(getApplicationContext(), EntradaActivity.class);

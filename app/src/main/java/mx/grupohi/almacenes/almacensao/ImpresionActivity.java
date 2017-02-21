@@ -1,5 +1,6 @@
 package mx.grupohi.almacenes.almacensao;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -12,9 +13,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
+
+import java.io.IOException;
 
 public class ImpresionActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    Usuario usuario;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,23 +28,39 @@ public class ImpresionActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        usuario = new Usuario(getApplicationContext());
+        usuario = usuario.getUsuario();
+        final DrawerLayout drawer = (DrawerLayout) findViewById(R. id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
+        if(drawer != null)
+            drawer.addDrawerListener(toggle);
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        if(drawer != null)
+            drawer.post(new Runnable() {
+                @Override
+                public void run() {
+                    for (int i = 0; i < drawer.getChildCount(); i++) {
+                        View child = drawer.getChildAt(i);
+                        TextView tvp = (TextView) child.findViewById(R.id.textViewProyecto);
+                        TextView tvu = (TextView) child.findViewById(R.id.textViewUser);
+                        TextView tvv = (TextView) child.findViewById(R.id.textViewVersion);
+
+                        if (tvp != null) {
+                            tvp.setText(usuario.getObraActiva());
+                        }
+                        if (tvu != null) {
+                            tvu.setText(usuario.getNombre());
+                        }
+                        if (tvv != null) {
+                            tvv.setText("Versión " + String.valueOf(BuildConfig.VERSION_NAME));
+                        }
+                    }
+                }
+            });
     }
 
     @Override
@@ -55,7 +76,7 @@ public class ImpresionActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.impresion, menu);
+        getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
@@ -80,20 +101,37 @@ public class ImpresionActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        if (id == R.id.nav_inicio) {
 
-        } else if (id == R.id.nav_slideshow) {
+            Intent main = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(main);
 
-        } else if (id == R.id.nav_manage) {
+        } else if (id == R.id.nav_imprimir) {
+            Intent intent = getIntent();
+            finish();
+            startActivity(intent);
+        } else if (id == R.id.nav_entrada) {
 
-        } else if (id == R.id.nav_share) {
+            Intent entrada = new Intent(getApplicationContext(), EntradaActivity.class);
+            startActivity(entrada);
 
-        } else if (id == R.id.nav_send) {
+        } else if (id == R.id.nav_salida) {
+            Intent salida = new Intent(getApplicationContext(), SalidaActivity.class);
+            startActivity(salida);
+        } else if (id == R.id.nav_trans) {
+            Intent t = new Intent(getApplicationContext(), TransferenciaActivity.class);
+            startActivity(t);
+        } else if (id == R.id.nav_syn) {
 
+        } else if (id == R.id.nav_cambio) {
+            Intent seleccionar = new Intent(this, SeleccionaObraActivity.class);
+            startActivity(seleccionar);
+
+        } else if (id == R.id.nav_cerrar) {
+            usuario.destroy();
+            Intent loginActivity = new Intent(this, LoginActivity.class);
+            startActivity(loginActivity);
         }
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
