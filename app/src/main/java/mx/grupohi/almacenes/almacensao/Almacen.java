@@ -95,4 +95,21 @@ public class Almacen {
             }
         return data;
     }
+
+    String getIdAlmacen(Integer id){
+        db = db_sca.getWritableDatabase();
+        Cursor c = db.rawQuery("SELECT * FROM almacenes WHERE id_almacen  = '"+id+"'", null);
+        try {
+            if(c!=null && c.moveToFirst()){
+                System.out.println("encontrar " +  c.getString(c.getColumnIndex("descripcion")));
+                return c.getString(c.getColumnIndex("descripcion"));
+            }
+            else{
+                return null;
+            }
+        } finally {
+            c.close();
+            db.close();
+        }
+    }
 }

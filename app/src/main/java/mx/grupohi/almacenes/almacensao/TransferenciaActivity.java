@@ -108,6 +108,7 @@ public class TransferenciaActivity extends AppCompatActivity implements Navigati
         buttonImprimir.setVisibility(View.GONE);
         salir.setVisibility(View.GONE);
 
+        bixolonPrinterApi = new BixolonPrinter(this, mHandler, null);
 
         final ArrayList<String> almacenes = almacen.getArrayListAlmacenes();
         final ArrayList<String> ids = almacen.getArrayListId();
@@ -302,8 +303,8 @@ public class TransferenciaActivity extends AppCompatActivity implements Navigati
                 a++;
                 if (a == lista.getCount()) {
                     Toast.makeText(getApplicationContext(), R.string.guardado, Toast.LENGTH_SHORT).show();
-                    salir.setEnabled(false);
-                    salir.setVisibility(View.GONE);
+                    guardar.setEnabled(false);
+                    guardar.setVisibility(View.GONE);
                     buttonImprimir.setVisibility(View.VISIBLE);
                     salir.setVisibility(View.VISIBLE);
                     spinner.setEnabled(false);
@@ -341,14 +342,14 @@ public class TransferenciaActivity extends AppCompatActivity implements Navigati
 
                                 BitmapDrawable drawable = (BitmapDrawable) getResources().getDrawable(R.mipmap.ic_logo);
                                 Bitmap bitmap = drawable.getBitmap();
-                                printheadproyecto(espacio+"COMPROBANTE SALIDA DE MATERIALES.",usuario.getObraActiva());
+                                printheadproyecto(espacio+"COMPROBANTE DE TRANSFERENCIA DE MATERIALES.",usuario.getObraActiva());
                                 System.out.println("IMPRIMIENDO");
 
 
                                 bixolonPrinterApi.lineFeed(1, true);
 
                                 printTextTwoColumns(espacio+"Folio: ", folio + " \n",0);
-                                printTextTwoColumns(espacio+"Almacén: ",nombrealmacen + " \n",0);
+                                printTextTwoColumns(espacio+"Almacén Salida: ",nombrealmacen + " \n",0);
                                 printTextTwoColumns(espacio+"Referencia: ", referencia.getText().toString().replaceAll(" +"," ").trim() + " \n",0);
 
 
@@ -357,7 +358,7 @@ public class TransferenciaActivity extends AppCompatActivity implements Navigati
                                 System.out.println("JSON "+ edetalle);
                                 bixolonPrinterApi.lineFeed(1, true);
                                 bixolonPrinterApi.printText(espacio+"=============================================   ", BixolonPrinter.ALIGNMENT_CENTER, BixolonPrinter.TEXT_ATTRIBUTE_FONT_A, 0, false);
-                                bixolonPrinterApi.printText(espacio+"RELACIÓN DE SALIDA DE MATERIALES. \n", BixolonPrinter.ALIGNMENT_CENTER, BixolonPrinter.TEXT_ATTRIBUTE_FONT_A, 0, false);
+                                bixolonPrinterApi.printText(espacio+"RELACIÓN DE TRANSFERENCIA DE MATERIALES. \n", BixolonPrinter.ALIGNMENT_CENTER, BixolonPrinter.TEXT_ATTRIBUTE_FONT_A, 0, false);
                                 bixolonPrinterApi.printText(espacio+"============================================= \n", BixolonPrinter.ALIGNMENT_CENTER, BixolonPrinter.TEXT_ATTRIBUTE_FONT_A, 0, false);
 
                                 JSONObject aux;
@@ -367,13 +368,13 @@ public class TransferenciaActivity extends AppCompatActivity implements Navigati
                                     if(i!=0) {
                                         aux = edetalle.getJSONObject(String.valueOf(i - 1));
 
-                                        if (!aux.getString("clave").equals(info.getString("clave"))) {
+                                        if (!aux.getString("almacenDestino").equals(info.getString("almacenDestino"))) {
                                             bixolonPrinterApi.printText(espacio+"_____________________________________________________________ \n", BixolonPrinter.ALIGNMENT_CENTER, BixolonPrinter.TEXT_ATTRIBUTE_FONT_C, 0, false);
-                                            bixolonPrinterApi.printText(espacio+"Clave Concepto: " + info.getString("clave") + " \n", BixolonPrinter.ALIGNMENT_LEFT, BixolonPrinter.TEXT_ATTRIBUTE_FONT_C, 0, false);
+                                            bixolonPrinterApi.printText(espacio+"Almacén Destino: " + info.getString("almacenDestino") + " \n", BixolonPrinter.ALIGNMENT_LEFT, BixolonPrinter.TEXT_ATTRIBUTE_FONT_C, 0, false);
                                         }
                                     }
                                     else{
-                                        bixolonPrinterApi.printText(espacio+"Clave Concepto: " + info.getString("clave") + " \n", BixolonPrinter.ALIGNMENT_LEFT, BixolonPrinter.TEXT_ATTRIBUTE_FONT_C, 0, false);
+                                        bixolonPrinterApi.printText(espacio+"Almacén Destino: " + info.getString("almacenDestino") + " \n", BixolonPrinter.ALIGNMENT_LEFT, BixolonPrinter.TEXT_ATTRIBUTE_FONT_C, 0, false);
                                     }
 
 
@@ -408,7 +409,7 @@ public class TransferenciaActivity extends AppCompatActivity implements Navigati
                 }
             }
         });
-        System.out.println("activo= "+buttonImprimir.isClickable());
+
         onPause();
         bixolonPrinterApi.kickOutDrawer(BixolonPrinter.DRAWER_CONNECTOR_PIN5);
 

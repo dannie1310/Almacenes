@@ -116,9 +116,10 @@ public class TransferenciaDetalle {
 
     static JSONObject getTransferenciaDetalle(Context context, String folio) {
         JSONObject JSON = new JSONObject();
+        Almacen a = new Almacen(context);
         DBScaSqlite db_sca = new DBScaSqlite(context, "sca", null, 1);
         SQLiteDatabase db = db_sca.getWritableDatabase();
-        Cursor c = db.rawQuery("SELECT * FROM salidadetalle sd INNER JOIN salida s ON s.id = sd.idsalida LEFT JOIN almacenes a ON s.idalmacen = a.id_almacen LEFT JOIN contratistas c ON c.idempresa = sd.idContratista INNER JOIN materiales m ON m.id_material = sd.idmaterial WHERE s.folio = '"+folio+"' ORDER BY a.id_almacen", null);
+        Cursor c = db.rawQuery("SELECT * FROM transferenciadetalle td INNER JOIN transferencia t ON t.id = td.idtransferencia LEFT JOIN almacenes a ON td.idalmacenDestino = a.id_almacen LEFT JOIN contratistas c ON c.idempresa = td.idContratista INNER JOIN materiales m ON m.id_material = td.idmaterial WHERE t.folio = '"+folio+"' ORDER BY a.id_almacen", null);
         try {
             if(c != null && c.moveToFirst()) {
                 Integer i = 0;
@@ -127,26 +128,18 @@ public class TransferenciaDetalle {
                     JSONObject json = new JSONObject();
 
                     json.put("id", c.getString(0));
-                    json.put("idsalida", c.getString(1));
-                    json.put("cantidad", c.getString(2));
-                    json.put("idmaterial", c.getInt(3));
-                    json.put("clave", c.getString(4).replaceAll(" +"," ").trim());
-                    json.put("idcontratista", c.getString(5));
-                    json.put("cargo", c.getString(6));
-                    json.put("unidad", c.getString(7));
-                    json.put("fecha", c.getString(8));
-                    json.put("idalmacen", c.getString(10));
-                    json.put("referencia", c.getString(11));
-                    json.put("observacion", c.getString(12));
-                    json.put("concepto", c.getString(13));
-
+                    json.put("idalmacenOrigen", c.getString(2));
+                    json.put("almacenOrigen", a.getIdAlmacen(c.getInt(2)));
+                    json.put("cantidad", c.getString(4));
+                    json.put("cargo", c.getString(7));
+                    json.put("unidad", c.getString(8));
+                    json.put("fecha", c.getString(9));
+                    json.put("referencia", c.getString(12));
+                    json.put("observacion", c.getString(13));
+                    json.put("idobra", c.getString(15));
                     json.put("folio", c.getString(16));
+                    json.put("almacenDestino", c.getString(18));
 
-                    if(c.getString(18)== null){
-                        json.put("almacen","null");
-                    }else{
-                        json.put("almacen", c.getString(18));
-                    }
                     if(c.getString(20) == null){
                         json.put("contratista", "null");
                     }else{
