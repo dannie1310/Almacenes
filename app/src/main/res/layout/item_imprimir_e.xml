@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:minHeight="?attr/listPreferredItemHeight"
+    android:paddingBottom="8dp"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="8dp"
+    android:orientation="vertical">
+
+
+    <TextView
+        android:id="@+id/folio"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?attr/textAppearanceListItem"
+        tools:text="T-000" />
+
+    <TextView
+        android:id="@+id/fecha"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/folio"
+        android:layout_below="@+id/folio"
+        tools:text="DESPERDICIO" />
+    <TextView
+        android:id="@+id/nombre"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/folio"
+        android:layout_below="@+id/fecha"
+        tools:text="KM 01 +300 V-1-B" />
+
+    <TextView
+        android:id="@+id/orden"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/folio"
+        android:layout_below="@+id/nombre"
+        tools:text="BANCO DE TIRO GUADALUPE" />
+
+</LinearLayout>

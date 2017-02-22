@@ -1,5 +1,6 @@
 package mx.grupohi.almacenes.almacensao;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -36,6 +37,22 @@ public class ImpresionActivity extends AppCompatActivity
         if(drawer != null)
             drawer.addDrawerListener(toggle);
         toggle.syncState();
+        final ProgressDialog progress = ProgressDialog.show(this, "ESPERE POR FAVOR", "Cargando Entrada de Materiales", true, false);
+
+        new Thread() {
+            @Override
+            public void run() {
+                ImprimirEntradaFragment fragment = (ImprimirEntradaFragment) getSupportFragmentManager().findFragmentById(R.id.content_impresion);
+
+                if (fragment == null) {
+                    fragment = ImprimirEntradaFragment.newInstance();
+                    getSupportFragmentManager().beginTransaction()
+                            .add(R.id.content_impresion, fragment)
+                            .commit();
+                }
+                progress.dismiss();
+            }
+        }.start();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);

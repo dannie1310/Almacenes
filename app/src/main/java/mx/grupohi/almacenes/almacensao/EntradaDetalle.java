@@ -7,6 +7,11 @@ import android.database.sqlite.SQLiteDatabase;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
 /**
  * Created by Usuario on 01/02/2017.
  */
@@ -25,9 +30,17 @@ public class EntradaDetalle {
     Integer cargo;
     Integer identrada;
     String idalmacen;
+    String almacen;
     String fecha;
     String unidad;
     String idmaterial;
+    String idorden;
+    String folio;
+    String referencia;
+    String observacion;
+    String material;
+    String contratista;
+    Integer idobra;
 
 
     EntradaDetalle(Context context) {
@@ -173,5 +186,80 @@ public class EntradaDetalle {
         }
         System.out.println("JSON: "+JSON);
         return JSON;
+    }
+
+    public static List<EntradaDetalle> getEntradas(Context context){
+        DBScaSqlite db_sca = new DBScaSqlite(context, "sca", null, 1);
+        SQLiteDatabase db = db_sca.getWritableDatabase();
+        Cursor c = db.rawQuery("SELECT * FROM entradadetalle  ORDER BY fecha", null);
+        ArrayList entradas = new ArrayList<EntradaDetalle>();
+        try {
+            if (c != null){
+                while (c.moveToNext()){
+                    EntradaDetalle entrada = new EntradaDetalle(context);
+                    entrada = entrada.findE(c.getInt(0));
+                    entradas.add(entrada);
+                }
+                Collections.sort(entradas, new Comparator<EntradaDetalle>() {
+                    @Override
+                    public int compare(EntradaDetalle v1, EntradaDetalle v2) {
+                        return Integer.valueOf(v2.id).compareTo(Integer.valueOf(v1.id));
+                    }
+                });
+                System.out.println("entraas: "+entradas);
+                return entradas;
+            }
+            else {
+                return new ArrayList<>();
+            }
+        } finally {
+            c.close();
+            db.close();
+        }
+    }
+    public EntradaDetalle findE (Integer id) {
+        db = db_sca.getWritableDatabase();
+        Cursor c = db.rawQuery("SELECT * FROM entradadetalle ed INNER JOIN entrada e ON e.id = ed.identrada LEFT JOIN almacenes a ON ed.idalmacen = a.id_almacen LEFT JOIN contratistas c ON c.idempresa = ed.idContratista INNER JOIN materiales m ON m.id_material = ed.idmaterial WHERE ed.id='"+id+"'", null);
+        try {
+            if (c != null && c.moveToFirst()) {
+                this.idalmacen = c.getString(3);
+                this.cantidad = c.getDouble(2);
+                this.identrada = c.getInt(1);
+                this.claveConcepto = c.getString(4);
+                this.idcontratista = c.getString(5);
+                this.cargo =c.getInt(6);
+                this.unidad = c.getString(7);
+                this.idmaterial = c.getString(8);
+                this.fecha = c.getString(9);
+                this.referencia = c.getString(13);
+                this.observacion = c.getString(14);
+                this.idorden = c.getString(11);
+                this.idobra =c.getInt(16);
+                this.folio = c.getString(17);
+
+                this.material =c.getString(25);
+
+                if(c.getString(19)== null){
+                    this.almacen = "null";
+                }else{
+                    this.almacen = c.getString(19);
+                }
+                if(c.getString(21) == null){
+                   this.contratista = "null";
+                }else{
+                    this.contratista = c.getString(21);
+                }
+                System.out.println("contrat: "+c.getString(19));
+
+               this.material = c.getString(25);
+
+                return this;
+            } else {
+                return null;
+            }
+        } finally {
+            c.close();
+            db.close();
+        }
     }
 }
