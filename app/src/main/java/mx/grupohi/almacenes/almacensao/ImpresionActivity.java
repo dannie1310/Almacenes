@@ -218,7 +218,7 @@ public class ImpresionActivity extends AppCompatActivity
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            if(getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
+            if (getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
                 View root = inflater.inflate(R.layout.fragment_imprimir_entrada, container, false);
                 ListView mViajesList = (ListView) root.findViewById(R.id.list);
                 final AdaptadorInicio adapter = new AdaptadorInicio(getActivity(), EntradaDetalle.getEntradas(getContext()));
@@ -237,7 +237,26 @@ public class ImpresionActivity extends AppCompatActivity
                 });
 
                 return root;
-            }else{
+            } else if (getArguments().getInt(ARG_SECTION_NUMBER) == 2) {
+                View root = inflater.inflate(R.layout.fragment_imprimir_salida, container, false);
+                ListView mViajesList = (ListView) root.findViewById(R.id.list);
+                final AdaptadorSalidas adapter = new AdaptadorSalidas(getActivity(), SalidaDetalle.getSalida(getContext()));
+                mViajesList.setAdapter(adapter);
+                System.out.println("FRAME");
+                mViajesList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        SalidaDetalle viajeActual = adapter.getItem(position);
+                        System.out.println("press Salida: " + position);
+               /* Intent intent = new Intent(con, SuccessDestinoActivity.class);
+                intent.putExtra("idViaje", viajeActual.idViaje);
+                intent.putExtra("list", 1);
+                startActivity(intent);*/
+                    }
+                });
+
+                return root;
+            } else {
                 View rootView = inflater.inflate(R.layout.fragment_imprimir_tab, container, false);
                 TextView textView = (TextView) rootView.findViewById(R.id.section_label);
                 textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));

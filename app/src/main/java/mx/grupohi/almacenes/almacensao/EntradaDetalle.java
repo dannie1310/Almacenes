@@ -217,6 +217,7 @@ public class EntradaDetalle {
             db.close();
         }
     }
+
     public EntradaDetalle findE (Integer id) {
         db = db_sca.getWritableDatabase();
         Cursor c = db.rawQuery("SELECT * FROM entradadetalle ed INNER JOIN entrada e ON e.id = ed.identrada LEFT JOIN almacenes a ON ed.idalmacen = a.id_almacen LEFT JOIN contratistas c ON c.idempresa = ed.idContratista INNER JOIN materiales m ON m.id_material = ed.idmaterial WHERE ed.id='"+id+"'", null);
