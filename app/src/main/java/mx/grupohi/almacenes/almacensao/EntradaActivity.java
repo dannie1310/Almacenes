@@ -61,6 +61,7 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
     String idOrden;
     String nombre;
     String idMaterial;
+    String fecha;
     Integer idfolio;
     Button guardar;
     Button buttonImprimir;
@@ -247,6 +248,7 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
                 Integer a = 0;
                 String aux_orden;
                 String aux_material;
+                Integer e = 0;
                 folio = Util.folio();
                 if (idOrden.equals("0")) {
                     Toast.makeText(getApplicationContext(), R.string.error_orden, Toast.LENGTH_SHORT).show();
@@ -264,17 +266,19 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
                         aux_orden = String.valueOf(ord.numerofolio);
                         aux_material = String.valueOf(ord.idmaterial);
                         //System.out.println("EXPYTY: "+listaRecibido.getCount());
-
-                        entradas.clear();
-                        entradas.put("referencia", referencia.getText().toString());
-                        entradas.put("observacion", observaciones.getText().toString());
-                        entradas.put("idorden", ord.idorden);
-                        entradas.put("fecha", Util.timeStamp());
-                        entradas.put("idmaterial", ord.idmaterial);
-                        entradas.put("idobra", usuario.getIdObra());
-                        entradas.put("folio", folio);
-
-                        Integer e = entrada.create(entradas);
+                        if(a==0) {
+                            fecha =  Util.timeStamp();
+                            entradas.clear();
+                            entradas.put("referencia", referencia.getText().toString());
+                            entradas.put("observacion", observaciones.getText().toString());
+                            entradas.put("idorden", ord.idorden);
+                            entradas.put("numerofolio", ord.numerofolio);
+                            entradas.put("fecha",fecha);
+                            entradas.put("idmaterial", ord.idmaterial);
+                            entradas.put("idobra", usuario.getIdObra());
+                            entradas.put("folio", folio);
+                            e = entrada.create(entradas);
+                        }
                         System.out.println("entrada: " + e + " " + entradas);
 
                         for (int l = 0; l < listaRecibido.getCount(); l++) {
@@ -370,7 +374,7 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
 
 
                                                                   //printTextTwoColumns(espacio+"Observaciones: ", observaciones.getText() + "\n",0);
-                                                                  printTextTwoColumns(espacio+"Checador: " + usuario.getNombre(), Util.formatoFecha() + "\n",0);
+                                                                  printTextTwoColumns(espacio+"Checador: " + usuario.getNombre(), fecha+ "\n",0);
                                                                   JSONObject edetalle = entradaDetalle.getEntradasDetalle(getApplicationContext(), folio);
                                                                   System.out.println("JSON "+ edetalle);
                                                                   bixolonPrinterApi.lineFeed(1, true);

@@ -65,6 +65,7 @@ public class TransferenciaActivity extends AppCompatActivity implements Navigati
     String nombrealmacen;
     String idAlmacen;
     String folio;
+    String fecha;
 
     Integer posicion_almacen;
     Integer idMaterial;
@@ -238,7 +239,7 @@ public class TransferenciaActivity extends AppCompatActivity implements Navigati
                 String aux_almacen;
                 System.out.println("almacen:  "+idAlmacen.toString());
                 folio = Util.folio();
-
+                Integer e = 0;
                 if (referencia.getText().toString().isEmpty()) {
                     Toast.makeText(getApplicationContext(), R.string.error_referencia, Toast.LENGTH_SHORT).show();
                 } else if (idAlmacen.equals("0")) {
@@ -254,17 +255,19 @@ public class TransferenciaActivity extends AppCompatActivity implements Navigati
                         aux_almacen = String.valueOf(ord.id_almacen);
                         aux_material = String.valueOf(ord.id_material);
 
+                        if(a==0) {
+                            fecha = Util.timeStamp();
+                            salidas.clear();
+                            salidas.put("referencia", referencia.getText().toString());
+                            salidas.put("observacion", observacion.getText().toString());
+                            salidas.put("idalmacenOrigen", ord.id_almacen);
+                            salidas.put("fecha", fecha);
+                            salidas.put("idobra", usuario.getIdObra());
+                            salidas.put("folio", folio);
 
-                        salidas.clear();
-                        salidas.put("referencia", referencia.getText().toString());
-                        salidas.put("observacion", observacion.getText().toString());
-                        salidas.put("idalmacenOrigen", ord.id_almacen);
-                        salidas.put("fecha", Util.timeStamp());
-                        salidas.put("idobra",usuario.getIdObra());
-                        salidas.put("folio", folio);
 
-
-                        Integer e = transferencia.create(salidas);
+                            e = transferencia.create(salidas);
+                        }
                         System.out.println("salidas: " + e + " " + salidas);
 
                         for (int l = 0; l < listaRecibido.getCount(); l++) {

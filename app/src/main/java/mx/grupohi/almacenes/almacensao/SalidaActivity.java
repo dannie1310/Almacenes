@@ -65,6 +65,7 @@ public class SalidaActivity extends AppCompatActivity
     String nombrealmacen;
     String idAlmacen;
     String folio;
+    String fecha;
     Integer idMaterial;
     Integer posicion_almacen;
     Double cantidad;
@@ -252,6 +253,7 @@ public class SalidaActivity extends AppCompatActivity
                 String aux_material;
                 String aux_almacen;
                 folio = Util.folio();
+                Integer e = 0;
                 //System.out.println("almacen:  "+idAlmacen.toString());
                 if (concepto.getText().toString().isEmpty()) {
                     Toast.makeText(getApplicationContext(), R.string.error_concepto, Toast.LENGTH_SHORT).show();
@@ -269,19 +271,20 @@ public class SalidaActivity extends AppCompatActivity
                         MaterialesAlmacen ord = lista.getItem(z);
                         aux_almacen = String.valueOf(ord.id_almacen);
                         aux_material = String.valueOf(ord.id_material);
-
-
+                        if(a==0) {
+                        fecha = Util.timeStamp();
                         salidas.clear();
                         salidas.put("referencia", referenica_salida.getText().toString().replaceAll(" +"," ").trim());
                         salidas.put("observacion", observacion_salida.getText().toString().replaceAll(" +"," ").trim());
                         salidas.put("idalmacen", ord.id_almacen);
-                        salidas.put("fecha", Util.timeStamp());
+                        salidas.put("fecha", fecha);
                         salidas.put("concepto", concepto.getText().toString().replaceAll(" +"," ").trim());
                         salidas.put("idobra",usuario.getIdObra());
                         salidas.put("folio", folio);
 
 
-                        Integer e = salida.create(salidas);
+                            e = salida.create(salidas);
+                        }
                         System.out.println("salidas: " + e + " " + salidas);
 
                         for (int l = 0; l < listaRecibido.getCount(); l++) {
@@ -370,7 +373,7 @@ public class SalidaActivity extends AppCompatActivity
                                 printTextTwoColumns(espacio+"Concepto: ",concepto.getText().toString().replaceAll(" +"," ").trim()+"\n",0);
 
 
-                                printTextTwoColumns(espacio+"Checador: " + usuario.getNombre(), Util.formatoFecha() + "\n",0);
+                                printTextTwoColumns(espacio+"Checador: " + usuario.getNombre(), fecha+ "\n",0);
                                 JSONObject edetalle = salidaDetalle.getSalidaDetalle(getApplicationContext(), folio);
                                 System.out.println("JSON "+ edetalle);
                                 bixolonPrinterApi.lineFeed(1, true);

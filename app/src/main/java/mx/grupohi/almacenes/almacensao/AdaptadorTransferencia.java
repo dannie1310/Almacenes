@@ -2,7 +2,6 @@ package mx.grupohi.almacenes.almacensao;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,16 +11,13 @@ import android.widget.TextView;
 import java.util.List;
 
 /**
- * Created by Usuario on 21/02/2017.
+ * Created by Usuario on 23/02/2017.
  */
 
-public class AdaptadorInicio  extends ArrayAdapter<Entrada> {
-
-
-
+public class AdaptadorTransferencia extends ArrayAdapter<TransferenciaDetalle> {
     private Context context;
 
-    AdaptadorInicio(Context context, List<Entrada> objects) {
+    AdaptadorTransferencia(Context context, List<TransferenciaDetalle> objects) {
         super(context, 0, objects);
         this.context = context;
     }
@@ -42,13 +38,13 @@ public class AdaptadorInicio  extends ArrayAdapter<Entrada> {
         TextView fecha = (TextView) convertView.findViewById(R.id.fecha);
         TextView orden = (TextView) convertView.findViewById(R.id.orden);
 
-        Entrada en = getItem(position);
+        TransferenciaDetalle en = getItem(position);
 
         assert en != null;
-        camion.setText("Folio: "+en.folio);
-        fecha.setText("Fecha: "+en.fecha);
-        material.setText("Observación: "+en.observacion);
-        orden.setText("Orden : #"+en.numerofolio);
+        camion.setText("Folio: " + en.folio);
+        fecha.setText("Fecha: " + en.fecha);
+        material.setText(en.material);
+        orden.setText("Observación : " + en.observacion);
 
         return convertView;
     }
