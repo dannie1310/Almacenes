@@ -5,6 +5,11 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
 /**
  * Created by Usuario on 13/02/2017.
  */
@@ -22,6 +27,7 @@ public class Transferencia {
     String observacion;
     String idalmacenNew;
     String fecha;
+    String almacenOrigen;
     Integer idobra;
     String folio;
 
@@ -37,7 +43,7 @@ public class Transferencia {
         Boolean result = db.insert("transferencia", null, data) > -1;
         if (result) {
 
-            Cursor c = db.rawQuery("SELECT ID FROM transferencia WHERE fecha = '" + data.getAsString("fecha") + "' ORDER BY ID DESC LIMIT 1", null);
+            Cursor c = db.rawQuery("SELECT ID FROM transferencia WHERE folio = '" + data.getAsString("folio") + "' ORDER BY ID DESC LIMIT 1", null);
             try {
                 if(c != null && c.moveToFirst()) {
                     this.id = c.getInt(0);
@@ -81,6 +87,62 @@ public class Transferencia {
             }
             else{
                 return false;
+            }
+        } finally {
+            c.close();
+            db.close();
+        }
+    }
+
+    public static List<Transferencia> getTransferencia(Context context){
+        DBScaSqlite db_sca = new DBScaSqlite(context, "sca", null, 1);
+        SQLiteDatabase db = db_sca.getWritableDatabase();
+        Cursor c = db.rawQuery("SELECT * FROM transferencia ORDER BY fecha", null);
+        ArrayList sa = new ArrayList<Transferencia>();
+        try {
+            if (c != null){
+                while (c.moveToNext()) {
+                    Transferencia s = new Transferencia(context);
+                    s = s.findT(c.getInt(0));
+                    sa.add(s);
+                }
+                Collections.sort(sa, new Comparator<Transferencia>() {
+                    @Override
+                    public int compare(Transferencia v1, Transferencia v2) {
+                        return String.valueOf(v2.folio).compareTo(String.valueOf(v1.folio));
+                    }
+                });
+                System.out.println("entraas: "+sa);
+                return sa;
+            }
+            else {
+                return new ArrayList<>();
+            }
+        } finally {
+            c.close();
+            db.close();
+        }
+    }
+
+    public Transferencia findT (Integer id) {
+        db = db_sca.getWritableDatabase();
+        Almacen a = new Almacen(context);
+        Cursor c = db.rawQuery("SELECT * FROM transferencia WHERE id='"+id+"'", null);
+        try {
+            if (c != null && c.moveToFirst()) {
+
+                this.idalmacenOrigen = c.getString(1);
+                this.fecha =c.getString(4);
+                this.almacenOrigen = a.getIdAlmacen(c.getInt(1));
+                this.referencia = c.getString(2);
+                this.observacion = c.getString(3);
+                this.idobra = c.getInt(5);
+                this.folio = c.getString(6);
+
+
+                return this;
+            } else {
+                return null;
             }
         } finally {
             c.close();

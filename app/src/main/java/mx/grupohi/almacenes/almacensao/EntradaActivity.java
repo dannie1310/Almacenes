@@ -75,6 +75,7 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
     Double existencia;
     Integer idOrdenCompra;
     private String folio;
+    static String  position;
 
     public static BixolonPrinter bixolonPrinterApi;
     private static final long PRINTING_TIME = 2100;
@@ -799,6 +800,9 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            Intent t = new Intent(getApplicationContext(), ImpresionActivity.class);
+            d.destroy();
+            startActivity(t);
         } else if (id == R.id.nav_entrada) {
 
             Intent intent = getIntent();

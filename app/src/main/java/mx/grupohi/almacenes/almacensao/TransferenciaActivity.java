@@ -164,7 +164,7 @@ public class TransferenciaActivity extends AppCompatActivity implements Navigati
                                 FragmentManager fm = getSupportFragmentManager();
 
                                 transferenciaFragment = new TransferenciaFragment();
-                                transferenciaFragment = transferenciaFragment.newInstance(String.valueOf(cantidad),m.unidad , idMaterial, m.descripcion, m.id_almacen, referencia.getText().toString(),observacion.getText().toString(), posicion_almacen);
+                                transferenciaFragment = transferenciaFragment.newInstance(String.valueOf(cantidad),m.unidad , idMaterial, m.descripcion, Integer.valueOf(idAlmacen), referencia.getText().toString(),observacion.getText().toString(), posicion_almacen);
 
                                 transferenciaFragment.show(fm, "Material Recibido");
 
@@ -260,7 +260,7 @@ public class TransferenciaActivity extends AppCompatActivity implements Navigati
                             salidas.clear();
                             salidas.put("referencia", referencia.getText().toString());
                             salidas.put("observacion", observacion.getText().toString());
-                            salidas.put("idalmacenOrigen", ord.id_almacen);
+                            salidas.put("idalmacenOrigen", idAlmacen);
                             salidas.put("fecha", fecha);
                             salidas.put("idobra", usuario.getIdObra());
                             salidas.put("folio", folio);
@@ -279,7 +279,7 @@ public class TransferenciaActivity extends AppCompatActivity implements Navigati
                                 salidas.put("cantidad", dr.cantidadRS);
                                 salidas.put("idtransferencia", e);
                                 salidas.put("idmaterial", dr.idmaterial);
-                                salidas.put("idalmacenOrigen", ord.id_almacen);
+                                salidas.put("idalmacenOrigen", idAlmacen );
                                 salidas.put("idalmacenDestino",dr.id_almacen);
                                 salidas.put("idcontratista", dr.idcontratista);
                                 salidas.put("cargo", dr.cargo);
@@ -357,7 +357,7 @@ public class TransferenciaActivity extends AppCompatActivity implements Navigati
                                 printTextTwoColumns(espacio+"Referencia: ", referencia.getText().toString().replaceAll(" +"," ").trim() + " \n",0);
 
 
-                                printTextTwoColumns(espacio+"Checador: " + usuario.getNombre(), Util.formatoFecha() + "\n",0);
+                                printTextTwoColumns(espacio+"Checador: " + usuario.getNombre(), fecha + "\n",0);
                                 JSONObject edetalle = transferenciaDetalle.getTransferenciaDetalle(getApplicationContext(), folio);
                                 System.out.println("JSON "+ edetalle);
                                 bixolonPrinterApi.lineFeed(1, true);
@@ -537,13 +537,25 @@ public class TransferenciaActivity extends AppCompatActivity implements Navigati
         if (leftText.length() + rightText.length() + 1 > LINE_CHARS) {
             int alignment = BixolonPrinter.ALIGNMENT_LEFT;
             int attribute = 0;
+            int suma;
             attribute |= BixolonPrinter.TEXT_ATTRIBUTE_FONT_C;
+            suma = leftText.length() - LINE_CHARS ;
+            suma = LINE_CHARS - (suma + rightText.length());
             bixolonPrinterApi.printText(leftText, alignment, attribute, BixolonPrinter.TEXT_SIZE_HORIZONTAL1, false);
-
+            System.out.println("mensaje: "+rightText+"IMM = "+ LINE_CHARS+" - "+leftText.length()+" - "+rightText.length()+"suma: "+suma);
             alignment = BixolonPrinter.ALIGNMENT_RIGHT;
             attribute = 0;
             attribute |= BixolonPrinter.TEXT_ATTRIBUTE_FONT_C;
-            bixolonPrinterApi.printText(rightText, alignment, attribute, BixolonPrinter.TEXT_SIZE_HORIZONTAL1, false);
+            String paddingChar = "";
+
+            for(int i=0; i<suma; i++){
+                if(valor == 0){
+                    paddingChar = paddingChar.concat(" ");
+                }else{
+                    paddingChar = paddingChar.concat(".");
+                }
+            }
+            bixolonPrinterApi.printText(paddingChar+rightText, alignment, attribute, BixolonPrinter.TEXT_SIZE_HORIZONTAL1, false);
         } else {
             int padding = LINE_CHARS - leftText.length() - rightText.length();
             String paddingChar = "";
@@ -734,10 +746,12 @@ public class TransferenciaActivity extends AppCompatActivity implements Navigati
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+        DialogoRecepcion dialogoRecepcion = new DialogoRecepcion(getApplicationContext());
 
         if (id == R.id.nav_inicio) {
 
             Intent main = new Intent(getApplicationContext(), MainActivity.class);
+            dialogoRecepcion.destroy();
             startActivity(main);
 
         } else if (id == R.id.nav_imprimir) {
@@ -746,17 +760,23 @@ public class TransferenciaActivity extends AppCompatActivity implements Navigati
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            Intent t = new Intent(getApplicationContext(), ImpresionActivity.class);
+            dialogoRecepcion.destroy();
+            startActivity(t);
         } else if (id == R.id.nav_entrada) {
 
             Intent entrada = new Intent(getApplicationContext(), EntradaActivity.class);
+            dialogoRecepcion.destroy();
             startActivity(entrada);
 
         } else if (id == R.id.nav_salida) {
             Intent salida = new Intent(getApplicationContext(), SalidaActivity.class);
+            dialogoRecepcion.destroy();
             startActivity(salida);
         } else if (id == R.id.nav_trans) {
 
             Intent intent = getIntent();
+            dialogoRecepcion.destroy();
             finish();
             startActivity(intent);
 
@@ -764,10 +784,12 @@ public class TransferenciaActivity extends AppCompatActivity implements Navigati
 
         } else if (id == R.id.nav_cambio) {
             Intent seleccionar = new Intent(this, SeleccionaObraActivity.class);
+            dialogoRecepcion.destroy();
             startActivity(seleccionar);
 
         } else if (id == R.id.nav_cerrar) {
             usuario.destroy();
+            dialogoRecepcion.destroy();
             Intent loginActivity = new Intent(this, LoginActivity.class);
             startActivity(loginActivity);
         }

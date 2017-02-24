@@ -164,7 +164,7 @@ public class TransferenciaFragment extends DialogFragment {
 
                     nombre = spinner.getSelectedItem().toString();
                     idAlmacen = spinnerMap.get(nombre);
-                    System.out.println("almacenes: " + idAlmacen + nombre);
+                    System.out.println("almacenes: " + idAlmacen + nombre+idalmacenAnt);
                 }
                 @Override
                 public void onNothingSelected(AdapterView<?> parent) {

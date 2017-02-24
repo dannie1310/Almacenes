@@ -14,10 +14,10 @@ import java.util.List;
  * Created by Usuario on 23/02/2017.
  */
 
-public class AdaptadorTransferencia extends ArrayAdapter<TransferenciaDetalle> {
+public class AdaptadorTransferencia extends ArrayAdapter<Transferencia> {
     private Context context;
 
-    AdaptadorTransferencia(Context context, List<TransferenciaDetalle> objects) {
+    AdaptadorTransferencia(Context context, List<Transferencia> objects) {
         super(context, 0, objects);
         this.context = context;
     }
@@ -38,12 +38,12 @@ public class AdaptadorTransferencia extends ArrayAdapter<TransferenciaDetalle> {
         TextView fecha = (TextView) convertView.findViewById(R.id.fecha);
         TextView orden = (TextView) convertView.findViewById(R.id.orden);
 
-        TransferenciaDetalle en = getItem(position);
+        Transferencia en = getItem(position);
 
         assert en != null;
         camion.setText("Folio: " + en.folio);
         fecha.setText("Fecha: " + en.fecha);
-        material.setText(en.material);
+        material.setText("Almacén: "+en.almacenOrigen);
         orden.setText("Observación : " + en.observacion);
 
         return convertView;

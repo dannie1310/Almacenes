@@ -755,13 +755,11 @@ public class SalidaActivity extends AppCompatActivity
             d.destroy();
             startActivity(inicio);
         } else if (id == R.id.nav_imprimir) {
-            //d.destroy();
+            d.destroy();
 
-            try {
-                Util.copyDataBase(getApplicationContext());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+
+            Intent t = new Intent(getApplicationContext(), ImpresionActivity.class);
+            startActivity(t);
         } else if (id == R.id.nav_entrada) {
 
             Intent entrada = new Intent(getApplicationContext(), EntradaActivity.class);
@@ -777,7 +775,11 @@ public class SalidaActivity extends AppCompatActivity
             Intent t = new Intent(getApplicationContext(), TransferenciaActivity.class);
             startActivity(t);
         } else if (id == R.id.nav_syn) {
-
+            try {
+                Util.copyDataBase(getApplicationContext());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         } else if (id == R.id.nav_cambio) {
             Intent seleccionar = new Intent(this, SeleccionaObraActivity.class);
             d.destroy();
