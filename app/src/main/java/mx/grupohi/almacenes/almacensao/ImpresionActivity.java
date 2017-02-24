@@ -41,6 +41,8 @@ import org.json.JSONObject;
 import java.util.Set;
 
 import static mx.grupohi.almacenes.almacensao.R.id.folio;
+import static mx.grupohi.almacenes.almacensao.R.id.useLogo;
+import static mx.grupohi.almacenes.almacensao.R.id.usuario;
 
 public class ImpresionActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -235,7 +237,7 @@ public class ImpresionActivity extends AppCompatActivity
             if (getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
                 View root = inflater.inflate(R.layout.fragment_imprimir_entrada, container, false);
                 ListView mViajesList = (ListView) root.findViewById(R.id.list);
-                final AdaptadorInicio adapter = new AdaptadorInicio(getActivity(), Entrada.getEntradas(getContext()));
+                final AdaptadorInicio adapter = new AdaptadorInicio(getActivity(), Entrada.getEntradas(getContext(),usuario.getIdObra()));
                 mViajesList.setAdapter(adapter);
                 mViajesList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
@@ -249,7 +251,7 @@ public class ImpresionActivity extends AppCompatActivity
             } else if (getArguments().getInt(ARG_SECTION_NUMBER) == 2) {
                 View root = inflater.inflate(R.layout.fragment_imprimir_salida, container, false);
                 ListView mViajesList = (ListView) root.findViewById(R.id.list);
-                final AdaptadorSalidas adapter = new AdaptadorSalidas(getActivity(), Salida.getSalida(getContext()));
+                final AdaptadorSalidas adapter = new AdaptadorSalidas(getActivity(), Salida.getSalida(getContext(),usuario.getIdObra()));
                 mViajesList.setAdapter(adapter);
                 System.out.println("FRAME");
                 mViajesList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -264,7 +266,7 @@ public class ImpresionActivity extends AppCompatActivity
             } else {
                 View root = inflater.inflate(R.layout.fragment_imprimir_transferencia, container, false);
                 ListView mViajesList = (ListView) root.findViewById(R.id.list);
-                final AdaptadorTransferencia adapter = new AdaptadorTransferencia(getActivity(), Transferencia.getTransferencia(getContext()));
+                final AdaptadorTransferencia adapter = new AdaptadorTransferencia(getActivity(), Transferencia.getTransferencia(getContext(),usuario.getIdObra()));
                 mViajesList.setAdapter(adapter);
                 System.out.println("FRAME");
                 mViajesList.setOnItemClickListener(new AdapterView.OnItemClickListener() {

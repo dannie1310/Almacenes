@@ -97,16 +97,16 @@ public class Salida {
             db.close();
         }
     }
-    public static List<Salida> getSalida(Context context){
+    public static List<Salida> getSalida(Context context, Integer idobra){
         DBScaSqlite db_sca = new DBScaSqlite(context, "sca", null, 1);
         SQLiteDatabase db = db_sca.getWritableDatabase();
-        Cursor c = db.rawQuery("SELECT * FROM salida  ORDER BY fecha", null);
+        Cursor c = db.rawQuery("SELECT * FROM salida WHERE idobra = '"+idobra+"'  ORDER BY fecha", null);
         ArrayList sa = new ArrayList<Salida>();
         try {
             if (c != null){
                 while (c.moveToNext()){
                     Salida s = new Salida(context);
-                    s = s.findS(c.getInt(0));
+                    s = s.findS(c.getInt(0),c.getInt(6));
                     sa.add(s);
                 }
                Collections.sort(sa, new Comparator<Salida>() {
@@ -126,9 +126,9 @@ public class Salida {
             db.close();
         }
     }
-    public Salida findS (Integer id) {
+    public Salida findS (Integer id, Integer idobra) {
         db = db_sca.getWritableDatabase();
-        Cursor c = db.rawQuery("SELECT * FROM salida s LEFT JOIN almacenes a ON s.idalmacen = a.id_almacen  WHERE s.id='"+id+"'", null);
+        Cursor c = db.rawQuery("SELECT * FROM salida s LEFT JOIN almacenes a ON s.idalmacen = a.id_almacen  WHERE s.id='"+id+"' and  idobra = '"+idobra+"' ", null);
         try {
             if (c != null && c.moveToFirst()) {
                 this.id = c.getInt(0);

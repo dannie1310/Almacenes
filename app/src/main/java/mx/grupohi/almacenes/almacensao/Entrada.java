@@ -2,6 +2,7 @@ package mx.grupohi.almacenes.almacensao;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -95,16 +96,16 @@ public class Entrada {
             db.close();
         }
     }
-    public static List<Entrada> getEntradas(Context context){
+    public static List<Entrada> getEntradas(Context context, Integer idobra){
         DBScaSqlite db_sca = new DBScaSqlite(context, "sca", null, 1);
         SQLiteDatabase db = db_sca.getWritableDatabase();
-        Cursor c = db.rawQuery("SELECT * FROM entrada ORDER BY fecha", null);
+        Cursor c = db.rawQuery("SELECT * FROM entrada WHERE idobra = '"+idobra+"' ORDER BY fecha", null);
         ArrayList entradas = new ArrayList<Entrada>();
         try {
             if (c != null){
                 while (c.moveToNext()){
                     Entrada entrada = new Entrada(context);
-                    entrada = entrada.findE(c.getInt(0));
+                    entrada = entrada.findE(c.getInt(0),c.getInt(6));
                     entradas.add(entrada);
 
                 }
@@ -126,9 +127,9 @@ public class Entrada {
         }
     }
 
-    public Entrada findE (Integer id) {
+    public Entrada findE (Integer id, Integer idobra) {
         db = db_sca.getWritableDatabase();
-        Cursor c = db.rawQuery("SELECT * FROM entrada WHERE id='"+id+"'", null);
+        Cursor c = db.rawQuery("SELECT * FROM entrada WHERE id='"+id+"' and  idobra = '"+idobra+"'", null);
         try {
             if (c != null && c.moveToFirst()) {
                 this.id = c.getInt(0);

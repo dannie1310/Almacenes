@@ -310,12 +310,6 @@ public class SalidaActivity extends AppCompatActivity
                             }
 
                         }
-                        System.out.println("FUNCION: " + e);
-                        if (!salidaDetalle.find(e)) {
-                            Salida.remove(getApplicationContext(), e);
-                            System.out.println("remove: " + e);
-                        }
-
                     }
                 }
                 a++;

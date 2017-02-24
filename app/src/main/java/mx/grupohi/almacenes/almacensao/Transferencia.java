@@ -2,6 +2,7 @@ package mx.grupohi.almacenes.almacensao;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -94,16 +95,16 @@ public class Transferencia {
         }
     }
 
-    public static List<Transferencia> getTransferencia(Context context){
+    public static List<Transferencia> getTransferencia(Context context, Integer idobra){
         DBScaSqlite db_sca = new DBScaSqlite(context, "sca", null, 1);
         SQLiteDatabase db = db_sca.getWritableDatabase();
-        Cursor c = db.rawQuery("SELECT * FROM transferencia ORDER BY fecha", null);
+        Cursor c = db.rawQuery("SELECT * FROM transferencia WHERE idobra = '"+idobra+"' ORDER BY fecha", null);
         ArrayList sa = new ArrayList<Transferencia>();
         try {
             if (c != null){
                 while (c.moveToNext()) {
                     Transferencia s = new Transferencia(context);
-                    s = s.findT(c.getInt(0));
+                    s = s.findT(c.getInt(0),c.getInt(5));
                     sa.add(s);
                 }
                 Collections.sort(sa, new Comparator<Transferencia>() {
@@ -124,10 +125,10 @@ public class Transferencia {
         }
     }
 
-    public Transferencia findT (Integer id) {
+    public Transferencia findT (Integer id, Integer idobra) {
         db = db_sca.getWritableDatabase();
         Almacen a = new Almacen(context);
-        Cursor c = db.rawQuery("SELECT * FROM transferencia WHERE id='"+id+"'", null);
+        Cursor c = db.rawQuery("SELECT * FROM transferencia WHERE id='"+id+"' and  idobra = '"+idobra+"' ", null);
         try {
             if (c != null && c.moveToFirst()) {
 

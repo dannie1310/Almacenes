@@ -295,11 +295,11 @@ public class TransferenciaActivity extends AppCompatActivity implements Navigati
                             }
 
                         }
-                        System.out.println("FUNCION: " + e);
+                       /* System.out.println("FUNCION: " + e);
                         if (!transferenciaDetalle.find(e)) {
                             Transferencia.remove(getApplicationContext(), e);
                             System.out.println("remove: " + e);
-                        }
+                        }*/
 
                     }
                 }
