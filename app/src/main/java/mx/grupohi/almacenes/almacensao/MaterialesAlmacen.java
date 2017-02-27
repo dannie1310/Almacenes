@@ -59,7 +59,7 @@ public class MaterialesAlmacen {
 
     public MaterialesAlmacen find(Integer id, Integer almacen, Integer idobra){
         db=db_sca.getWritableDatabase();
-        Cursor c = db.rawQuery("SELECT * FROM materiales m LEFT JOIN material_almacen ma  ON m.id_material = ma.id_material LEFT JOIN entradadetalle ed ON ed.idmaterial = m.id_material LEFT JOIN transferenciadetalle td ON td.idmaterial = m.id_material WHERE m.id_material = '"+id+"' and ma.id_almacen = '"+almacen+"' or ed.idalmacen = '"+almacen+"' or td.idalmacenDestino = '"+almacen+"'", null);
+        Cursor c = db.rawQuery("SELECT * FROM materiales m LEFT JOIN material_almacen ma  ON m.id_material = ma.id_material LEFT JOIN entradadetalle ed ON ed.idmaterial = m.id_material LEFT JOIN transferenciadetalle td ON td.idmaterial = m.id_material WHERE m.id_material = '"+id+"' and ( ma.id_almacen = '"+almacen+"' or ed.idalmacen = '"+almacen+"' or td.idalmacenDestino = '"+almacen+"' ) ", null);
         EntradaDetalle e = new EntradaDetalle(context);
         DialogoRecepcion d = new DialogoRecepcion(context);
         SalidaDetalle s = new SalidaDetalle(context);
@@ -72,7 +72,7 @@ public class MaterialesAlmacen {
         Double aux_cantidad = 0.0;
         Double aux_transferenciaEntrada;
         Double aux_transferenciaSalida;
-        System.out.println("PROBANDO: "+ c!= null);
+
         try{
             if(c != null && c.moveToFirst()){
                 cantidad_entrada = e.getCantidad(id,almacen, idobra);
@@ -81,8 +81,9 @@ public class MaterialesAlmacen {
                 salida =  d.valorSalida(context,id, almacen);
                 aux_transferenciaEntrada = td.getCantidadEntrada(id,almacen,idobra);
                 aux_transferenciaSalida = td.getCantidadSalida(id,almacen,idobra);
-
                 this.id_material = c.getInt(0);
+
+                System.out.println("PROBANDO: id material "+ id_material +" almacen "+ almacen+" obra "+ idobra+" id0material " +id+"nombrre "+ c.getString(c.getColumnIndex("descripcion")));
                 if(c.getInt(6)==0){
                     this.id_almacen = c.getInt(13);
                 }else{
