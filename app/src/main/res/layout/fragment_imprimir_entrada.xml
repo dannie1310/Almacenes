@@ -4,9 +4,13 @@
     android:layout_height="match_parent"
     tools:context="mx.grupohi.almacenes.almacensao.ImpresionActivity">
 
-    <ListView
-        android:id="@+id/list"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+        <ListView
+            android:id="@+id/list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </ScrollView>
 </FrameLayout>
