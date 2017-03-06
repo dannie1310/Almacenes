@@ -190,19 +190,21 @@
             <Button
                 android:text="Imprimir"
                 android:textAlignment="center"
-                android:layout_width="180dp"
+                android:layout_width="155dp"
                 android:layout_height="match_parent"
                 android:id="@+id/ImprimirEntrada"
                 style="@style/Widget.AppCompat.Button.Colored"
                 android:textSize="20sp" />
+
             <Button
                 android:text="Salir"
+                android:layout_width="165dp"
                 android:textAlignment="center"
-                android:layout_width="180dp"
                 android:layout_height="match_parent"
                 android:id="@+id/salir"
                 style="@style/Widget.AppCompat.Button.Colored"
                 android:textSize="20sp" />
+
 
         </LinearLayout>
 

@@ -227,7 +227,7 @@
             <Button
                 android:text="Imprimir"
                 android:textAlignment="center"
-                android:layout_width="180dp"
+                android:layout_width="155dp"
                 android:layout_height="match_parent"
                 android:id="@+id/ImprimirSalida"
                 style="@style/Widget.AppCompat.Button.Colored"
@@ -235,7 +235,7 @@
             <Button
                 android:text="Salir"
                 android:textAlignment="center"
-                android:layout_width="180dp"
+                android:layout_width="165dp"
                 android:layout_height="match_parent"
                 android:id="@+id/salirS"
                 style="@style/Widget.AppCompat.Button.Colored"
