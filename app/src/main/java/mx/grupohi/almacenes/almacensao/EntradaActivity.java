@@ -592,15 +592,28 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
         if (leftText.length() + rightText.length() + 1 > LINE_CHARS) {
             int alignment = BixolonPrinter.ALIGNMENT_LEFT;
             int attribute = 0;
+            int suma;
             attribute |= BixolonPrinter.TEXT_ATTRIBUTE_FONT_C;
+            suma = leftText.length() - LINE_CHARS ;
+            suma = LINE_CHARS - (suma + rightText.length());
             bixolonPrinterApi.printText(leftText, alignment, attribute, BixolonPrinter.TEXT_SIZE_HORIZONTAL1, false);
-
+            System.out.println("mensaje: "+rightText+"IMM = "+ LINE_CHARS+" - "+leftText.length()+" - "+rightText.length()+"suma: "+suma);
             alignment = BixolonPrinter.ALIGNMENT_RIGHT;
             attribute = 0;
             attribute |= BixolonPrinter.TEXT_ATTRIBUTE_FONT_C;
-            bixolonPrinterApi.printText(rightText, alignment, attribute, BixolonPrinter.TEXT_SIZE_HORIZONTAL1, false);
+            String paddingChar = "";
+
+            for(int i=0; i<suma; i++){
+                if(valor == 0){
+                    paddingChar = paddingChar.concat(" ");
+                }else{
+                    paddingChar = paddingChar.concat(".");
+                }
+            }
+            bixolonPrinterApi.printText(paddingChar+rightText, alignment, attribute, BixolonPrinter.TEXT_SIZE_HORIZONTAL1, false);
         } else {
             int padding = LINE_CHARS - leftText.length() - rightText.length();
+            System.out.println("mensaje: "+rightText+"IMMMM: "+padding +" = "+ LINE_CHARS+" - "+leftText.length()+" - "+rightText.length());
             String paddingChar = "";
             for (int i = 0; i < padding; i++) {
                 if(valor == 0){
@@ -826,6 +839,7 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
 
         } else if (id == R.id.nav_trans) {
             Intent t = new Intent(getApplicationContext(), TransferenciaActivity.class);
+            d.destroy();
             startActivity(t);
         } else if (id == R.id.nav_syn) {
 

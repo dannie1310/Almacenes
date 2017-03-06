@@ -219,6 +219,10 @@ public class TransferenciaFragment extends DialogFragment {
                     cargo.setVisibility(View.GONE);
                     textCargo.setVisibility(View.GONE);
                     spinnercontratista.setVisibility(View.GONE);
+                    spinnercontratista.setSelection(0);
+                    empresa = null;
+                    idContratista = null;
+                    cargo.setChecked(false);
                 }
 
 
