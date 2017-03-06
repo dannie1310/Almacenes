@@ -63,7 +63,7 @@ public class DialogoRecepcion {
     Boolean destroy() {
         db = db_sca.getWritableDatabase();
         Boolean x;
-
+        System.out.println("BORRAR");
         if(getCount()!=0){
             x = true;
         }else{

@@ -57,6 +57,7 @@ public class CantidadEntradaFragment extends DialogFragment {
     private CheckBox cargo;
     Spinner spinner_almacenes;
     Spinner spinnercontratista;
+    static Integer posicion;
     private HashMap<String, String>  spinnerMap;
     private HashMap<String, String>  spinnerMapContra;
     TextView titulo;
@@ -80,14 +81,14 @@ public class CantidadEntradaFragment extends DialogFragment {
 
     public CantidadEntradaFragment() {
         // Required empty public constructor
-       System.out.println("cont "+nombre);
+       //System.out.println("cont "+nombre);
 
 
 
     }
 
     // TODO: Rename and change types and number of parameters
-    public static CantidadEntradaFragment newInstance(String titulo, String cantidad, String unidad,String idorden, String material,String referen, String obs) {
+    public static CantidadEntradaFragment newInstance(String titulo, String cantidad, String unidad,String idorden, String material,String referen, String obs, Integer posicionn) {
         CantidadEntradaFragment frag = new CantidadEntradaFragment();
         Bundle args = new Bundle();
         frag.isResumed();
@@ -100,6 +101,7 @@ public class CantidadEntradaFragment extends DialogFragment {
         idmaterial = material;
         observacion = obs;
         referencia = referen;
+        posicion = posicionn;
 
         return frag;
 
@@ -177,7 +179,7 @@ public class CantidadEntradaFragment extends DialogFragment {
 
                     nombre = spinner_almacenes.getSelectedItem().toString();
                     idAlmacen = spinnerMap.get(nombre);
-                    System.out.println("almacenes: " + idAlmacen + nombre);
+                   // System.out.println("almacenes: " + idAlmacen + nombre);
 
                 }
 
@@ -208,7 +210,7 @@ public class CantidadEntradaFragment extends DialogFragment {
 
                     empresa = spinnercontratista.getSelectedItem().toString();
                     idContratista = spinnerMapContra.get(empresa);
-                    System.out.println("contratista: " + empresa + idContratista);
+                    //System.out.println("contratista: " + empresa + idContratista);
 
                 }
 
@@ -222,7 +224,7 @@ public class CantidadEntradaFragment extends DialogFragment {
         almacen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                System.out.println("Almacen: " + recibido.getText());
+               // System.out.println("Almacen: " + recibido.getText());
                 //spinneralmacen.setVisibility(LinearLayout.VISIBLE);
                 if(almacen.isChecked()){
                     spinneralmacen.setVisibility(View.VISIBLE);
@@ -234,6 +236,8 @@ public class CantidadEntradaFragment extends DialogFragment {
                     spinner_almacenes.getFirstVisiblePosition();
                     spinner_almacenes.setSelection(0);
                     clave.setVisibility(View.VISIBLE);
+                    nombre = null;
+                    idAlmacen = null;
                 }
             }
 
@@ -252,7 +256,10 @@ public class CantidadEntradaFragment extends DialogFragment {
                     cargo.setVisibility(View.GONE);
                     textCargo.setVisibility(View.GONE);
                     spinnercontratista.setVisibility(View.GONE);
-                    spinner_almacenes.setSelection(0);
+                    spinnercontratista.setSelection(0);
+                    empresa = null;
+                    idContratista = null;
+                    cargo.setChecked(false);
                 }
 
 
@@ -264,7 +271,7 @@ public class CantidadEntradaFragment extends DialogFragment {
             @Override
             public void onClick(View v) {
                 Integer idcargo=0;
-                System.out.println("clave: "+textclave.getText().toString());
+                //System.out.println("clave: "+textclave.getText().toString());
                 if (recibido.getText().toString().isEmpty()){
                     error.setText("DEBE ESCRIBIR LA CANTIDAD RECIBIDA.");
                 }
@@ -285,7 +292,7 @@ public class CantidadEntradaFragment extends DialogFragment {
                     if(cargo.isChecked() == true){
                         idcargo = 1;
                     }
-                    System.out.println("Recibir: " + recibido.getText() + textclave.getText());
+                   // System.out.println("Recibir: " + recibido.getText() + textclave.getText()+idcargo+nombre + idAlmacen);
                     cantidadRecibida = Double.valueOf(recibido.getText().toString());
 
                     data.put("idalmacen", idAlmacen);
@@ -309,7 +316,8 @@ public class CantidadEntradaFragment extends DialogFragment {
                         Intent intent = new Intent(getContext(), EntradaActivity.class);
                         intent.putExtra("observacion",observacion);
                         intent.putExtra("referencia", referencia);
-                        startActivityForResult(intent,1);
+                        intent.putExtra("posicion", String.valueOf(posicion));
+                        intent.putExtra("idorden", String.valueOf(idordenT));
                         startActivity(intent);
                         getDialog().dismiss();
                     }

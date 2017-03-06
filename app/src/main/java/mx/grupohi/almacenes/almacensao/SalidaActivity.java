@@ -86,7 +86,7 @@ public class SalidaActivity extends AppCompatActivity
     private Toolbar toolbar;
     private String mConnectedDeviceName = null;
     static String espacio = "   ";
-
+    String idSpinner;
 
 
     @Override
@@ -102,9 +102,10 @@ public class SalidaActivity extends AppCompatActivity
         String x = getIntent().getStringExtra("observacion");
         String y = getIntent().getStringExtra("referencia");
         String z = getIntent().getStringExtra("concepto");
-        String w =getIntent().getStringExtra("posicion");
-        System.out.println("extra: "+ x + y + z + w);
-
+        String w = getIntent().getStringExtra("posicion");
+        idSpinner = getIntent().getStringExtra("idalmacen");
+        System.out.println("extra: "+ x + y + z + w+idSpinner);
+        mListRecibido = (ListView) findViewById(R.id.listView_salida_materiales);
         concepto = (EditText) findViewById(R.id.textConcepto);
         referenica_salida = (EditText) findViewById(R.id.textReferenciaSalida);
         observacion_salida = (EditText) findViewById(R.id.textObservacionesSalida);
@@ -160,9 +161,28 @@ public class SalidaActivity extends AppCompatActivity
                     lista = new ListaMaterialAdaptador(getApplicationContext(), MaterialesAlmacen.getMateriales(getApplicationContext(), idAlmacen, usuario.getIdObra()));
                     materiales.setAdapter(lista);
 
+                    System.out.println("spinenELSEIFOUT " + idSpinner +"!="+ spinnerMap.get(almacen_spinner.getSelectedItem())+" : "+almacen_spinner.getSelectedItem().toString()+  "spiner "+spinnerMap.get(almacen_spinner.getSelectedItem()));
+                    if (idSpinner!=null && !idSpinner.equals(spinnerMap.get(almacen_spinner.getSelectedItem()))){
+                        dialogoRecepcion.destroy();
+                        System.out.println("spineLSEIF "+almacen_spinner.getSelectedItem().toString()+ " "+ "spiner "+spinnerMap.get(almacen_spinner.getSelectedItem()));
+                        listaRecibido = new ListaDialog(getApplicationContext(), DialogoRecepcion.getRecepcion(getApplicationContext(), "null", String.valueOf(idMaterial)));
+                        mListRecibido.setAdapter(listaRecibido);
+                        botonSalida.setEnabled(true);
+                        botonSalida.setVisibility(View.VISIBLE);
+                        buttonImprimir.setVisibility(View.GONE);
+                        salir.setVisibility(View.GONE);
+                        materiales.setEnabled(true);
+                        mListRecibido.setEnabled(true);
+                        concepto.setEnabled(true);
+                        referenica_salida.setEnabled(true);
+                        observacion_salida.setEnabled(true);
+                        concepto.setText("");
+                        referenica_salida.setText("");
+                        observacion_salida.setText("");
+                        idSpinner = "null";
 
-
-
+                    }
+                    System.out.println("spinen "+almacen_spinner.getSelectedItem().toString()+ " "+ idSpinner+ "spiner "+spinnerMap.get(almacen_spinner.getSelectedItem()));
                     materiales.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -170,17 +190,13 @@ public class SalidaActivity extends AppCompatActivity
 
                             idMaterial = m.id_material;
                             cantidad = Double.valueOf(m.cantidad);
-                            if(cantidad != 0) {
-                               // System.out.println(idMaterial + "Click orden: " + m.id_material +": "+m.id_almacen +" posicion" + position);
-                               // idMaterial = String.valueOf(orden.idmaterial);
-                              //  showEditDialog(idMaterial);
-                                FragmentManager fm = getSupportFragmentManager();
 
+                            if(cantidad != 0) {
+
+                                FragmentManager fm = getSupportFragmentManager();
                                 salidaFragment = new SalidaFragment();
                                 salidaFragment = salidaFragment.newInstance(String.valueOf(cantidad),m.unidad , idMaterial, m.descripcion, m.id_almacen,concepto.getText().toString(), referenica_salida.getText().toString(),observacion_salida.getText().toString(), posicion_almacen);
-
                                 salidaFragment.show(fm, "Material Recibido");
-
 
                             }else{
                                 Toast.makeText(getApplicationContext(), "NO HAY MÁS MATERIAL PARA RECIBIR.", Toast.LENGTH_SHORT).show();
@@ -198,7 +214,7 @@ public class SalidaActivity extends AppCompatActivity
             });
 
             if(dialogoRecepcion.getCount() != 0) {
-                mListRecibido = (ListView) findViewById(R.id.listView_salida_materiales);
+
                 listaRecibido = new ListaDialog(getApplicationContext(), DialogoRecepcion.getRecepcion(getApplicationContext(), "null", String.valueOf(idMaterial)));
                 mListRecibido.setAdapter(listaRecibido);
 
@@ -239,8 +255,6 @@ public class SalidaActivity extends AppCompatActivity
             }
         }
 
-
-
         botonSalida.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -271,16 +285,16 @@ public class SalidaActivity extends AppCompatActivity
                         MaterialesAlmacen ord = lista.getItem(z);
                         aux_almacen = String.valueOf(ord.id_almacen);
                         aux_material = String.valueOf(ord.id_material);
-                        if(a==0) {
-                        fecha = Util.timeStamp();
-                        salidas.clear();
-                        salidas.put("referencia", referenica_salida.getText().toString().replaceAll(" +"," ").trim());
-                        salidas.put("observacion", observacion_salida.getText().toString().replaceAll(" +"," ").trim());
-                        salidas.put("idalmacen", ord.id_almacen);
-                        salidas.put("fecha", fecha);
-                        salidas.put("concepto", concepto.getText().toString().replaceAll(" +"," ").trim());
-                        salidas.put("idobra",usuario.getIdObra());
-                        salidas.put("folio", folio);
+                        if (a == 0) {
+                            fecha = Util.timeStamp();
+                            salidas.clear();
+                            salidas.put("referencia", referenica_salida.getText().toString().replaceAll(" +", " ").trim());
+                            salidas.put("observacion", observacion_salida.getText().toString().replaceAll(" +", " ").trim());
+                            salidas.put("idalmacen", ord.id_almacen);
+                            salidas.put("fecha", fecha);
+                            salidas.put("concepto", concepto.getText().toString().replaceAll(" +", " ").trim());
+                            salidas.put("idobra", usuario.getIdObra());
+                            salidas.put("folio", folio);
 
 
                             e = salida.create(salidas);
@@ -293,9 +307,9 @@ public class SalidaActivity extends AppCompatActivity
                             if (aux_almacen.equals(dr.id_almacen) && aux_material.equals(dr.idmaterial)) {
 
                                 salidas.clear();
-                                salidas.put("cantidad", dr.cantidadRS.replaceAll(" +"," ").trim());
+                                salidas.put("cantidad", dr.cantidadRS.replaceAll(" +", " ").trim());
                                 salidas.put("idsalida", e);
-                                salidas.put("claveConcepto", dr.claveConcepto.replaceAll(" +"," ").trim());
+                                salidas.put("claveConcepto", dr.claveConcepto.replaceAll(" +", " ").trim());
                                 salidas.put("idcontratista", dr.idcontratista);
                                 salidas.put("cargo", dr.cargo);
                                 salidas.put("unidad", dr.unidad);
@@ -311,17 +325,20 @@ public class SalidaActivity extends AppCompatActivity
 
                         }
                     }
-                }
-                a++;
-                if (a == lista.getCount()) {
-                    Toast.makeText(getApplicationContext(), R.string.guardado, Toast.LENGTH_SHORT).show();
-                    botonSalida.setEnabled(false);
-                    botonSalida.setVisibility(View.GONE);
-                    buttonImprimir.setVisibility(View.VISIBLE);
-                    salir.setVisibility(View.VISIBLE);
-                    materiales.setEnabled(false);
-                    mListRecibido.setEnabled(false);
+                    a++;
+                    if (a == lista.getCount()) {
+                        Toast.makeText(getApplicationContext(), R.string.guardado, Toast.LENGTH_SHORT).show();
+                        botonSalida.setEnabled(false);
+                        botonSalida.setVisibility(View.GONE);
+                        buttonImprimir.setVisibility(View.VISIBLE);
+                        salir.setVisibility(View.VISIBLE);
+                        materiales.setEnabled(false);
+                        mListRecibido.setEnabled(false);
+                        concepto.setEnabled(false);
+                        referenica_salida.setEnabled(false);
+                        observacion_salida.setEnabled(false);
 
+                    }
                 }
             }
         });

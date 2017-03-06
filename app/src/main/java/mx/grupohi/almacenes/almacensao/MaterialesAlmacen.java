@@ -84,11 +84,12 @@ public class MaterialesAlmacen {
                 this.id_material = c.getInt(0);
 
                 System.out.println("PROBANDO: id material "+ id_material +" almacen "+ almacen+" obra "+ idobra+" id0material " +id+"nombrre "+ c.getString(c.getColumnIndex("descripcion")));
-                if(c.getInt(6)==0){
+                /*if(c.getInt(6)==0){
                     this.id_almacen = c.getInt(13);
                 }else{
                     this.id_almacen = c.getInt(6);
-                }
+                }*/
+                this.id_almacen = almacen; // corregir problema de Salida con transferencias
                 this.id_obra = c.getInt(c.getColumnIndex("id_obra"));
                 if(cantidad_almacen != 0){
                     aux_cantidad = aux_cantidad +cantidad_almacen;
@@ -119,7 +120,7 @@ public class MaterialesAlmacen {
 
                 this.descripcion = c.getString(c.getColumnIndex("descripcion"));
                 System.out.println("valores: "+cantidad_almacen+" + "+cantidad_entrada+" + "+aux_transferenciaEntrada+" - "+salida+ " - "+ salidasDetalle +" - "+aux_transferenciaSalida+" = "+cantidad);
-                System.out.println("datos: "+id_material+" "+cantidad+" "+unidad+" "+id_obra+ " "+ descripcion);
+                System.out.println("datos: "+id_material+" "+cantidad+" "+unidad+" "+id_obra+ " "+ descripcion+" "+id_almacen);
             }
             return this;
         }finally {

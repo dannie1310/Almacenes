@@ -88,6 +88,8 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
     private Toolbar toolbar;
     private String mConnectedDeviceName = null;
     static String espacio = "   ";
+    String idSpinner;
+    Integer posicion;
 
 
     CantidadEntradaFragment editNameDialogFragment;
@@ -101,7 +103,10 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
         setSupportActionBar(toolbar);
         String x = getIntent().getStringExtra("observacion");
         String y = getIntent().getStringExtra("referencia");
-        System.out.println("extra: "+ x + y);
+        String w = getIntent().getStringExtra("posicion");
+        idSpinner = getIntent().getStringExtra("idorden");
+
+        //System.out.println("extra: "+ x + y + w);
         main = new Intent(getApplicationContext(), MainActivity.class);
         usuario = new Usuario(getApplicationContext());
         usuario = usuario.getUsuario();
@@ -112,18 +117,12 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
         spinner = (Spinner) findViewById(R.id.spinner_ordencompra);
         guardar = (Button) findViewById(R.id.buttonGuardar);
         buttonImprimir = (Button) findViewById(R.id.ImprimirEntrada);
+        mListRecibido = (ListView) findViewById(R.id.listView_materiales_ordencompra_temp);
         salir = (Button) findViewById(R.id.salir);
         buttonImprimir.setVisibility(View.GONE);
         salir.setVisibility(View.GONE);
 
         bixolonPrinterApi = new BixolonPrinter(this, mHandler, null);
-
-        if (x != null){
-            observaciones.setText(x);
-        }
-        if (y != null){
-            referencia.setText(y);
-        }
 
         final ArrayList<String> nombres = ordenCompra.getArrayListOrdenes();
         final ArrayList<String> ids = ordenCompra.getArrayListId();
@@ -140,7 +139,16 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
         a.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
         spinner.setAdapter(a);
 
-
+        if (x != null){
+            observaciones.setText(x);
+        }
+        if (y != null){
+            referencia.setText(y);
+        }
+        //System.out.println("rrr: "+w + " " +posicion+" "+ idSpinner);
+        if(w != null){
+            spinner.setSelection(Integer.valueOf(w));
+        }
 
         if (spinner != null) {
             spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -149,15 +157,30 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
 
                     nombre = spinner.getSelectedItem().toString();
                     idOrden = spinnerMap.get(nombre);
-
-                    System.out.println("add: " + idOrden + nombre);
+                    posicion = position;
                     mList = (ListView) findViewById(R.id.listView_materiales_ordencompra);
-                    System.out.println("valores: " + idOrden);
 
                     lista = new lista_adaptador(getApplicationContext(), OrdenCompra.getOrden(getApplicationContext(), idOrden));
                     mList.setAdapter(lista);
 
-
+                    //System.out.println("spinenELSEIFOUT " + idSpinner +"!="+ spinnerMap.get(spinner.getSelectedItem())+" : "+spinner.getSelectedItem().toString()+  "spiner "+spinnerMap.get(spinner.getSelectedItem()));
+                    if (idSpinner!=null && !idSpinner.equals(spinnerMap.get(spinner.getSelectedItem()))){
+                        dialogoRecepcion.destroy();
+                        //System.out.println("spineLSEIF "+spinner.getSelectedItem().toString()+ " "+ "spiner "+spinnerMap.get(spinner.getSelectedItem()));
+                        listaRecibido = new ListaDialog(getApplicationContext(), DialogoRecepcion.getRecepcion(getApplicationContext(), idOrden, "null"));
+                        mListRecibido.setAdapter(listaRecibido);
+                        guardar.setEnabled(true);
+                        guardar.setVisibility(View.VISIBLE);
+                        buttonImprimir.setVisibility(View.GONE);
+                        salir.setVisibility(View.GONE);
+                        mList.setEnabled(true);
+                        mListRecibido.setEnabled(true);
+                        referencia.setEnabled(true);
+                        observaciones.setEnabled(true);
+                        referencia.setText("");
+                        observaciones.setText("");
+                        idSpinner = "null";
+                    }
 
 
                     mList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -168,13 +191,9 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
                             idOrdenCompra = orden.id;
                             existencia = Double.valueOf(orden.existencia);
                             if(existencia != 0) {
-                                System.out.println(idOrdenCompra + "Click orden: " + orden.idorden + "posicion" + position);
+                                //System.out.println(idOrdenCompra + "Click orden: " + orden.idorden + "posicion" + position);
                                 idMaterial = String.valueOf(orden.idmaterial);
                                 showEditDialog(idOrdenCompra);
-
-
-
-                                System.out.println("idcompra: " + idOrden);
                             }else{
                                 Toast.makeText(getApplicationContext(), "NO HAY MÁS MATERIAL PARA RECIBIR.", Toast.LENGTH_SHORT).show();
                             }
@@ -183,7 +202,7 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
                     });
 
                     if(dialogoRecepcion.getCount() != 0) {
-                        mListRecibido = (ListView) findViewById(R.id.listView_materiales_ordencompra_temp);
+
                         listaRecibido = new ListaDialog(getApplicationContext(), DialogoRecepcion.getRecepcion(getApplicationContext(), idOrden, "null"));
                         mListRecibido.setAdapter(listaRecibido);
 
@@ -202,7 +221,6 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
                                         listaRecibido.remove((DialogoRecepcion) listaRecibido.getItem(position));
 
                                         mListRecibido.setAdapter(listaRecibido);
-                                        System.out.println("aq: " + cantx);
                                         DialogoRecepcion.remove(getApplicationContext(), idDialogo);
 
                                         lista = new lista_adaptador(getApplicationContext(), OrdenCompra.getOrden(getApplicationContext(), idOrden));
@@ -221,7 +239,6 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
                                     }
                                 });
                                 alert.show();
-                                System.out.println(dialogR.contratista + "Adaptador Dialog: posicion" + position);
                             }
                         });
                     }
@@ -243,7 +260,6 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
                 entrada = new Entrada(getApplicationContext());
                 entradaDetalle = new EntradaDetalle(getApplicationContext());
 
-                System.out.println("add5: " + idOrden + nombre);
 
                 ContentValues entradas = new ContentValues();
                 Integer a = 0;
@@ -280,11 +296,10 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
                             entradas.put("folio", folio);
                             e = entrada.create(entradas);
                         }
-                        System.out.println("entrada: " + e + " " + entradas);
 
                         for (int l = 0; l < listaRecibido.getCount(); l++) {
                             DialogoRecepcion dr = listaRecibido.getItem(l);
-                            System.out.println("ffff: " + aux_orden + " " + aux_material + " " + dr.idorden + " " + ord.idmaterial);
+                           // System.out.println("ffff: " + aux_orden + " " + aux_material + " " + dr.idorden + " " + ord.idmaterial);
                             if (aux_material.equals(dr.idmaterial) && aux_orden.equals(dr.idorden)) {
 
                                 entradas.clear();
@@ -296,7 +311,7 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
                                 entradas.put("cargo", dr.cargo);
                                 entradas.put("unidad", dr.unidad);
                                 entradas.put("idmaterial", dr.idmaterial);
-                                System.out.println("entradaDetalle: " + entradas);
+                                //System.out.println("entradaDetalle: " + entradas);
 
                                 if (!entradaDetalle.create(entradas)) {
                                     Toast.makeText(getApplicationContext(), R.string.error_entradadetalle, Toast.LENGTH_SHORT).show();
@@ -305,13 +320,6 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
                             }
 
                         }
-
-                       /* System.out.println("FUNCION: " + e);
-                        if (!entradaDetalle.find(e)) {
-                            Entrada.remove(getApplicationContext(), e);
-                            System.out.println("remove: " + e);
-                        }*/
-
                     }
 
                     a++;
@@ -324,6 +332,8 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
                         salir.setVisibility(View.VISIBLE);
                         mList.setEnabled(false);
                         mListRecibido.setEnabled(false);
+                        referencia.setEnabled(false);
+                        observaciones.setEnabled(false);
 
                         //buttonImprimir.performClick();
                     }
@@ -377,7 +387,7 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
                                                                   //printTextTwoColumns(espacio+"Observaciones: ", observaciones.getText() + "\n",0);
                                                                   printTextTwoColumns(espacio+"Checador: " + usuario.getNombre(), fecha+ "\n",0);
                                                                   JSONObject edetalle = entradaDetalle.getEntradasDetalle(getApplicationContext(), folio);
-                                                                  System.out.println("JSON "+ edetalle);
+
                                                                   bixolonPrinterApi.lineFeed(1, true);
                                                                   bixolonPrinterApi.printText(espacio+"=============================================   ", BixolonPrinter.ALIGNMENT_CENTER, BixolonPrinter.TEXT_ATTRIBUTE_FONT_A, 0, false);
                                                                   bixolonPrinterApi.printText(espacio+"RELACIÓN DE MATERIALES RECIBIDOS. \n", BixolonPrinter.ALIGNMENT_CENTER, BixolonPrinter.TEXT_ATTRIBUTE_FONT_A, 0, false);
@@ -385,7 +395,6 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
                                                                   //bixolonPrinterApi.lineFeed(1, true);
                                                                   JSONObject aux;
                                                                   for (int i = 0; i < edetalle.length(); i++) {
-                                                                      System.out.println("obras: " + edetalle.getJSONObject(String.valueOf(i)));
                                                                       JSONObject info = edetalle.getJSONObject(String.valueOf(i));
                                                                       if(i!=0) {
                                                                           aux = edetalle.getJSONObject(String.valueOf(i - 1));
@@ -443,7 +452,7 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
                                                   }
                                               }
                                           });
-        System.out.println("activo= "+buttonImprimir.isClickable());
+       // System.out.println("activo= "+buttonImprimir.isClickable());
         onPause();
         bixolonPrinterApi.kickOutDrawer(BixolonPrinter.DRAWER_CONNECTOR_PIN5);
 
@@ -497,7 +506,7 @@ public class EntradaActivity extends AppCompatActivity implements NavigationView
         FragmentManager fm = getSupportFragmentManager();
 
         editNameDialogFragment = new CantidadEntradaFragment();
-        editNameDialogFragment = editNameDialogFragment.newInstance(ordenCompra.getDescripcion(idOrdenCompra), String.valueOf(existencia), ordenCompra.getUnidad(idOrdenCompra), idOrden, idMaterial, referencia.getText().toString(),observaciones.getText().toString());
+        editNameDialogFragment = editNameDialogFragment.newInstance(ordenCompra.getDescripcion(idOrdenCompra), String.valueOf(existencia), ordenCompra.getUnidad(idOrdenCompra), idOrden, idMaterial, referencia.getText().toString(),observaciones.getText().toString(), posicion);
 
         editNameDialogFragment.show(fm, "Material Recibido");
 

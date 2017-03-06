@@ -277,7 +277,7 @@ public class TransferenciaFragment extends DialogFragment {
                         intent.putExtra("observacion",observacion);
                         intent.putExtra("referencia", referencia);
                         intent.putExtra("posicion", String.valueOf(posicion_in));
-                        startActivityForResult(intent,1);
+                        intent.putExtra("idalmacen", String.valueOf(idalmacenAnt));
                         startActivity(intent);
                         getDialog().dismiss();
                     }

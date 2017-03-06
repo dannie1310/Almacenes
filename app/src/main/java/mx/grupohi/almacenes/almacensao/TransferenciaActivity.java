@@ -82,6 +82,7 @@ public class TransferenciaActivity extends AppCompatActivity implements Navigati
     private Toolbar toolbar;
     private String mConnectedDeviceName = null;
     static String espacio = "   ";
+    String idSpinner;
 
 
     @Override
@@ -97,7 +98,8 @@ public class TransferenciaActivity extends AppCompatActivity implements Navigati
 
         String x = getIntent().getStringExtra("observacion");
         String y = getIntent().getStringExtra("referencia");
-        String w =getIntent().getStringExtra("posicion");
+        String w = getIntent().getStringExtra("posicion");
+        idSpinner = getIntent().getStringExtra("idalmacen");
         System.out.println("extra: "+ x + y + w);
 
         referencia = (EditText) findViewById(R.id.textReferenciaT);
@@ -151,6 +153,27 @@ public class TransferenciaActivity extends AppCompatActivity implements Navigati
                     lista = new ListaMaterialAdaptador(getApplicationContext(), MaterialesAlmacen.getMateriales(getApplicationContext(), idAlmacen, usuario.getIdObra()));
                     mList.setAdapter(lista);
 
+                    System.out.println("spinenELSEIFOUT " + idSpinner +"!="+ spinnerMap.get(spinner.getSelectedItem())+" : "+spinner.getSelectedItem().toString()+  "spiner "+spinnerMap.get(spinner.getSelectedItem()));
+                    if (idSpinner!=null && !idSpinner.equals(spinnerMap.get(spinner.getSelectedItem()))){
+                        dialogoRecepcion.destroy();
+                        System.out.println("spineLSEIF "+spinner.getSelectedItem().toString()+ " "+ "spiner "+spinnerMap.get(spinner.getSelectedItem()));
+                        listaRecibido = new ListaDialog(getApplicationContext(), DialogoRecepcion.getRecepcion(getApplicationContext(), "null", String.valueOf(idMaterial)));
+                        lista = new ListaMaterialAdaptador(getApplicationContext(), MaterialesAlmacen.getMateriales(getApplicationContext(), idAlmacen, usuario.getIdObra()));
+                        mList.setAdapter(lista);
+                        mListRecibido.setAdapter(listaRecibido);
+                        guardar.setEnabled(true);
+                        guardar.setVisibility(View.VISIBLE);
+                        buttonImprimir.setVisibility(View.GONE);
+                        salir.setVisibility(View.GONE);
+                        mList.setEnabled(true);
+                        mListRecibido.setEnabled(true);
+                        referencia.setEnabled(true);
+                        observacion.setEnabled(true);
+                        referencia.setText("");
+                        observacion.setText("");
+                        idSpinner = "null";
+                    }
+
                     mList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -165,7 +188,6 @@ public class TransferenciaActivity extends AppCompatActivity implements Navigati
 
                                 transferenciaFragment = new TransferenciaFragment();
                                 transferenciaFragment = transferenciaFragment.newInstance(String.valueOf(cantidad),m.unidad , idMaterial, m.descripcion, Integer.valueOf(idAlmacen), referencia.getText().toString(),observacion.getText().toString(), posicion_almacen);
-
                                 transferenciaFragment.show(fm, "Material Recibido");
 
 
@@ -255,7 +277,7 @@ public class TransferenciaActivity extends AppCompatActivity implements Navigati
                         aux_almacen = String.valueOf(ord.id_almacen);
                         aux_material = String.valueOf(ord.id_material);
 
-                        if(a==0) {
+                        if (a == 0) {
                             fecha = Util.timeStamp();
                             salidas.clear();
                             salidas.put("referencia", referencia.getText().toString());
@@ -279,8 +301,8 @@ public class TransferenciaActivity extends AppCompatActivity implements Navigati
                                 salidas.put("cantidad", dr.cantidadRS);
                                 salidas.put("idtransferencia", e);
                                 salidas.put("idmaterial", dr.idmaterial);
-                                salidas.put("idalmacenOrigen", idAlmacen );
-                                salidas.put("idalmacenDestino",dr.id_almacen);
+                                salidas.put("idalmacenOrigen", idAlmacen);
+                                salidas.put("idalmacenDestino", dr.id_almacen);
                                 salidas.put("idcontratista", dr.idcontratista);
                                 salidas.put("cargo", dr.cargo);
                                 salidas.put("unidad", dr.unidad);
@@ -302,17 +324,19 @@ public class TransferenciaActivity extends AppCompatActivity implements Navigati
                         }*/
 
                     }
-                }
-                a++;
-                if (a == lista.getCount()) {
-                    Toast.makeText(getApplicationContext(), R.string.guardado, Toast.LENGTH_SHORT).show();
-                    guardar.setEnabled(false);
-                    guardar.setVisibility(View.GONE);
-                    buttonImprimir.setVisibility(View.VISIBLE);
-                    salir.setVisibility(View.VISIBLE);
-                    mList.setEnabled(false);
-                   // spinner.setEnabled(false);
-                    mListRecibido.setEnabled(false);
+
+                    a++;
+                    if (a == lista.getCount()) {
+                        Toast.makeText(getApplicationContext(), R.string.guardado, Toast.LENGTH_SHORT).show();
+                        guardar.setEnabled(false);
+                        guardar.setVisibility(View.GONE);
+                        buttonImprimir.setVisibility(View.VISIBLE);
+                        salir.setVisibility(View.VISIBLE);
+                        mList.setEnabled(false);
+                        mListRecibido.setEnabled(false);
+                        referencia.setEnabled(false);
+                        observacion.setEnabled(false);
+                    }
                 }
             }
         });

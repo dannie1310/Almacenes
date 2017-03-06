@@ -247,7 +247,7 @@ public class SalidaFragment extends DialogFragment {
                             intent.putExtra("referencia", referencia);
                             intent.putExtra("concepto", conceptoT);
                             intent.putExtra("posicion", String.valueOf(posicion_in));
-                            startActivityForResult(intent,1);
+                            intent.putExtra("idalmacen", String.valueOf(idalmacen));
                             startActivity(intent);
                             getDialog().dismiss();
                         }
