@@ -155,4 +155,32 @@ public class Salida {
             db.close();
         }
     }
+
+    static Boolean isSync(Context context) {
+        DBScaSqlite db_sca = new DBScaSqlite(context, "sca", null, 1);
+        SQLiteDatabase db = db_sca.getWritableDatabase();
+        Boolean result = true;
+        Cursor c = db.rawQuery("SELECT * FROM salida", null);
+        try {
+            if(c != null && c.moveToFirst()) {
+                result = false;
+            }
+            return result;
+        } finally {
+            c.close();
+            db.close();
+        }
+    }
+
+    static Integer getCount(Context context) {
+        DBScaSqlite db_sca = new DBScaSqlite(context, "sca", null, 1);
+        SQLiteDatabase db = db_sca.getWritableDatabase();
+        Cursor c = db.rawQuery("SELECT * FROM salida",null);
+        try {
+            return c.getCount();
+        } finally {
+            c.close();
+            db.close();
+        }
+    }
 }

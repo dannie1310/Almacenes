@@ -187,4 +187,91 @@ public class EntradaDetalle {
         System.out.println("JSON: "+JSON);
         return JSON;
     }
+
+    static JSONObject getJSON(Context context) {
+        JSONObject JSON = new JSONObject();
+        DBScaSqlite db_sca = new DBScaSqlite(context, "sca", null, 1);
+        SQLiteDatabase db = db_sca.getWritableDatabase();
+        Cursor c = db.rawQuery("SELECT * FROM entrada e INNER JOIN ordenescompra o ON e.idorden = o.idorden  ORDER BY e.id", null);
+        try {
+            if(c != null && c.moveToFirst()) {
+                Integer i = 0;
+                do {
+
+                    JSONObject json = new JSONObject();
+
+                    json.put("identrada", c.getString(0));
+                    json.put("folio", c.getString(7));
+                    json.put("idorden", c.getString(1));
+                    json.put("referencia", c.getString(3));
+                    json.put("observacion", c.getString(4));
+                    json.put("fecha", c.getString(5));
+                    json.put("idobra", c.getInt(6));
+                    json.put("numerofolio", c.getString(8));
+                    json.put("iditem", c.getString(9));
+                    json.put("razonsocial", c.getString(10));
+                    json.put("detalle", getJSONDetalle(context,c.getInt(0)));
+
+                    JSON.put(i + "", json);
+                    i++;
+
+                } while (c.moveToNext());
+
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            c.close();
+            db.close();
+        }
+       // System.out.println("JSON: "+JSON);
+        return JSON;
+    }
+
+    static JSONObject getJSONDetalle(Context context, Integer id) {
+        JSONObject JSON = new JSONObject();
+        DBScaSqlite db_sca = new DBScaSqlite(context, "sca", null, 1);
+        SQLiteDatabase db = db_sca.getWritableDatabase();
+        Cursor c = db.rawQuery("SELECT * FROM entradadetalle ed LEFT JOIN almacenes a ON ed.idalmacen = a.id_almacen LEFT JOIN contratistas c ON c.idempresa = ed.idContratista INNER JOIN materiales m ON m.id_material = ed.idmaterial WHERE ed.identrada = '"+id+"' ORDER BY ed.id ", null);
+        try {
+            if(c != null && c.moveToFirst()) {
+                Integer i = 0;
+                do {
+
+                    JSONObject json = new JSONObject();
+
+                    json.put("id", c.getString(0));
+                    json.put("identrada", c.getString(1));
+                    json.put("cantidad", c.getString(2));
+                    json.put("clave", c.getString(4));
+                    json.put("cargo", c.getString(6));
+                    json.put("unidad", c.getString(7));
+                    json.put("fecha", c.getString(9));
+
+
+                    json.put("idalmacen", c.getInt(3));
+                    json.put("almacen", c.getString(11));
+
+                    json.put("idcontratista", c.getString(5));
+                    json.put("contratista", c.getString(13));
+                    json.put("idmaterial", c.getString(8));
+                    json.put("material", c.getString(17));
+
+                    JSON.put(i + "", json);
+                    i++;
+
+                } while (c.moveToNext());
+
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            c.close();
+            db.close();
+        }
+        //System.out.println("JSONDetalle: "+JSON);
+        return JSON;
+    }
 }

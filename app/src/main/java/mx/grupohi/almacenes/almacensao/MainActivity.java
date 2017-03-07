@@ -1,5 +1,7 @@
 package mx.grupohi.almacenes.almacensao;
 
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -8,6 +10,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -15,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.IOException;
 
@@ -26,6 +30,7 @@ public class MainActivity extends AppCompatActivity
     ImageButton salida;
     ImageButton trans;
     ImageButton imprimir;
+    private ProgressDialog progressDialogSync;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -164,7 +169,26 @@ public class MainActivity extends AppCompatActivity
             startActivity(t);
 
         } else if (id == R.id.nav_syn) {
-
+            new AlertDialog.Builder(MainActivity.this)
+                    .setTitle("¡ADVERTENCIA!")
+                    .setMessage("¿Deséas continuar con la sincronización?")
+                    .setNegativeButton("NO", null)
+                    .setPositiveButton("SI", new DialogInterface.OnClickListener() {
+                        @Override public void onClick(DialogInterface dialog, int which) {
+                            if (Util.isNetworkStatusAvialable(getApplicationContext())) {
+                                if(!Entrada.isSync(getApplicationContext()) || !Salida.isSync(getApplicationContext()) || !Transferencia.isSync(getApplicationContext())) {
+                                    progressDialogSync = ProgressDialog.show(MainActivity.this, "Sincronizando datos", "Por favor espere...", true);
+                                    new Sincronizar(getApplicationContext(), progressDialogSync).execute((Void) null);
+                                } else {
+                                    Toast.makeText(getApplicationContext(), "No es necesaria la sincronización en este momento", Toast.LENGTH_LONG).show();
+                                }
+                            } else {
+                                Toast.makeText(getApplicationContext(), R.string.error_internet, Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    })
+                    .create()
+                    .show();
         } else if (id == R.id.nav_cambio) {
             Intent seleccionar = new Intent(this, SeleccionaObraActivity.class);
             startActivity(seleccionar);

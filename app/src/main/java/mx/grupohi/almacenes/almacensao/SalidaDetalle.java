@@ -166,4 +166,85 @@ public class SalidaDetalle {
         return JSON;
     }
 
+    static JSONObject getJSON(Context context) {
+        JSONObject JSON = new JSONObject();
+        DBScaSqlite db_sca = new DBScaSqlite(context, "sca", null, 1);
+        SQLiteDatabase db = db_sca.getWritableDatabase();
+        Cursor c = db.rawQuery("SELECT * FROM salida s LEFT JOIN almacenes a ON s.idalmacen = a.id_almacen ORDER BY s.id", null);
+        try {
+            if(c != null && c.moveToFirst()) {
+                Integer i = 0;
+                do {
+
+                    JSONObject json = new JSONObject();
+                    json.put("idsalida", c.getString(0));
+                    json.put("folio", c.getString(7));
+                    json.put("referencia", c.getString(2));
+                    json.put("observacion", c.getString(3));
+                    json.put("concepto", c.getString(4));
+                    json.put("fecha", c.getString(5));
+                    json.put("idobra", c.getString(6));
+                    json.put("idalmacen", c.getString(8));
+                    json.put("almacen", c.getString(9));
+                    json.put("detalle", getJSONDetalle(context,c.getInt(0)));
+
+                    JSON.put(i + "", json);
+                    i++;
+
+                } while (c.moveToNext());
+
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            c.close();
+            db.close();
+        }
+        //System.out.println("JSONSalida: "+JSON);
+        return JSON;
+    }
+
+    static JSONObject getJSONDetalle(Context context, Integer id) {
+        JSONObject JSON = new JSONObject();
+        DBScaSqlite db_sca = new DBScaSqlite(context, "sca", null, 1);
+        SQLiteDatabase db = db_sca.getWritableDatabase();
+        Cursor c = db.rawQuery("SELECT * FROM salidadetalle sd LEFT JOIN contratistas c ON c.idempresa = sd.idContratista INNER JOIN materiales m ON m.id_material = sd.idmaterial WHERE sd.idsalida = '"+id+"' ORDER BY sd.id", null);
+        try {
+            if(c != null && c.moveToFirst()) {
+                Integer i = 0;
+                do {
+
+                    JSONObject json = new JSONObject();
+
+                    json.put("id", c.getString(0));
+                    json.put("idsalida", c.getString(1));
+                    json.put("cantidad", c.getString(2));
+                    json.put("idmaterial", c.getString(3));
+                    json.put("material", c.getString(14));
+                    json.put("clave", c.getString(4));
+                    json.put("idcontratista", c.getString(5));
+                    json.put("contratista", c.getString(10));
+                    json.put("cargo", c.getString(6));
+                    json.put("unidad", c.getString(7));
+                    json.put("fecha", c.getString(8));
+
+
+                    JSON.put(i + "", json);
+                    i++;
+
+                } while (c.moveToNext());
+
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            c.close();
+            db.close();
+        }
+        //System.out.println("JSONDetalle: "+JSON);
+        return JSON;
+    }
+
 }

@@ -174,7 +174,88 @@ public class TransferenciaDetalle {
             c.close();
             db.close();
         }
-        System.out.println("JSON: "+JSON);
+        //git System.out.println("JSON: "+JSON);
+        return JSON;
+    }
+
+    static JSONObject getJSON(Context context) {
+        JSONObject JSON = new JSONObject();
+        DBScaSqlite db_sca = new DBScaSqlite(context, "sca", null, 1);
+        SQLiteDatabase db = db_sca.getWritableDatabase();
+        Cursor c = db.rawQuery("SELECT * FROM  transferencia t LEFT JOIN almacenes a ON t.idalmacenoRIGEN = a.id_almacen ORDER BY t.id", null);
+        try {
+            if(c != null && c.moveToFirst()) {
+                Integer i = 0;
+                do {
+
+                    JSONObject json = new JSONObject();
+                    json.put("idtransferencia", c.getString(0));
+                    json.put("folio", c.getString(6));
+                    json.put("idalmacenOrigen", c.getString(1));
+                    json.put("almacenOrigen", c.getString(8));
+                    json.put("referencia", c.getString(2));
+                    json.put("observacion", c.getString(3));
+                    json.put("fecha", c.getString(4));
+                    json.put("idobra", c.getString(5));
+                    json.put("detalle", getJSONDetalle(context, c.getInt(0)));
+
+                    JSON.put(i + "", json);
+                    i++;
+
+                } while (c.moveToNext());
+
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            c.close();
+            db.close();
+        }
+        //System.out.println("JSONTransferencia: "+JSON);
+        return JSON;
+    }
+
+    static JSONObject getJSONDetalle(Context context, Integer id) {
+        JSONObject JSON = new JSONObject();
+        DBScaSqlite db_sca = new DBScaSqlite(context, "sca", null, 1);
+        SQLiteDatabase db = db_sca.getWritableDatabase();
+        Cursor c = db.rawQuery("SELECT * FROM transferenciadetalle td LEFT JOIN almacenes a ON td.idalmacenDestino = a.id_almacen LEFT JOIN contratistas c ON c.idempresa = td.idContratista INNER JOIN materiales m ON m.id_material = td.idmaterial WHERE td.idtransferencia = '"+id+"' ORDER BY td.id", null);
+        try {
+            if(c != null && c.moveToFirst()) {
+                Integer i = 0;
+                do {
+
+                    JSONObject json = new JSONObject();
+
+                    json.put("id", c.getString(0));
+                    json.put("idtransferencia", c.getString(1));
+                    json.put("idalmacenOrigen", c.getString(2));
+                    json.put("idalmacenDestino", c.getString(3));
+                    json.put("almacenDestino", c.getString(11));
+                    json.put("cantidad", c.getString(4));
+                    json.put("idmaterial", c.getString(5));
+                    json.put("material", c.getString(17));
+                    json.put("idcontratista", c.getString(6));
+                    json.put("contratista", c.getString(13));
+                    json.put("cargo", c.getString(7));
+                    json.put("unidad", c.getString(8));
+                    json.put("fecha", c.getString(9));
+
+                    JSON.put(i + "", json);
+                    i++;
+
+                } while (c.moveToNext());
+
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            c.close();
+            db.close();
+        }
+        //System.out.println("JSONDetalle: "+JSON);
         return JSON;
     }
 }
