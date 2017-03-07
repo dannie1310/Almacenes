@@ -182,7 +182,7 @@ public class TransferenciaDetalle {
         JSONObject JSON = new JSONObject();
         DBScaSqlite db_sca = new DBScaSqlite(context, "sca", null, 1);
         SQLiteDatabase db = db_sca.getWritableDatabase();
-        Cursor c = db.rawQuery("SELECT * FROM  transferencia t LEFT JOIN almacenes a ON t.idalmacenoRIGEN = a.id_almacen ORDER BY t.id", null);
+        Cursor c = db.rawQuery("SELECT * FROM  transferencia t LEFT JOIN almacenes a ON t.idalmacenorigen = a.id_almacen ORDER BY t.id", null);
         try {
             if(c != null && c.moveToFirst()) {
                 Integer i = 0;
