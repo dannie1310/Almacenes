@@ -69,13 +69,13 @@ public class Sincronizar  extends AsyncTask<Void, Void, Boolean> {
                 JSONObject transferencias = TransferenciaDetalle.getJSON(context);
                 values.put("Transferencias", String.valueOf(transferencias));
             }
-            System.out.println("JSON: "+String.valueOf(values));
+            //System.out.println("JSON: "+String.valueOf(values));
             /*try {
 
                 URL url = new URL("http://sca.grupohi.mx/android20160923.php");
-                JSONCAMIONES = HttpConnection.POST(url, values);
+                JSONCAMIONES = HttpConnection.POST(url, values);*/
                 System.out.println("JSON: "+String.valueOf(values));
-                ContentValues aux = new ContentValues();
+                /*ContentValues aux = new ContentValues();
                 int i = 0;
                 imagenesTotales= ImagenesCamion.getCount(context);
                 System.out.println("JSON2: "+JSONCAMIONES);

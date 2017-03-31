@@ -188,7 +188,7 @@ class Util {
     }
 
     public static String folio() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyMMddHHmmssSS");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyMMddHHmmssSSS");
         String currentDateandTime = sdf.format(new Date());
         Log.e("tiempo decimal", currentDateandTime);
         //Log.e("exadecimal",   Hex.getHex(currentDateandTime));

@@ -201,7 +201,7 @@ public class SalidaDetalle {
             c.close();
             db.close();
         }
-        //System.out.println("JSONSalida: "+JSON);
+        System.out.println("JSONSalida: "+JSON);
         return JSON;
     }
 
@@ -243,7 +243,7 @@ public class SalidaDetalle {
             c.close();
             db.close();
         }
-        //System.out.println("JSONDetalle: "+JSON);
+        System.out.println("JSONDetalleS: "+JSON);
         return JSON;
     }
 

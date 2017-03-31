@@ -211,7 +211,7 @@ public class EntradaDetalle {
                     json.put("iditem", c.getString(9));
                     json.put("razonsocial", c.getString(10));
                     json.put("detalle", getJSONDetalle(context,c.getInt(0)));
-
+                    System.out.println("BuscarOOK: "+c.getString(0));
                     JSON.put(i + "", json);
                     i++;
 
@@ -225,7 +225,7 @@ public class EntradaDetalle {
             c.close();
             db.close();
         }
-       // System.out.println("JSON: "+JSON);
+        System.out.println("JSON: "+JSON);
         return JSON;
     }
 
@@ -238,7 +238,7 @@ public class EntradaDetalle {
             if(c != null && c.moveToFirst()) {
                 Integer i = 0;
                 do {
-
+                    System.out.println("Buscar: "+c.getString(1));
                     JSONObject json = new JSONObject();
 
                     json.put("id", c.getString(0));
@@ -271,7 +271,7 @@ public class EntradaDetalle {
             c.close();
             db.close();
         }
-        //System.out.println("JSONDetalle: "+JSON);
+        System.out.println("JSONDetalleE: "+JSON);
         return JSON;
     }
 }

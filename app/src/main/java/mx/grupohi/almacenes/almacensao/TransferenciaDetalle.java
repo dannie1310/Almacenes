@@ -212,7 +212,7 @@ public class TransferenciaDetalle {
             c.close();
             db.close();
         }
-        //System.out.println("JSONTransferencia: "+JSON);
+        System.out.println("JSONTransferencia: "+JSON);
         return JSON;
     }
 
@@ -255,7 +255,7 @@ public class TransferenciaDetalle {
             c.close();
             db.close();
         }
-        //System.out.println("JSONDetalle: "+JSON);
+        System.out.println("JSONDetalleT: "+JSON);
         return JSON;
     }
 }
